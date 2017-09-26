@@ -1798,9 +1798,9 @@ CDMA
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
  | ``D_DAIN_MAP``                | ``0x804c``     | Whether input cube is line packed or surface packed                                                                |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_BLOCK_X_CFG``             | ``0x8050``     | Indicate how many GOBs in one row for block linear pixel format                                                    |
+ | ``RESERVED``                  | ``0x8050``     | This address is reserved                                                                                           |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_BLOCK_Y_CFG``             | ``0x8054``     | Indicate how many GOBs in one GOB group for block linear pixel format and the vertical index of GOB in GOB group   |
+ | ``RESERVED``                  | ``0x8054``     | This address is reserved                                                                                           |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
  | ``D_BATCH_NUMBER``            | ``0x8058``     | Number of batches                                                                                                  |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
@@ -1891,7 +1891,7 @@ their registers are not available either.  These registers are as noted below:
  * - Feature
    - Registers
  * - Image-in mode
-   - ``D_PIXEL_OFFSET``, ``D_DAIN_ADDR_HIGH_1``, ``D_DAIN_ADDR_LOW_1``, ``D_BLOCK_X_CFG``, ``D_BLOCK_Y_CFG``, ``D_MEAN_FORMAT``, ``D_MEAN_GLOBAL_0``, ``D_MEAN_GLOBAL_1``
+   - ``D_PIXEL_OFFSET``, ``D_DAIN_ADDR_HIGH_1``, ``D_DAIN_ADDR_LOW_1``, ``D_MEAN_FORMAT``, ``D_MEAN_GLOBAL_0``, ``D_MEAN_GLOBAL_1``
  * - FP16 data format
    - ``D_NAN_FLUSH_TO_ZERO``, ``D_NAN_INPUT_DATA_NUM``, ``D_NAN_INPUT_WEIGHT_NUM``, ``D_INF_INPUT_DATA_NUM``, ``D_INF_INPUT_WEIGHT_NUM``
  * - Weight compression
