@@ -1,0 +1,109 @@
+{#
+    sphinxdoc/layout.html
+    ~~~~~~~~~~~~~~~~~~~~~
+
+    Sphinx layout template for the sphinxdoc theme.
+
+    :copyright: Copyright 2007-2014 by the Sphinx team, see AUTHORS.
+    :license: BSD, see LICENSE for details.
+#}
+{%- extends "basic/layout.html" %}
+
+{# put the sidebar before the body #}
+
+{% block sidebar1 %}
+  {{ sidebar() }}
+{% endblock %}
+{% block sidebar2 %}{% endblock %}
+
+{%- block header %}
+<header class="navbar">
+  <nav class="container navbar navbar-light bg-faded">
+    <a class="navbar-brand" href="https://www.nvidia.com/">
+      <div class="logo"></div>
+    </a>
+  </nav>
+</header>
+{% endblock %}
+
+{%- block footer %}
+<div class="footer" role="contentinfo">
+<div class="container">
+<div class="row">
+{% trans path=pathto('copyright'), copyright=copyright|e %}&#169; <a
+href="{{ path }}">Copyright</a> {{ copyright }}.{% endtrans %}
+<a href="http://www.nvidia.com/object/legal_info.html">Legal Information.</a>
+<a href="http://www.nvidia.com/object/privacy_policy.html">Privacy Policy.</a>
+{% trans sphinx_version=sphinx_version|e %}Created using <a href="http://sphinx-doc.org/">Sphinx</a> {{ sphinx_version }}.{% endtrans %}
+</div>
+</div>
+</div>
+{%- endblock %}
+
+{# Sigh.  We put this way up here instead of in extrahead, because otherwise
+   it's just too far down.
+#}
+
+{%- block csss %}
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+{{ super() }}
+{%- endblock %}
+
+{%- block content %}
+  <div class="document">
+    <div class="container">
+      <div class="row">
+        {%- if render_sidebar %}
+        <div class="col-xs-12 col-md-9">
+        {%- else %}
+        <div class="col-xs-12">
+        {%- endif %}
+          {% block body %} {% endblock %}
+        </div>
+        {%- if render_sidebar %}
+        <div class="col-xs-12 col-md-3">
+          {{ sidebar() }}
+        </div>
+        {%- endif %}
+      </div>
+    </div>
+  </div>
+{%- endblock %}
+
+{#
+{%- block document %}
+  <div class="container">
+    {{ super() }}
+  </div>
+{%- endblock %}
+#}
+
+{%- set reldelim1 = reldelim1 is not defined and '&#187;' or reldelim1 %}
+{%- macro nvrelbar() %}
+    <div class="related" role="navigation" aria-label="related navigation">
+      <div class="container">
+      <div class="row">
+      <h3>{{ _('Navigation') }}</h3>
+      <ul>
+        {%- for rellink in rellinks %}
+        <li class="right{% if loop.first %} first{% endif %}">
+          <a href="{{ pathto(rellink[0]) }}" title="{{ rellink[1]|striptags|e }}"
+             {{ accesskey(rellink[2]) }}>{{ rellink[3] }}</a>
+          {%- if not loop.first %}{{ reldelim2 }}{% endif %}</li>
+        {%- endfor %}
+        {%- block rootrellink %}
+        <li class="nav-item nav-item-0"><a href="{{ pathto("index.html",1) }}">NVDLA Open Source Project</a>{{ reldelim1 }}</li>
+        <li class="nav-item nav-item-1"><a href="{{ pathto(master_doc) }}">Documentation</a>{{ reldelim1 }}</li>
+        {%- endblock %}
+        {%- for parent in parents %}
+          <li class="nav-item nav-item-{{ loop.index + 1 }}"><a href="{{ parent.link|e }}" {% if loop.last %}{{ accesskey("U") }}{% endif %}>{{ parent.title }}</a>{{ reldelim1 }}</li>
+        {%- endfor %}
+        {%- block relbaritems %} {% endblock %}
+      </ul>
+      </div>
+      </div>
+    </div>
+{%- endmacro %}
+
+{%- block relbar1 %}{{ nvrelbar() }}{% endblock %}
+{%- block relbar2 %}{{ nvrelbar() }}{% endblock %}

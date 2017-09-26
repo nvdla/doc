@@ -1,0 +1,30 @@
+language: python
+
+before_install:
+- openssl aes-256-cbc -K $encrypted_69070afafbde_key -iv $encrypted_69070afafbde_iv -in deploy/publish-key.enc -out ~/.ssh/publish-key -d
+- chmod u=rw,og= ~/.ssh/publish-key
+- echo "Host github.com" >> ~/.ssh/config
+- echo "  IdentityFile ~/.ssh/publish-key" >> ~/.ssh/config
+- git --version
+- git remote add origin2 git@github.com:nvdla/nvdla.github.io
+
+install:
+- pip install ghp-import sphinx
+
+script:
+- git fetch origin2 -f master:gh-pages-x
+- sphinx-build -b html -d build/doctrees   doc build/html
+- echo nvdla.org > build/html/CNAME
+- ghp-import -n -m 'update gh-pages' -b gh-pages-x build/html
+- git push origin2 gh-pages-x:master
+
+cache:
+  directories:
+  - .env
+
+git:
+  depth: 10
+
+branches:
+  only:
+  - master

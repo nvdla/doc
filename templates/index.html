@@ -1,0 +1,81 @@
+{% set title = "NVIDIA Deep Learning Accelerator" %}
+{% set embedded = true %}
+
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="section">
+<!--  <header>-->
+    <h1>NVDLA</h1>
+<!--    <a href="https://github.com/nvdla"><div class="btn">Get the Code</div></a>
+  </header>
+  <hr>-->
+  <p class="bigger">
+  
+  The NVIDIA Deep Learning Accelerator (NVDLA) is a free and open
+  architecture that promotes a standard way to design deep learning
+  inference accelerators.  With its modular architecture, NVDLA is scalable,
+  highly configurable, and designed to simplify integration and portability. 
+  The hardware supports a wide range of IoT devices.  Delivered as an open
+  source project under the <a href="license.html">NVIDIA Open NVDLA
+  License</a>, all of the software, hardware, and documentation will be
+  available on GitHub.  Contributions are welcome.
+  
+  </p>
+
+  <div class="bullet row slightlybigger">
+    <div class="col-xs-12 col-md-6">
+      <ul>
+          <li><b>Open Source:</b> Developed <a href="https://www.github.com/nvdla/">on GitHub</a> in an open directed community where contributions are encouraged.</li>
+          <li><b>Complete Solution:</b> Comes complete with a Verilog and C-model, Linux drivers, test benches and test suites, kernel- and user-mode software, and software development tools. 
+          Easily portable to other operating systems.</li>
+          <li><b>Scalable:</b> Well-suited to scale across a wide range of IoT devices.</li>
+      </ul>
+    </div>
+    <div class="col-xs-12 col-md-6">
+        <ul>
+            <li><b>Common Hardware Architecture:</b> Based on <a href="https://blogs.nvidia.com/blog/2016/09/28/xavier/">Xavier</a> &mdash; the world's first autonomous processor that NVIDIA designed for automotive products and more &mdash; and backed by a full verification suite.</li>
+            <li><b>Deep Learning Savvy:</b> Smart, efficient, and ready to work with the wide range of NVIDIA supported solutions. </li>
+        </ul>
+    </div>
+  </div>
+</div>
+<hr>
+<div class="section">
+{% macro mklink(link, img, h3, p) %}
+  <div class="row">
+    <div class="col-xs-0 col-md-0 col-lg-1"></div>
+    <div class="col-xs-6 col-md-4 col-lg-3">
+      <a href="{{ link }}">{% if img %}<img class="linkimg" src="{{ img }}" />{% else %}<b><i>AN IMAGE!</i></b>{% endif %}</a>
+    </div>
+    <div class="col-xs-6 col-md-8 col-lg-7">
+      <h3>{{ h3 }}</h3>
+      <p>{{ p }}</p>
+      <a href="{{ link }}">Learn More ></a>
+    </div>
+    <div class="col-xs-0 col-md-0 col-lg-1"></div>
+  </div>
+{%- endmacro %}
+{{ mklink("primer.html", "_static/build-community.png", "Learn About NVDLA", "Gain a full understanding of NVDLA in our conceptual overview.") }}
+{{ mklink("roadmap.html", "_static/developer-question.png", "What's Next", "Preview the NVDLA roadmap.") }}
+{{ mklink("contents.html", "_static/community-doc.png", "Dive Deep", "Ready to dive into NVDLA?  Check out the documentation.") }}
+{{ mklink("https://github.com/nvdla", "_static/github.png", "Get the Code", "Go straight to the source and get the NVDLA code from our repository on GitHub.") }}
+  </div>
+<hr>
+<div class="section">
+<div class="row">
+<div class="col-xs-0 col-lg-1"></div>
+<div class="col-xs-12 col-lg-10">
+<p class="bigger">
+
+Have questions that we haven't answered?  Feel free to <a
+href="mailto:nvdla@nvidia.com">contact the NVDLA team by e-mail</a>.
+
+</p>
+</div>
+<div class="col-xs-0 col-lg-1"></div>
+</div>
+</div>
+</div>
+{% endblock body %}
