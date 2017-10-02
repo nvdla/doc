@@ -14,7 +14,7 @@ in your working directory.  To do this:
    /home/utils/git-2.9.2/bin/ will do.
 
  * Set up the VirtualEnv.  `cd` into where you want Sphinx to be installed,
-   and then run:
+   and then run::
   
      $ /home/utils/Python-2.7.9/bin/virtualenv sphinx
    
@@ -23,17 +23,17 @@ in your working directory.  To do this:
    as the parameter to virtualenv.)
 
  * Install Sphinx in the virtualenv.  I set up my virtualenv in
-   /home/scratch.jwise_t19x/sphinx, so I will run:
+   /home/scratch.jwise_t19x/sphinx, so I will run::
 
      $ /home/scratch.jwise_t19x/sphinx/bin/pip install sphinx
 
  * Sphinx should be installed now.  To set up your environment to run
    Sphinx, if you're using csh, you can run (changing the paths for your
-   install):
+   install)::
 
      % source /home/scratch.jwise_t19x/sphinx/bin/activate.csh
 
-   or, for bash users:
+   or, for bash users::
 
      $ . /home/scratch.jwise_t19x/sphinx/bin/activate
 
