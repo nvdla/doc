@@ -1,6 +1,9 @@
 NVDLA Open Source Project documentation
 =======================================
 
+If you just want to read the latest version of the NVDLA documentation, go
+to http://nvdla.org/.
+
 The NVDLA documentation is written in RestructuredText and built using
 Sphinx.
 
