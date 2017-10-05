@@ -14,6 +14,7 @@ of documents that have been written about NVDLA.
    hwarch
    integration_guide
    license
+   conduct
    glossary
 
 
@@ -35,6 +36,9 @@ of documents that have been written about NVDLA.
   synthesis scripts.
 
 * :doc:`license` -- the license under which NVDLA hardware is released.
+
+* This project adheres to the :doc:`conduct`; by participating, you are
+  expected to uphold this code.
 
 * :doc:`glossary`
 
