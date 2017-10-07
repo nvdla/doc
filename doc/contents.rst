@@ -13,6 +13,7 @@ of documents that have been written about NVDLA.
    sw/contents
    hwarch
    integration_guide
+   updates
    license
    conduct
    glossary
@@ -34,6 +35,8 @@ of documents that have been written about NVDLA.
 * :doc:`integration_guide` -- a guide for SoC integrators, including a
   walk-through of the NVDLA build infrastructure, NVDLA's testbenches, and
   synthesis scripts.
+
+* :doc:`updates` -- a list of updates to the NVDLA repository
 
 * :doc:`license` -- the license under which NVDLA hardware is released.
 

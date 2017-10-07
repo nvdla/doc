@@ -9,12 +9,22 @@ The software packages will be released as source code.  However, the compiler wi
 
 In the tables below, the term early access implies that the design source is included for the purposes of integrating into an SoC and validating that integration.  However, some bugs may remain.
 
+Components will be released at various points during the timeframes below.  For a detailed listing of the released components, see the :ref:`updates` page.
+
+|
+
 2017-Q3
 =======
+
+.. role:: red
+
 
 The first deliverables allow users to test with their tool flows and libraries. Both front-end simulation and back-end design will be enabled. The initial RTL will be for a large NVDLA configuration with 2048 8-bit MACs, also configurable as 1024 16-bit fixed or floating point MACs. 
 
 Detailed hardware and software documentation and an xls-based performance estimator help to determine whether NVDLA meets a user’s needs and what configuration is required. 
+
+All items listed below have been uploaded to the NVDLA GitHub repository.
+
 
 |
 

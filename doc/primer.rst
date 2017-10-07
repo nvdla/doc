@@ -455,7 +455,7 @@ below; and each of these is described below.
   Dataflow diagram inside of NVDLA system software.
 
 Compilation Tools: Model Creation and Compilation
-----------------------------------------------
+-------------------------------------------------
 
 Compilation tools include compiler and parser. Compiler is responsible for creating a sequence of hardware
 layers that are optimized for a given NVDLA configuration; having an
