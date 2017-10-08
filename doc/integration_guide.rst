@@ -475,9 +475,9 @@ The release directory structure for synthesis is shown below::
            |--- NV_NVDLA_partition_o.sdc
            `--- NV_NVDLA_partition_p.sdc          
 
-NV_NVDLA_partition_* are synthesis “TOP_NAMES” - The designs will be compiled at this 
+``NV_NVDLA_partition_*`` are synthesis **“TOP_NAMES”** - The designs will be compiled at this 
 hierarchy, and netlists will be generated for these designs. These are independent 
-sub-designs for synthesis. 
+sub-designs for synthesis, which are instantiated in a top-level wrapper. 
 
 Requirements
 ------------
@@ -503,35 +503,41 @@ variables, meanings and defaults.
 
    * - Variable
      - Comments
-   * - NVDLA_ROOT
-     - Location on disk for the NVDLA source. 
-   * - TOP_NAMES
+   * - ``NVDLA_ROOT``
+     - Location on disk for the NVDLA source "hw" directory.  
+   * - ``TOP_NAMES``
      - Space separated list of TOP_NAMES to synthesize. You may choose to synthesize all or a subset of TOP_NAMES. 
        Defaults to  
        “NV_NVDLA_partition_a NV_NVDLA_partition_c NV_NVDLA_partition_o NV_NVDLA_partition_m NV_NVDLA_partition_p”
-   * - RTL_SEARCH_PATH
+   * - ``RTL_SEARCH_PATH``
      - Space separated list of search paths (directories) for locating all the pieces of RTL. 
-       Defaults to an empty string. 
-   * - RTL_INCLUDE_SEARCH_PATH
+       Defaults to an empty string.
+       Please do not include paths to non synthesizable (behavioral) RAM models, like the ones in ``${NVDLA_ROOT}/vmod/rams/model``
+   * - ``RTL_INCLUDE_SEARCH_PATH``
      - Space separated list of search paths (directories) for locating all the supplementary Verilog include files. 
        Defaults to an empty string. 
-   * - EXTRA_RTL
+   * - ``EXTRA_RTL``
      - List of files to read in, apart from the modules that can be found in the search paths. 
        Defaults to an empty string. 
-   * - RTL_EXTENSIONS
+   * - ``RTL_EXTENSIONS``
      - List of extensions for the source RTL files.
        Defaults to “.v .sv .gv”
-   * - RTL_INCLUDE_EXTENSIONS
+   * - ``RTL_INCLUDE_EXTENSIONS``
      - List of extensions for supplementary Verilog include files. Defaults to “.vh .svh”
-   * - DEF
+   * - ``DEF``
      - Path to directory containing floorplans in the “DEF” format. Files should be named by the TOP_NAMES, with the extension “.def”
        This variable defaults to a directory called  “def” in the current directory
-   * - CONS
+       
+       We do not provide templates, because it depends on the process node, and the memory compiler being used. 
+   * - ``CONS``
      - Path to directory containing constraints in the “SDC” format. 
        Files should be named by the TOP_NAMES, with the extension “.sdc”
        This directory may also contain “<TOP_NAME>.tcl” to specify any non-SDC constraints to guide synthesis. 
        All of these constraints are sourced before compiling the design. 
-       This variable defaults to a directory called “cons” in the current directory
+       This variable defaults to a directory called “cons” in the current directory.
+      
+       We provide template SDCs for all logical partitions in the `${NVDLA_ROOT}/syn/cons` directory including
+       clock constraints etc. You may provide your own constraints, based on the process node you are targeting. 
 
 |
 |
@@ -543,7 +549,7 @@ variables, meanings and defaults.
 
    * - Variable
      - Comments
-   * - DC_PATH
+   * - ``DC_PATH``
      - Location of the Design Compiler installation. 
        Defaults to an empty string
 
@@ -557,57 +563,57 @@ variables, meanings and defaults.
 
    * - Variable
      - Comments
-   * - TARGET_LIB
+   * - ``TARGET_LIB``
      - Path to a single standard cell library that will be used to map the design to (the “target” library). 
        Defaults to an empty string. 
-   * - LINK_LIB
+   * - ``LINK_LIB``
      - Path to all the libraries that are required to link the design. 
        This should include the target library as well.
-       Include any RAM compiler libraries here. 
+       Include any RAM compiler timing libraries here. 
        Defaults to an empty string. 
-   * - TF_FILE
+   * - ``TF_FILE``
      - Path to the “Milkyway Technology File” that is used to create the Milkyway models for the physical library.
        Please check with your standard cell library vendor for the right file to use.
        Defaults to an empty string. 
        Required for DC-Topographical
-   * - TLUPLUS_FILE
+   * - ``TLUPLUS_FILE``
      - Path to the “TLUPlus” files that will be used for RC extraction
        Please check with your standard cell library vendor for the right file to use.
        Defaults to an empty string. 
        Required for DC-Topographical
-   * - TLUPLUS_MAPPING_FILE
+   * - ``TLUPLUS_MAPPING_FILE``
      - Path to the “Tech2ITF” mapping file, that maps layer names from between the Milkyway Tech file and the interconnect technology format file. 
        Please check with your standard cell library vendor for the right file to use. 
        Defaults to an empty string. 
        Required for DC-Topographical
-   * - MIN_ROUTING_LAYER
+   * - ``MIN_ROUTING_LAYER``
      - Bottom routing layer for signal nets. 
        Please check with place-and-route methodology for the right value. 
        Defaults to an empty string. 
        Required for DC-Topographical
-   * - MAX_ROUTING_LAYER
+   * - ``MAX_ROUTING_LAYER``
      - Top routing layer for signal nets.
        Please check with place-and-route methodology for the right value. 
        Defaults to an empty string. 
        Required for DC-Topographical
-   * - HORIZONTAL_LAYERS
+   * - ``HORIZONTAL_LAYERS``
      - Space separated list of layers with preferred horizontal routing.
        Defaults to an empty string. 
-   * - VERTICAL_LAYERS
+   * - ``VERTICAL_LAYERS``
      - Space separated list of layers with preferred vertical routing.
        Defaults to an empty string. 
-   * - DONT_USE_LIST
+   * - ``DONT_USE_LIST``
      - Space separated list of regular expressions for cells that you do not wish to map your design to. 
        A “dont_use” will be applied on these cells in Design Compiler. 
        Defaults to an empty string. 
-   * - WIRELOAD_MODEL_FILE
+   * - ``WIRELOAD_MODEL_FILE``
      - A file containing a “wireload model” - a lookup table for resistance and capacitance calculation based on fanout. 
        Refer to the lcug16_Defining_Wire_Load_Groups.htm on the Synopsys Solvnet site
        for more information regarding wire load modeling. 
        Not required if your standard cell library contains the wireload models built in. 
        Not required for DC-Topographical. 
        Defaults to an empty string.
-   * - WIRELOAD_MODEL_NAME
+   * - ``WIRELOAD_MODEL_NAME``
      - Name of the wireload model lookup table (if you have multiple tables) 
        Not required for DC-Topographical.
        Defaults to an empty string. 
@@ -616,31 +622,38 @@ variables, meanings and defaults.
 |
 |
 
+.. warning::
+  We do not supply timing models or synthesizable RTL for the RAMs in the design. 
+  These need to be provided by the user for the process node/ memory compiler being used. 
+  
+  Please DO NOT include ``${NVDLA_ROOT}/vmod/rams/model`` in the RTL_SEARCH_PATH - They are simulation models, not synthesizable.
+
+
 .. list-table:: Miscellaneous Options
    :widths: 10 30
    :header-rows: 1
 
    * - Variable
      - Comments
-   * - TIGHTEN_CGE
+   * - ``TIGHTEN_CGE``
      - Boolean, “1” to enable over constraining the CG-Enable paths. See section 5.5.2 below
        Default is set to “0”
-   * - CGLUT_FILE
+   * - ``CGLUT_FILE``
      - File containing the fanout-based CG over constraint lookup table to pessimize the CG enable paths. See section 5.5.2 below.
-       Please see “<NVDLA_RELASE>/syn/dc/templates/cg_latency_lut.tcl” for an example.
+       Please see “${NVDLA_ROOT}/syn/templates/cg_latency_lut.tcl” for an example.
        Defaults to an empty string. 
-   * - DC_NUM_CORES
+   * - ``DC_NUM_CORES``
      - The number of CPU cores available for Design Compiler.
        Defaults to ‘1’ 
        Note: Single CPU core synthesis may see a long overall runtime. 
-   * - AREA_RECOVERY
+   * - ``AREA_RECOVERY``
      - Boolean, “1” to Run quick area optimization by undoing some optimizations on paths with positive slack. 
        Defaults to “1”.
-   * - INCREMENTAL_RECOMPILE_COUNT
+   * - ``INCREMENTAL_RECOMPILE_COUNT``
      - Number of rounds of incremental compiles  to run in Design Compiler. 
        Defaults to “1” - This amounts to 2 rounds of compile, one for mapping - the “main” compile 
        and one for incremental optimization - the “incremental” compile.
-   * - COMMAND_PREFIX
+   * - ``COMMAND_PREFIX``
      - String. 
        Defaults to an empty string. 
        This will be pre-fixed to the dc_shell command . 
@@ -661,20 +674,20 @@ Clock Constraints
 ^^^^^^^^^^^^^^^^^
 
 The clock constraints are provided through an SDC file. 
-You will find reference constraints in “<NVDLA_RELEASE>/syn/dc/cons/NV_NVDLA_partition*.sdc”. 
+You will find reference constraints in “${NVDLA_ROOT}/syn/cons/NV_NVDLA_partition*.sdc”. 
 These contain clock targets for the 16nm process. You will need to scale the clock 
 constraints to the target process/synthesis corner as appropriate. 
 The SDC files also contain some timing exceptions (false paths) as well.
 Please populate the SDC files for all TOP_NAMES in a single directory, and set the CONS variable 
 in the configuration file described in the previous section.
 
-You can also add additional non-SDC constraints, like specific clock gating styles, etc. in <CONS>/NV_NVDLA_partition*.tcl
+You can also add additional non-SDC constraints, like, for example, specific clock gating styles, etc. in <CONS>/NV_NVDLA_partition*.tcl
 
 Clock Gate Enable Path Over constraining
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The flow allows for over constraining the CG enable paths to pessimize synthesis to take into account post-CTS latencies. 
-This is achieved through a fanout-based lookup table in TCL syntax. See “<NVDLA_RELEASE>/syn/dc/templates/cg_latency_lut.tcl” for an example. 
+This is achieved through a fanout-based lookup table in TCL syntax. See “${NVDLA_ROOT}/syn/templates/cg_latency_lut.tcl” for an example. 
 Provide the path to this file as the CGLUT_FILE variable in the configuration file.
 To enable the over constraining, please set TIGHTEN_CGE variable to 1 in the configuration file.
 
@@ -691,7 +704,7 @@ You can also provide constraints in TCL syntax, through “<CONS>/NV_NVDLA_parti
 Running synthesis
 -----------------
 
-You can run synthesis using the “<NVDLA_RELEASE>/syn/dc/scripts/syn_launch.sh” bash script. 
+You can run synthesis using the “${NVDLA_ROOT}/syn/dc/scripts/syn_launch.sh” bash script. 
 The supported arguments to the scripts are in table below.
 
 |
@@ -702,23 +715,23 @@ The supported arguments to the scripts are in table below.
 
    * - Argument
      - Explanation
-   * - -config
+   * - ``-config``
      - Path to the synthesis configuration file (see section 5.4)
        If not provided, the flow will look for a file called “config.sh” in the current directory. 
-   * - -mode
+   * - ``-mode``
      - Specifies which tool to use for synthesis. Use one of the following::
 
         “wlm” => Use Design Compiler (non-topographical) for wireload model based synthesis (non-physical)
         “dct” => Use DC-Topographical
         “dcg” => Use DC-Graphical along with “-spg” in the compile command. 
         “de”  => Use DC Explorer for synthesis.
-   * - -build
+   * - ``-build``
      - Sandbox of synthesis. Optional. 
-       Defaults to “osdla_syn_<timestamp>”
-   * - -modules
+       Defaults to “``nvdla_syn_<timestamp>``”
+   * - ``-modules``
      - Space separated list of modules to run synthesis on / restore database for. 
        If not specified, the TOP_NAMES must be populated in the configuration file.
-   * - -restore
+   * - ``-restore``
      - Path to design database (in DDC format) to restore.
        
 
@@ -730,7 +743,7 @@ Running Non-physical synthesis (Wireload Models)
 
 You can run::
 
-    <NVDLA_RELEASE>/syn/dc/scripts/syn_launch.sh -mode wlm -config /path/to/config.sh
+    ${NVDLA_ROOT}/syn/dc/scripts/syn_launch.sh -mode wlm -config /path/to/config.sh
 
 You will need to have a wire load model defined in your standard cell library, or in a 
 separate file (in liberty syntax, as described in the lcug16_Defining_Wire_Load_Groups.htm 
@@ -753,9 +766,9 @@ Running physical synthesis
 
 You can run one of the following, To pick DC-Topographical/DC-Graphical/DC Explorer::
 
-    <NVDLA_RELEASE>/syn/dc/scripts/syn_launch.sh -mode dct -config /path/to/config.sh
-    <NVDLA_RELEASE>/syn/dc/scripts/syn_launch.sh -mode dcg -config /path/to/config.sh
-    <NVDLA_RELEASE>/syn/dc/scripts/syn_launch.sh -mode de -config /path/to/config.sh
+    ${NVDLA_ROOT}/syn/dc/scripts/syn_launch.sh -mode dct -config /path/to/config.sh
+    ${NVDLA_ROOT}/syn/dc/scripts/syn_launch.sh -mode dcg -config /path/to/config.sh
+    ${NVDLA_ROOT}/syn/dc/scripts/syn_launch.sh -mode de -config /path/to/config.sh
 
 In the configuration file, the following variables are required to be defined::
 
@@ -780,7 +793,7 @@ Restoring a design database
 
 You can run one of the following, To restore a design database from a previous synthesis run with the reference methodology::
 
-    <NVDLA_RELEASE>/syn/dc/scripts/syn_launch.sh -mode <mode_used_for_synthesis> -config /path/to/config.sh -build <build_tag_used_for_synthesis> -restore /path/to/build/db/<module>.ddc -modules <module>
+    ${NVDLA_ROOT}/syn/dc/scripts/syn_launch.sh -mode <mode_used_for_synthesis> -config /path/to/config.sh -build <build_tag_used_for_synthesis> -restore /path/to/build/db/<module>.ddc -modules <module>
 
 
 Synthesis outputs
