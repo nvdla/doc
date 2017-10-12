@@ -647,7 +647,7 @@ estimator tool available to explore the space of NVDLA designs, and
 the impact on performance.
 
 Power and performance in the following table are shown for a 1GHz frequency.
-Power and performance for a givin configuration can be varied though
+Power and performance for a given configuration can be varied though
 adjustment of voltage and frquency.
 
 
