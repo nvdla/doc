@@ -5,6 +5,12 @@ Open NVDLA Repository Updates
 
 This document is a quick reference guide to changes in the NVDLA repository. Most recent updates are at the top of the document.  Detailed information can be obtained from the GIT list of commits.  
 
+10/18/2017
+==========
+The traceplayer testbench has been updated to split the memory model into two logically separate region. Support was added to the axi_slave and memory model for non-zero burst lengths which is used by the cvsram interface. Added cvsram form of sanity tests. Added sdp and pdp sanity tests. Added googlenet_conv2_3x3_int16 and cc_alexnet_conv5_relu5_int16_dtest_cvsram layer tests.
+
+Changes to address issues #16, #23, #24 on the NVDLA GitHub site.
+
 10/6/2017
 =========
 The large configuration RTL is updated to a 64-bit address bus on the DBBIF and RAMIF busses.  The previous design was 32-bit externally and 40-bit internally.  This reflects the final size for the large configuration.

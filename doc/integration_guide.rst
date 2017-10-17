@@ -834,18 +834,34 @@ playing back the trace and responding to NVDLA interrupts.  The trace format is 
 Tests
 -----
 
-The NVDLA repository contains four basic sanity tests, and one convolution test.  Additional tests
-will be added soon.  
+The NVDLA repository contains seven basic sanity tests, and two layer tests.  Additional tests will be added periodically.
 
-* Sanity0, Sanity1, and Sanity2  
+Basic sanity tests
+------------------
 
-  Basic sanity tests
+* sanity0 - basic register write and compare read-back value
+* sanity1 - memory copy test using bdma (dbb to dbb), test ends using register polling
+* sanity2 - sanity1 waiting on interrupts instead of register polling
+* sanity3 - convolution test, test ends using register polling and compares output mem region to determine passing
+* sanity3_cvsram - convolution test, uses cvsram path instead of dbb, test ends using register polling and compares output mem region to determine passing
+
+Short single function tests using dbb
+-------------------------------------
 
 * conv_8x8_fc_int16
+* pdp_max_pooling_int16
+* sdp_relu_int16
+
+Long layer tests
+----------------
+
+* googlenet_conv2_3x3_int16 - uses cvsram, 30 min runtime
+* cc_alexnet_conv5_relu5_int16_dtest_cvsram - uses cvsram, 156 min runtime
  
-  Short convolution test.  Utilizes the MAC and Accumulator datapaths.
+The long layer tests are not in the regress target. Run using
 
-
+* make run TESTDIR=../traces/traceplayer/googlenet_conv2_3x3_int16
+* make run TESTDIR=../traces/traceplayer/cc_alexnet_conv5_relu5_int16_dtest_cvsram
 
 .. _test_format:
 
@@ -855,13 +871,16 @@ Test Format
 Tests will be in trace form and will support seven commands:  cpu read/write, memory read/write, 
 memory load/dump, and interrupt wait. 
 
-CPU Read/Write Commands
-^^^^^^^^^^^^^^^^^^^^^^^
+Tests read in input.txn in what we call "trace" format which is a file containing a list of 
+register and memory accesses that will be used by the test before finishing the simulation. The script in synth_tb/sim_scripts/inp_txn_to_hexdump.pl reads input.txn and outputs input.txn.raw containing encodings for the csb master sequencer to read and execute from.
 
-The main test trace performs cpu register reads/writes to the NVDLA IP.  These commands
+Hardware Config Read/Write Commands
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The main test trace performs register reads/writes to the NVDLA IP.  These commands
 will cause reads and write commands to the CSB programming bus.
 
-CPU read and write Commands are listed in the following table.
+Reg read and write Commands are listed in the following table.
 
 .. list-table::
    :widths: 20 30
@@ -869,14 +888,28 @@ CPU read and write Commands are listed in the following table.
 
    * - Command
      - Description
-   * - write_reg <addr:32> <data:32> 
-     - Execute a 32b data write to a 32b addr
-   * - read_reg <addr:32> <bitmask:32> <expectedData:32>
-     - Execute a polling read to 32b addr and poll until 32b expectedData is met.  
+   * - write_reg <misc:16><addr:16> <data:32> 
+     - Execute a 32b data write to a 16b addr.
+
+       addr is calculated from 
+       (documented register address - NVDLA_GLB.S_NVDLA_HW_VERSION_0.offset) >> 2.
+       Left shift by 2 because hardware expects the word address.
+
+       Bit 1 of misc (bit 17 of 32b field) means CSB master will wait for wr_complete or error
+       before sending next read or write.
+       Bit 0 of misc (bit 16 of 32b field) is 1 for writes and 0 for reads.
+
+       inp_txn_to_hexdump.pl will correct the rd/wr bit based on read_reg/write_reg cmd.
+       Examples::
+
+         write_reg 0x00030200 0x1234c0de //Wait for wr_complete or error
+         write_reg 0x00010200 0x1234da7a //Don't wait for wr_complete or error
+   * - read_reg <misc:16><addr:16> <bitmask:32> <expectedData:32>
+     - Execute a polling read to 16b addr and poll until (returnData & bitmask) == expectedData.
        Number of polls will be equal to  +read_reg_poll_retries (default 50).
        Examples::
 
-         read_reg 0x27000200 0xffffffff 0x00000000
+         read_reg  0x00000200 0xffffffff 0x1234da7a //0x0020 read back should be 0x1234da7a
 
 
 Memory Read/Write Commands
@@ -892,10 +925,10 @@ Memory read and write Commands are listed in the following table.
 
    * - Command
      - Description
-   * - write_mem <addr:40> <bytemask:16> <wdata:128>
-     - Execute a 128b data write with corresponding 16 byte mask to 40b addr.
-   * - read_mem <addr:40> <bitmask:128> <expectedData:128>
-     - Execute a polling read to 40b addr and poll until 128b expectedData is met.  
+   * - write_mem <addr:64> <bytemask:16> <wdata:128>
+     - Execute a 128b data write with corresponding 16 byte mask to 64b addr.
+   * - read_mem <addr:64> <bitmask:128> <expectedData:128>
+     - Execute a polling read to 64b addr and poll until 128b expectedData is met.  
        Number of polls will be equal to  +read_mem_poll_retries (default 50).
        Example::
 
@@ -913,10 +946,10 @@ To further accelerate simulation, the trace supports loading and dumping of memo
 
    * - Command
      - Description
-   * - load_mem <addr:40> <num_bytes:32> <string>
-     - Use Verilog $readmemh() to load memory with 32b num_bytes at 40b addr from file, “string”.
-   * - dump_mem <addr:40> <num_bytes:32> <string>
-     - Use Verilog $writememh() to dump 32b num_bytes at 40b addr of memory to file, “string”.
+   * - load_mem <addr:64> <num_bytes:32> <string>
+     - Use Verilog $readmemh() to load memory with 32b num_bytes at 64b addr from file, “string”.
+   * - dump_mem <addr:64> <num_bytes:32> <string>
+     - Use Verilog $writememh() to dump 32b num_bytes at 64b addr of memory to file, “string”.
 
 
 Interrupt Wait Command
@@ -953,8 +986,12 @@ The memory write, load, and dump commands occur in zero simulation time.  The po
 DBBIF Slave Agent
 ^^^^^^^^^^^^^^^^^
 
-The DBBIF slave agent captures DBBIF memory transactions and issues reads and writes to memory.  The NVDLA and environment supports two slave agents, each 16B/clk.
+The DBBIF slave agent captures DBBIF memory transactions and issues reads and writes to memory.  The NVDLA and environment supports one slave agent per memory region, 16B/clk.
 
+CVSRAM Slave Agent
+^^^^^^^^^^^^^^^^^^
+
+The CVSRAM slave agent captures CVSRAM memory transactions and issues reads and writes to a section of memory logically separate from DBB.  The NVDLA and environment supports one slave agent per memory region, 16B/clk.
 
 Memory Stub
 ^^^^^^^^^^^
@@ -1003,7 +1040,7 @@ The make targets are described below.
 
   Examples command lines::
    make run DUMP=1 TESTDIR=../traces/traceplayer/sanity0
-   make run DUMP=0 TESTDIR=../traces/first_release/conv_8x8_fc_int16
+   make run DUMP=0 TESTDIR=../traces/traceplayer/conv_8x8_fc_int16
 
   All packaged tests will be found in the verif/traces/* directories.  Within each test directory there is 
   an ‘input.txn’ file which is a list of the input transactions executed against the DUT.
