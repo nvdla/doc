@@ -17,19 +17,23 @@ Quick-Start
 
 After downloading, to understand more about the NVDLA design, you can try out the following:
 
-1) Run a simulation using the included testbench.  A number of sanity 
+1) Set up the Linux environment with required tools.  Review :ref:`env_setup`
+
+2) Select a configuration and build the hardware tree.  Review :ref:`tree_build`
+
+3) Run a simulation using the included testbench.  A number of sanity 
    tests are included in the repository.  See :ref:`simulation_testbench`
  
-2) Synthesize the design to review area and timing in your 
+4) Synthesize the design to review area and timing in your 
    library.  See :ref:`synthesis`.  You will need to map RAM's 
    to your RAM library.  See :ref:`memories_sram`.  And update timing contraints 
    as appropriate for your technology.
 
-3) Open up the :ref:`performance_model` spreadsheet to look at 
+5) Open up the :ref:`performance_model` spreadsheet to look at 
    performance with different NVDLA configurations.  Configurable RTL
    is on the :doc:`roadmap`.
 
-4) Integrate the NVDLA RTL into your SoC.  The sanity tests that are run in the stand-alone NVDLA 
+6) Integrate the NVDLA RTL into your SoC.  The sanity tests that are run in the stand-alone NVDLA 
    testbench can also be run at the SoC level and used to validate the integration.  
    See :ref:`test_format`.
 
@@ -184,6 +188,52 @@ In current release, NVDLA has implemented one signal named test_mode to enable D
      - Enable test mode.  The only use of this signal currently is to select between
        the functional and DFT reset signals.
      - Should connect to the system DFT controller as needed.  Otherwise, tie to 0.
+
+.. _env_setup:
+
+Environment Setup
+=================
+The Verilog code included in this release is parameterized such that multiple configurations
+can be generated from a single source.  A hardware tree build is needed to generate the final
+Verilog RTL code for a given configuration.  The tools required for this build are outlined 
+below.  The versions listed are used for testing.
+
+* Java - jdk1.7
+* Perl - perl-5.8.8
+* CPP - gcc-4.0
+
+.. _tree_build:
+
+Tree Build
+==========
+
+The NVDLA repository supports the build of multiple configurations based on a feature
+specification file.  Each configuration of the NVDLA is defined by a spec file in
+he hw/spec/defs directory.  The filename is the name of the configuration with a ".spec"
+exension.  There are currently two spec files included: "nv_large" which has 2048 INT8 MAC's,
+and "nv_small" which has 64 INT8 MAC's plus some other reductions.  
+
+The file hw/tree.make specifies a list of configurations to build, as well as paths to tools
+required for building the configured RTL.  To create an initial version of this file, run the
+following command::
+
+ cd hw
+ make
+
+This command will prompt for the configuration and tool locations.  It will create a tree.make
+file in the hw directory containing the appropriate configuration and tool setup.  
+For subsequent changes the tree.make file can be edited directory with a text editor.  Once
+tree.make setup is complete, the RTL can be built::
+
+ cd hw
+ ./tools/bin/tmake -build vmod
+
+The tmake program can also be used to launch a set of short sanity simulations.  Once you've
+set up the simulation environment according to the testbench section of this 
+document :ref:`testbench`, the following command can be used to launch the short sanity 
+regression::
+
+ ./tools/bin/tmake -build verif_sim
 
 
 .. _performance_model:
@@ -819,7 +869,7 @@ In the synthesis sandbox, the following outputs are generated::
                         (Detailed timing/QoR information)
                         (There are also reports generated at intermediate stages)
 
-
+.. _testbench:
 
 Testbench & Traces
 ==================

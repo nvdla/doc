@@ -5,6 +5,16 @@ Open NVDLA Repository Updates
 
 This document is a quick reference guide to changes in the NVDLA repository. Most recent updates are at the top of the document.  Detailed information can be obtained from the GIT list of commits.  
 
+11/1/2017
+=========
+First drop of RTL build system to be used for creating multiple NVDLA configurations.  The 
+configurations themselves will be checked in as features become available.  All configuration
+parameters to create a small config NVDLA with 64 MACs is expected before the end 2017.
+
+10/24/2017
+==========
+Initial release of the NVDLA Kernel Mode Driver (KMD) for Linux.
+
 10/18/2017
 ==========
 The traceplayer testbench has been updated to split the memory model into two logically separate region. Support was added to the axi_slave and memory model for non-zero burst lengths which is used by the cvsram interface. Added cvsram form of sanity tests. Added sdp and pdp sanity tests. Added googlenet_conv2_3x3_int16 and cc_alexnet_conv5_relu5_int16_dtest_cvsram layer tests.
