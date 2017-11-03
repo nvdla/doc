@@ -7,6 +7,8 @@ before_install:
 - echo "  IdentityFile ~/.ssh/publish-key" >> ~/.ssh/config
 - git --version
 - git remote add origin2 git@github.com:nvdla/nvdla.github.io
+- git remote set-url origin git@github.com:cliffgold/doc
+- git fetch origin -f gh-pages:gh-pages
 
 install:
 - pip install ghp-import sphinx
