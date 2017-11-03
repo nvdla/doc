@@ -1325,15 +1325,15 @@ registers are not accessible.
    - 4
  * - PDP
    - ``0x0000_D000``
-   - ``0x0001_DFFF``
+   - ``0x0000_DFFF``
    - 4
  * - CDP (RDMA)
    - ``0x0000_E000``
-   - ``0x0001_EFFF``
+   - ``0x0000_EFFF``
    - 4
  * - CDP
    - ``0x0000_F000``
-   - ``0x0001_FFFF``
+   - ``0x0000_FFFF``
    - 4
  * - RUBIK
    - ``0x0001_0000``
@@ -1353,19 +1353,19 @@ GLB
  +-----------------+--------------+--------------------------------------------------------+
  | Name            | Address      | Description                                            |
  +=================+==============+========================================================+
- | ``HW_VERSION``  | ``0x3000``   | HW version of NVDLA                                    |
+ | ``HW_VERSION``  | ``0x0000``   | HW version of NVDLA                                    |
  +-----------------+--------------+--------------------------------------------------------+
- | ``INTR_MASK``   | ``0x3004``   | Interrupt mask control                                 |
+ | ``INTR_MASK``   | ``0x0004``   | Interrupt mask control                                 |
  +-----------------+--------------+--------------------------------------------------------+
- | ``INTR_SET``    | ``0x3008``   | Interrupt set control                                  |
+ | ``INTR_SET``    | ``0x0008``   | Interrupt set control                                  |
  +-----------------+--------------+--------------------------------------------------------+
- | ``INTR_STATUS`` | ``0x300c``   | Interrupt status                                       |
+ | ``INTR_STATUS`` | ``0x000c``   | Interrupt status                                       |
  +-----------------+--------------+--------------------------------------------------------+
- | ``HW_CONFIG0``  | ``0x3010``   | HW capability register 0: supported data types         |
+ | ``HW_CONFIG0``  | ``0x0010``   | HW capability register 0: supported data types         |
  +-----------------+--------------+--------------------------------------------------------+
- | ``HW_CONFIG1``  | ``0x3014``   | HW capability register 1: supported features           |
+ | ``HW_CONFIG1``  | ``0x0014``   | HW capability register 1: supported features           |
  +-----------------+--------------+--------------------------------------------------------+
- | ``HW_CONFIG2``  | ``0x3018``   | HW capability register 2: design size configurations   |
+ | ``HW_CONFIG2``  | ``0x0018``   | HW capability register 2: design size configurations   |
  +-----------------+--------------+--------------------------------------------------------+
 
 .. table:: GLB register fields.
@@ -1656,19 +1656,19 @@ MCIF
  +-------------------------+----------------+------------------------------------------------------------+
  | Name                    | Address        | Description                                                |
  +=========================+================+============================================================+
- | ``CFG_RD_WEIGHT_0``     | ``0x5000``     | Register0 to control the read weight of clients in MCIF    |
+ | ``CFG_RD_WEIGHT_0``     | ``0x2000``     | Register0 to control the read weight of clients in MCIF    |
  +-------------------------+----------------+------------------------------------------------------------+
- | ``CFG_RD_WEIGHT_1``     | ``0x5004``     | Register1 to control the read weight of clients in MCIF    |
+ | ``CFG_RD_WEIGHT_1``     | ``0x2004``     | Register1 to control the read weight of clients in MCIF    |
  +-------------------------+----------------+------------------------------------------------------------+
- | ``CFG_RD_WEIGHT_2``     | ``0x5008``     | Register2 to control the read weight of clients in MCIF    |
+ | ``CFG_RD_WEIGHT_2``     | ``0x2008``     | Register2 to control the read weight of clients in MCIF    |
  +-------------------------+----------------+------------------------------------------------------------+
- | ``CFG_WR_WEIGHT_0``     | ``0x500c``     | Register0 to control the write weight of clients in MCIF   |
+ | ``CFG_WR_WEIGHT_0``     | ``0x200c``     | Register0 to control the write weight of clients in MCIF   |
  +-------------------------+----------------+------------------------------------------------------------+
- | ``CFG_WR_WEIGHT_1``     | ``0x5010``     | Register1 to control the write weight of clients in MCIF   |
+ | ``CFG_WR_WEIGHT_1``     | ``0x2010``     | Register1 to control the write weight of clients in MCIF   |
  +-------------------------+----------------+------------------------------------------------------------+
- | ``CFG_OUTSTANDING_CNT`` | ``0x5014``     | Outstanding AXI transactions in unit of 64Byte             |
+ | ``CFG_OUTSTANDING_CNT`` | ``0x2014``     | Outstanding AXI transactions in unit of 64Byte             |
  +-------------------------+----------------+------------------------------------------------------------+
- | ``STATUS``              | ``0x5018``     | Idle status of MCIF                                        |
+ | ``STATUS``              | ``0x2018``     | Idle status of MCIF                                        |
  +-------------------------+----------------+------------------------------------------------------------+
 
 CVIF
@@ -1680,19 +1680,19 @@ CVIF
  +-------------------------+----------------+------------------------------------------------------------+
  | Name                    | Address        | Description                                                |
  +=========================+================+============================================================+
- | ``CFG_RD_WEIGHT_0``     | ``0x5000``     | Register0 to control the read weight of clients in MCIF    |
+ | ``CFG_RD_WEIGHT_0``     | ``0x3000``     | Register0 to control the read weight of clients in MCIF    |
  +-------------------------+----------------+------------------------------------------------------------+
- | ``CFG_RD_WEIGHT_1``     | ``0x5004``     | Register1 to control the read weight of clients in MCIF    |
+ | ``CFG_RD_WEIGHT_1``     | ``0x3004``     | Register1 to control the read weight of clients in MCIF    |
  +-------------------------+----------------+------------------------------------------------------------+
- | ``CFG_RD_WEIGHT_2``     | ``0x5008``     | Register2 to control the read weight of clients in MCIF    |
+ | ``CFG_RD_WEIGHT_2``     | ``0x3008``     | Register2 to control the read weight of clients in MCIF    |
  +-------------------------+----------------+------------------------------------------------------------+
- | ``CFG_WR_WEIGHT_0``     | ``0x500c``     | Register0 to control the write weight of clients in MCIF   |
+ | ``CFG_WR_WEIGHT_0``     | ``0x300c``     | Register0 to control the write weight of clients in MCIF   |
  +-------------------------+----------------+------------------------------------------------------------+
- | ``CFG_WR_WEIGHT_1``     | ``0x5010``     | Register1 to control the write weight of clients in MCIF   |
+ | ``CFG_WR_WEIGHT_1``     | ``0x3010``     | Register1 to control the write weight of clients in MCIF   |
  +-------------------------+----------------+------------------------------------------------------------+
- | ``CFG_OUTSTANDING_CNT`` | ``0x5014``     | Outstanding AXI transactions in unit of 64Byte             |
+ | ``CFG_OUTSTANDING_CNT`` | ``0x3014``     | Outstanding AXI transactions in unit of 64Byte             |
  +-------------------------+----------------+------------------------------------------------------------+
- | ``STATUS``              | ``0x5018``     | Idle status of MCIF                                        |
+ | ``STATUS``              | ``0x3018``     | Idle status of MCIF                                        |
  +-------------------------+----------------+------------------------------------------------------------+
 
 BDMA
@@ -1704,47 +1704,47 @@ BDMA
  +------------------------------+----------------+-----------------------------------------------------------+
  | Name                         | Address        | Description                                               |
  +==============================+================+===========================================================+
- | ``CFG_SRC_ADDR_LOW``         | ``0x7000``     | Lower 32bits of source address                            |
+ | ``CFG_SRC_ADDR_LOW``         | ``0x4000``     | Lower 32bits of source address                            |
  +------------------------------+----------------+-----------------------------------------------------------+
- | ``CFG_SRC_ADDR_HIGH``        | ``0x7004``     | Higher 32bits of source address when axi araddr is 64bits |
+ | ``CFG_SRC_ADDR_HIGH``        | ``0x4004``     | Higher 32bits of source address when axi araddr is 64bits |
  +------------------------------+----------------+-----------------------------------------------------------+
- | ``CFG_DST_ADDR_LOW``         | ``0x7008``     | Lower 32bits of dest address                              |
+ | ``CFG_DST_ADDR_LOW``         | ``0x4008``     | Lower 32bits of dest address                              |
  +------------------------------+----------------+-----------------------------------------------------------+
- | ``CFG_DST_ADDR_HIGH``        | ``0x700c``     | Higher 32bits of dest address when axi awaddr is 64bits   |
+ | ``CFG_DST_ADDR_HIGH``        | ``0x400c``     | Higher 32bits of dest address when axi awaddr is 64bits   |
  +------------------------------+----------------+-----------------------------------------------------------+
- | ``CFG_LINE``                 | ``0x7010``     | Size of one line                                          |
+ | ``CFG_LINE``                 | ``0x4010``     | Size of one line                                          |
  +------------------------------+----------------+-----------------------------------------------------------+
- | ``CFG_CMD``                  | ``0x7014``     | Ram type of source and destination                        |
+ | ``CFG_CMD``                  | ``0x4014``     | Ram type of source and destination                        |
  +------------------------------+----------------+-----------------------------------------------------------+
- | ``CFG_LINE_REPEAT``          | ``0x7018``     | Number of lines to be moved in one surface                |
+ | ``CFG_LINE_REPEAT``          | ``0x4018``     | Number of lines to be moved in one surface                |
  +------------------------------+----------------+-----------------------------------------------------------+
- | ``CFG_SRC_LINE``             | ``0x701c``     | Source line stride                                        |
+ | ``CFG_SRC_LINE``             | ``0x401c``     | Source line stride                                        |
  +------------------------------+----------------+-----------------------------------------------------------+
- | ``CFG_DST_LINE``             | ``0x7020``     | Destination line stride                                   |
+ | ``CFG_DST_LINE``             | ``0x4020``     | Destination line stride                                   |
  +------------------------------+----------------+-----------------------------------------------------------+
- | ``CFG_SURF_REPEAT``          | ``0x7024``     | Number of surfaces to be moved in one operation           |
+ | ``CFG_SURF_REPEAT``          | ``0x4024``     | Number of surfaces to be moved in one operation           |
  +------------------------------+----------------+-----------------------------------------------------------+
- | ``CFG_SRC_SURF``             | ``0x7028``     | Source surface stride                                     |
+ | ``CFG_SRC_SURF``             | ``0x4028``     | Source surface stride                                     |
  +------------------------------+----------------+-----------------------------------------------------------+
- | ``CFG_DST_SURF``             | ``0x702c``     | Destination surface stride                                |
+ | ``CFG_DST_SURF``             | ``0x402c``     | Destination surface stride                                |
  +------------------------------+----------------+-----------------------------------------------------------+
- | ``CFG_OP``                   | ``0x7030``     | This register is not used in NVDLA 1.0                    |
+ | ``CFG_OP``                   | ``0x4030``     | This register is not used in NVDLA 1.0                    |
  +------------------------------+----------------+-----------------------------------------------------------+
- | ``CFG_LAUNCH0``              | ``0x7034``     | Set it to 1 to kick off operations in group0              |
+ | ``CFG_LAUNCH0``              | ``0x4034``     | Set it to 1 to kick off operations in group0              |
  +------------------------------+----------------+-----------------------------------------------------------+
- | ``CFG_LAUNCH1``              | ``0x7038``     | Set it to 1 to kick off operations in group1              |
+ | ``CFG_LAUNCH1``              | ``0x4038``     | Set it to 1 to kick off operations in group1              |
  +------------------------------+----------------+-----------------------------------------------------------+
- | ``CFG_STATUS``               | ``0x703c``     | Enable/Disable of counting stalls                         |
+ | ``CFG_STATUS``               | ``0x403c``     | Enable/Disable of counting stalls                         |
  +------------------------------+----------------+-----------------------------------------------------------+
- | ``STATUS``                   | ``0x7040``     | Status register: idle status of bdma, group0 and group1   |
+ | ``STATUS``                   | ``0x4040``     | Status register: idle status of bdma, group0 and group1   |
  +------------------------------+----------------+-----------------------------------------------------------+
- | ``STAUS_GRP0_READ_STALL``    | ``0x7044``     | Counting register of group0 read stall                    |
+ | ``STAUS_GRP0_READ_STALL``    | ``0x4044``     | Counting register of group0 read stall                    |
  +------------------------------+----------------+-----------------------------------------------------------+
- | ``STATUS_GRP0_WRITE_STALL``  | ``0x7048``     | Counting register of group0 write stall                   |
+ | ``STATUS_GRP0_WRITE_STALL``  | ``0x4048``     | Counting register of group0 write stall                   |
  +------------------------------+----------------+-----------------------------------------------------------+
- | ``STAUS_GRP1_READ_STALL``    | ``0x704c``     | Counting register of group1 read stall                    |
+ | ``STAUS_GRP1_READ_STALL``    | ``0x404c``     | Counting register of group1 read stall                    |
  +------------------------------+----------------+-----------------------------------------------------------+
- | ``STATUS_GRP1_WRITE_STALL``  | ``0x7050``     | Counting register of group1 write stall                   |
+ | ``STATUS_GRP1_WRITE_STALL``  | ``0x4050``     | Counting register of group1 write stall                   |
  +------------------------------+----------------+-----------------------------------------------------------+
 
 CDMA
@@ -1756,127 +1756,127 @@ CDMA
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
  | Name                          | Address        | Description                                                                                                        |
  +===============================+================+====================================================================================================================+
- | ``S_STATUS``                  | ``0x8000``     | Idle status of two register groups                                                                                 |
+ | ``S_STATUS``                  | ``0x5000``     | Idle status of two register groups                                                                                 |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``S_POINTER``                 | ``0x8004``     | Pointer for CSB master and data path to access groups                                                              |
+ | ``S_POINTER``                 | ``0x5004``     | Pointer for CSB master and data path to access groups                                                              |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``S_ARBITER``                 | ``0x8008``     | WMB and Weight share same port to access external memory.                                                          |
+ | ``S_ARBITER``                 | ``0x5008``     | WMB and Weight share same port to access external memory.                                                          |
  |                               |                |                                                                                                                    |
  |                               |                | This register controls the weight factor in the arbiter.                                                           |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``S_CBUF_FLUSH_STATUS``       | ``0x800c``     | Indicates whether CBUF flush is finished after reset.                                                              |
+ | ``S_CBUF_FLUSH_STATUS``       | ``0x500c``     | Indicates whether CBUF flush is finished after reset.                                                              |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_OP_ENABLE``               | ``0x8010``     | Set it to 1 to kick off operation for current register group                                                       |
+ | ``D_OP_ENABLE``               | ``0x5010``     | Set it to 1 to kick off operation for current register group                                                       |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_MISC_CFG``                | ``0x8014``     | Configuration of operation: convolution mode, precision, weight reuse, data reuse.                                 |
+ | ``D_MISC_CFG``                | ``0x5014``     | Configuration of operation: convolution mode, precision, weight reuse, data reuse.                                 |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_DATAIN_FORMAT``           | ``0x8018``     | Input data format and pixel format                                                                                 |
+ | ``D_DATAIN_FORMAT``           | ``0x5018``     | Input data format and pixel format                                                                                 |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_DATAIN_SIZE_0``           | ``0x801c``     | Input cube’s width and height                                                                                      |
+ | ``D_DATAIN_SIZE_0``           | ``0x501c``     | Input cube’s width and height                                                                                      |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_DATAIN_SIZE_1``           | ``0x8020``     | Input cube’s channel                                                                                               |
+ | ``D_DATAIN_SIZE_1``           | ``0x5020``     | Input cube’s channel                                                                                               |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_DATAIN_SIZE_EXT_0``       | ``0x8024``     | Input cube’s width and height after extension                                                                      |
+ | ``D_DATAIN_SIZE_EXT_0``       | ``0x5024``     | Input cube’s width and height after extension                                                                      |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_PIXEL_OFFSET``            | ``0x8028``     | For image-in mode, horizontal offset and vertical offset of the 1 :sup:`st` pixel.                                 |
+ | ``D_PIXEL_OFFSET``            | ``0x5028``     | For image-in mode, horizontal offset and vertical offset of the 1 :sup:`st` pixel.                                 |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_DAIN_RAM_TYPE``           | ``0x802c``     | Ram type of input RAM                                                                                              |
+ | ``D_DAIN_RAM_TYPE``           | ``0x502c``     | Ram type of input RAM                                                                                              |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_DAIN_ADDR_HIGH_0``        | ``0x8030``     | Higher 32bits of input data address when axi araddr is 64bits                                                      |
+ | ``D_DAIN_ADDR_HIGH_0``        | ``0x5030``     | Higher 32bits of input data address when axi araddr is 64bits                                                      |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_DAIN_ADDR_LOW_0``         | ``0x8034``     | Lower 32bits of input data address                                                                                 |
+ | ``D_DAIN_ADDR_LOW_0``         | ``0x5034``     | Lower 32bits of input data address                                                                                 |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_DAIN_ADDR_HIGH_1``        | ``0x8038``     | Higher 32bits of input data address of UV plane when axi araddr is 64bits                                          |
+ | ``D_DAIN_ADDR_HIGH_1``        | ``0x5038``     | Higher 32bits of input data address of UV plane when axi araddr is 64bits                                          |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_DAIN_ADDR_LOW_1``         | ``0x803c``     | Lower 32bits of input data address of UV plane                                                                     |
+ | ``D_DAIN_ADDR_LOW_1``         | ``0x503c``     | Lower 32bits of input data address of UV plane                                                                     |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_LINE_STRIDE``             | ``0x8040``     | Line stride of input cube                                                                                          |
+ | ``D_LINE_STRIDE``             | ``0x5040``     | Line stride of input cube                                                                                          |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_LINE_UV_STRIDE``          | ``0x8044``     | Line stride of input cube’s UV plane                                                                               |
+ | ``D_LINE_UV_STRIDE``          | ``0x5044``     | Line stride of input cube’s UV plane                                                                               |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_SURF_STRIDE``             | ``0x8048``     | Surface stride of input cube                                                                                       |
+ | ``D_SURF_STRIDE``             | ``0x5048``     | Surface stride of input cube                                                                                       |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_DAIN_MAP``                | ``0x804c``     | Whether input cube is line packed or surface packed                                                                |
+ | ``D_DAIN_MAP``                | ``0x504c``     | Whether input cube is line packed or surface packed                                                                |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``RESERVED``                  | ``0x8050``     | This address is reserved                                                                                           |
+ | ``RESERVED``                  | ``0x5050``     | This address is reserved                                                                                           |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``RESERVED``                  | ``0x8054``     | This address is reserved                                                                                           |
+ | ``RESERVED``                  | ``0x5054``     | This address is reserved                                                                                           |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_BATCH_NUMBER``            | ``0x8058``     | Number of batches                                                                                                  |
+ | ``D_BATCH_NUMBER``            | ``0x5058``     | Number of batches                                                                                                  |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_BATCH_STRIDE``            | ``0x805c``     | The stride of input data cubes when batches > 1                                                                    |
+ | ``D_BATCH_STRIDE``            | ``0x505c``     | The stride of input data cubes when batches > 1                                                                    |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_ENTRY_PER_SLICE``         | ``0x8060``     | Number of CBUF entries used for one input slice                                                                    |
+ | ``D_ENTRY_PER_SLICE``         | ``0x5060``     | Number of CBUF entries used for one input slice                                                                    |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_FETCH_GRAIN``             | ``0x8064``     | Number of slices to be fetched before sending update information to CSC                                            |
+ | ``D_FETCH_GRAIN``             | ``0x5064``     | Number of slices to be fetched before sending update information to CSC                                            |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_WEIGHT_FORMAT``           | ``0x8068``     | Whether weight is compressed or not                                                                                |
+ | ``D_WEIGHT_FORMAT``           | ``0x5068``     | Whether weight is compressed or not                                                                                |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_WEIGHT_SIZE_0``           | ``0x806c``     | The size of one kernel in bytes                                                                                    |
+ | ``D_WEIGHT_SIZE_0``           | ``0x506c``     | The size of one kernel in bytes                                                                                    |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_WEIGHT_SIZE_1``           | ``0x8070``     | Number of kernels                                                                                                  |
+ | ``D_WEIGHT_SIZE_1``           | ``0x5070``     | Number of kernels                                                                                                  |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_WEIGHT_RAM_TYPE``         | ``0x8074``     | Ram type of weight                                                                                                 |
+ | ``D_WEIGHT_RAM_TYPE``         | ``0x5074``     | Ram type of weight                                                                                                 |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_WEIGHT_ADDR_HIGH``        | ``0x8078``     | Higher 32bits of weight address when axi araddr is 64bits                                                          |
+ | ``D_WEIGHT_ADDR_HIGH``        | ``0x5078``     | Higher 32bits of weight address when axi araddr is 64bits                                                          |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_WEIGHT_ADDR_LOW``         | ``0x807c``     | Lower 32bits of weight address                                                                                     |
+ | ``D_WEIGHT_ADDR_LOW``         | ``0x507c``     | Lower 32bits of weight address                                                                                     |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_WEIGHT_BYTES``            | ``0x8080``     | Total bytes of Weight                                                                                              |
+ | ``D_WEIGHT_BYTES``            | ``0x5080``     | Total bytes of Weight                                                                                              |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_WGS_ADDR_HIGH``           | ``0x8084``     | Higher 32bits of wgs address when axi araddr is 64bits                                                             |
+ | ``D_WGS_ADDR_HIGH``           | ``0x5084``     | Higher 32bits of wgs address when axi araddr is 64bits                                                             |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_WGS_ADDR_LOW``            | ``0x8088``     | Lower 32bits of wgs address                                                                                        |
+ | ``D_WGS_ADDR_LOW``            | ``0x5088``     | Lower 32bits of wgs address                                                                                        |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_WMB_ADDR_HIGH``           | ``0x808c``     | Higher 32bits of wmb address when axi araddr is 64bits                                                             |
+ | ``D_WMB_ADDR_HIGH``           | ``0x508c``     | Higher 32bits of wmb address when axi araddr is 64bits                                                             |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_WMB_ADDR_LOW``            | ``0x8090``     | Lower 32bits of wmb address                                                                                        |
+ | ``D_WMB_ADDR_LOW``            | ``0x5090``     | Lower 32bits of wmb address                                                                                        |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_WMB_BYTES``               | ``0x8094``     | Total bytes of WMB                                                                                                 |
+ | ``D_WMB_BYTES``               | ``0x5094``     | Total bytes of WMB                                                                                                 |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_MEAN_FORMAT``             | ``0x8098``     | Whether mean registers are used or not                                                                             |
+ | ``D_MEAN_FORMAT``             | ``0x5098``     | Whether mean registers are used or not                                                                             |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_MEAN_GLOBAL_0``           | ``0x809c``     | Global mean value for red in RGB or Y in YUV                                                                       |
+ | ``D_MEAN_GLOBAL_0``           | ``0x509c``     | Global mean value for red in RGB or Y in YUV                                                                       |
  |                               |                |                                                                                                                    |
  |                               |                | Global mean value for green in RGB or U in YUV                                                                     |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_MEAN_GLOBAL_1``           | ``0x80a0``     | Global mean value for blue in RGB or V in YUV                                                                      |
+ | ``D_MEAN_GLOBAL_1``           | ``0x50a0``     | Global mean value for blue in RGB or V in YUV                                                                      |
  |                               |                |                                                                                                                    |
  |                               |                | Global mean value for alpha in ARGB/AYUV or X in XRGB                                                              |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_CVT_CFG``                 | ``0x80a4``     | Enable/disable input data converter in CDMA and number of bits to be truncated in the input data converter         |
+ | ``D_CVT_CFG``                 | ``0x50a4``     | Enable/disable input data converter in CDMA and number of bits to be truncated in the input data converter         |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_CVT_OFFSET``              | ``0x80a8``     | Offset of input data convertor                                                                                     |
+ | ``D_CVT_OFFSET``              | ``0x50a8``     | Offset of input data convertor                                                                                     |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_CVT_SCALE``               | ``0x80ac``     | Scale of input data convertor                                                                                      |
+ | ``D_CVT_SCALE``               | ``0x50ac``     | Scale of input data convertor                                                                                      |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_CONV_STRIDE``             | ``0x80b0``     | Convolution x stride and convolution y stride                                                                      |
+ | ``D_CONV_STRIDE``             | ``0x50b0``     | Convolution x stride and convolution y stride                                                                      |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_ZERO_PADDING``            | ``0x80b4``     | Left/right/top/bottom padding size                                                                                 |
+ | ``D_ZERO_PADDING``            | ``0x50b4``     | Left/right/top/bottom padding size                                                                                 |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_ZERO_PADDING_VALUE``      | ``0x80b8``     | Padding value                                                                                                      |
+ | ``D_ZERO_PADDING_VALUE``      | ``0x50b8``     | Padding value                                                                                                      |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_BANK``                    | ``0x80bc``     | Number of data banks and weight banks in CBUF                                                                      |
+ | ``D_BANK``                    | ``0x50bc``     | Number of data banks and weight banks in CBUF                                                                      |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_NAN_FLUSH_TO_ZERO``       | ``0x80c0``     | Enable/Disable flushing input NaN to zero                                                                          |
+ | ``D_NAN_FLUSH_TO_ZERO``       | ``0x50c0``     | Enable/Disable flushing input NaN to zero                                                                          |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_NAN_INPUT_DATA_NUM``      | ``0x80c4``     | Count NaN number in input data cube, update per layer                                                              |
+ | ``D_NAN_INPUT_DATA_NUM``      | ``0x50c4``     | Count NaN number in input data cube, update per layer                                                              |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_NAN_INPUT_WEIGHT_NUM``    | ``0x80c8``     | Count NaN number in weight kernels, update per layer                                                               |
+ | ``D_NAN_INPUT_WEIGHT_NUM``    | ``0x50c8``     | Count NaN number in weight kernels, update per layer                                                               |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_INF_INPUT_DATA_NUM``      | ``0x80cc``     | Count infinity number in input data cube, update per layer                                                         |
+ | ``D_INF_INPUT_DATA_NUM``      | ``0x50cc``     | Count infinity number in input data cube, update per layer                                                         |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_INF_INPUT_WEIGHT_NUM``    | ``0x80d0``     | Count infinity number in weight kernels, update per layer                                                          |
+ | ``D_INF_INPUT_WEIGHT_NUM``    | ``0x50d0``     | Count infinity number in weight kernels, update per layer                                                          |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_PERF_ENABLE``             | ``0x80d4``     | Enable/disable performance counter                                                                                 |
+ | ``D_PERF_ENABLE``             | ``0x50d4``     | Enable/disable performance counter                                                                                 |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_PERF_DAT_READ_STALL``     | ``0x80d8``     | Count blocking cycles of read request of input data, update per layer                                              |
+ | ``D_PERF_DAT_READ_STALL``     | ``0x50d8``     | Count blocking cycles of read request of input data, update per layer                                              |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_PERF_WT_READ_STALL``      | ``0x80dc``     | Count blocking cycles of read request of weight data, update per layer                                             |
+ | ``D_PERF_WT_READ_STALL``      | ``0x50dc``     | Count blocking cycles of read request of weight data, update per layer                                             |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_PERF_DAT_READ_LATENCY``   | ``0x80e0``     | Count total latency cycles of read response of input data, update per layer                                        |
+ | ``D_PERF_DAT_READ_LATENCY``   | ``0x50e0``     | Count total latency cycles of read response of input data, update per layer                                        |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
- | ``D_PERF_WT_READ_LATENCY``    | ``0x80e4``     | Count total latency cycles of read request of weight data, update per layer                                        |
+ | ``D_PERF_WT_READ_LATENCY``    | ``0x50e4``     | Count total latency cycles of read request of weight data, update per layer                                        |
  +-------------------------------+----------------+--------------------------------------------------------------------------------------------------------------------+
 
 Note that some registers in the CDMA unit are only used in certain modes; if
@@ -1909,79 +1909,79 @@ CSC
    - Address
    - Description
  * - ``S_STATUS``
-   - ``0x9000``
+   - ``0x6000``
    - Idle status of two register groups
  * - ``S_POINTER``
-   - ``0x9004``
+   - ``0x6004``
    - Pointer for CSB master and data path to access groups
  * - ``D_OP_ENABLE``
-   - ``0x9008``
+   - ``0x6008``
    - Set it to 1 to kick off operation for current register group
  * - ``D_MISC_CFG``
-   - ``0x900c``
+   - ``0x600c``
    - Configuration of operation: convolution mode, precision, weight reuse, data reuse.
  * - ``D_DATAIN_FORMAT``
-   - ``0x9010``
+   - ``0x6010``
    - Input data format and pixel format
  * - ``D_DATAIN_SIZE_EXT_0``
-   - ``0x9014``
+   - ``0x6014``
    - Input cube’s width and height after extension
  * - ``D_DATAIN_SIZE_EXT_1``
-   - ``0x9018``
+   - ``0x6018``
    - Input cube’s channel after extension
  * - ``D_BATCH_NUMBER``
-   - ``0x901c``
+   - ``0x601c``
    - Number of batches
  * - ``D_POST_Y_EXTENSION``
-   - ``0x9020``
+   - ``0x6020``
    - Post extension parameter for image-in
  * - ``D_ENTRY_PER_SLICE``
-   - ``0x9024``
+   - ``0x6024``
    - Number of CBUF entries used for one input slice
  * - ``D_WEIGHT_FORMAT``
-   - ``0x9028``
+   - ``0x6028``
    - Whether weight is compressed or not
  * - ``D_WEIGHT_SIZE_EXT_0``
-   - ``0x902c``
+   - ``0x602c``
    - Weight’s width and height after extension
  * - ``D_WEIGHT_SIZE_EXT_1``
-   - ``0x9030``
+   - ``0x6030``
    - Weight’s channel after extension and number of weight kernels
  * - ``D_WEIGHT_BYTES``
-   - ``0x9034``
+   - ``0x6034``
    - Total bytes of Weight
  * - ``D_WMB_BYTES``
-   - ``0x9038``
+   - ``0x6038``
    - Total bytes of WMB
  * - ``D_DATAOUT_SIZE_0``
-   - ``0x903c``
+   - ``0x603c``
    - Output cube’s width and height
  * - ``D_DATAOUT_SIZE_1``
-   - ``0x9040``
+   - ``0x6040``
    - Output cube’s channel
  * - ``D_ATOMICS``
-   - ``0x9044``
+   - ``0x6044``
    - Equals to output\_data\_cube\_width \* output\_data\_cube\_height - 1
  * - ``D_RELEASE``
-   - ``0x9048``
+   - ``0x6048``
    - Slices of CBUF to be released at the end of current layer
  * - ``D_CONV_STRIDE_EXT``
-   - ``0x904c``
+   - ``0x604c``
    - Convolution x stride and convolution y stride after extension
  * - ``D_DILATION_EXT``
-   - ``0x9050``
+   - ``0x6050``
    - Dilation parameter
  * - ``D_ZERO_PADDING``
-   - ``0x9054``
+   - ``0x6054``
    - Left/right/top/bottom padding size
  * - ``D_ZERO_PADDING_VALUE``
-   - ``0x9058``
+   - ``0x6058``
    - Padding value
  * - ``D_BANK``
-   - ``0x905c``
+   - ``0x605c``
    - Number of data banks and weight banks in CBUF
  * - ``D_PRA_CFG``
-   - ``0x9060``
+   - ``0x6060``
    - PRA truncate in Winograd mode, range: 0~2
 
 Note that some registers in the CSC unit are only used in certain modes; if
@@ -2012,16 +2012,16 @@ CMAC\_A
    - Address
    - Description
  * - ``S_STATUS``
-   - ``0xa000``
+   - ``0x7000``
    - Idle status of two register groups
  * - ``S_POINTER``
-   - ``0xa004``
+   - ``0x7004``
    - Pointer for CSB master and data path to access groups
  * - ``D_OP_ENABLE``
-   - ``0xa008``
+   - ``0x7008``
    - Set it to 1 to kick off operation for current register group
  * - ``D_MISC_CFG``
-   - ``0xa00c``
+   - ``0x700c``
    - Configuration of operation: convolution mode, precision, etc.
 
 CMAC\_B
@@ -2029,6 +2029,81 @@ CMAC\_B
 
 .. list-table:: CMAC\_B registers.
  :name: tab_cmac_b_registers
+ :header-rows: 1
+ :widths: auto
+
+ * - Name
+   - Address
+   - Description
+ * - ``S_STATUS``
+   - ``0x8000``
+   - Idle status of two register groups
+ * - ``S_POINTER``
+   - ``0x8004``
+   - Pointer for CSB master and data path to access groups
+ * - ``D_OP_ENABLE``
+   - ``0x8008``
+   - Set it to 1 to kick off operation for current register group
+ * - ``D_MISC_CFG``
+   - ``0x800c``
+   - Configuration of operation: convolution mode, precision, etc.
+
+CACC
+^^^^
+
+.. list-table:: CACC registers.
+ :name: tab_cacc_registers
+ :header-rows: 1
+ :widths: auto
+
+ * - Name
+   - Address
+   - Description
+ * - ``S_STATUS``
+   - ``0x9000``
+   - Idle status of two register groups
+ * - ``S_POINTER``
+   - ``0x9004``
+   - Pointer for CSB master and data path to access groups
+ * - ``D_OP_ENABLE``
+   - ``0x9008``
+   - Set it to 1 to kick off operation for current register group
+ * - ``D_MISC_CFG``
+   - ``0x900c``
+   - Configuration of operation: convolution mode, precision, etc.
+ * - ``D_DATAOUT_SIZE_0``
+   - ``0x9010``
+   - Input cube’s width and height after extension
+ * - ``D_DATAOUT_SIZE_1``
+   - ``0x9014``
+   - Input cube’s channel after extension
+ * - ``D_DATAOUT_ADDR``
+   - ``0x9018``
+   - Address of output cube
+ * - ``D_BATCH_NUMBER``
+   - ``0x901c``
+   - Number of batches
+ * - ``D_LINE_STRIDE``
+   - ``0x9020``
+   - Line stride of output cube
+ * - ``D_SURF_STRIDE``
+   - ``0x9024``
+   - Line stride of surface cube
+ * - ``D_DATAOUT_MAP``
+   - ``0x9028``
+   - Whether output cube is line packed or surface packed
+ * - ``D_CLIP_CFG``
+   - ``0x902c``
+   - Number of bits to be truncated before sending to SDP
+ * - ``D_OUT_SATURATION``
+   - ``0x9030``
+   - Output saturation count
+
+SDP\_RDMA
+^^^^^^^^^
+
+.. list-table:: SDP\_RDMA registers.
+ :name: tab_sdp_rdma_registers
  :header-rows: 1
  :widths: auto
 
@@ -2044,15 +2119,315 @@ CMAC\_B
  * - ``D_OP_ENABLE``
    - ``0xa008``
    - Set it to 1 to kick off operation for current register group
- * - ``D_MISC_CFG``
+ * - ``D_DATA_CUBE_WIDTH``
    - ``0xa00c``
-   - Configuration of operation: convolution mode, precision, etc.
+   - Input cube’s width
+ * - ``D_DATA_CUBE_HEIGHT``
+   - ``0xa010``
+   - Input cube’s height
+ * - ``D_DATA_CUBE_CHANNEL``
+   - ``0xa014``
+   - Input cube’s channel
+ * - ``D_SRC_BASE_ADDR_LOW``
+   - ``0xa018``
+   - Lower 32bits of input data address
+ * - ``D_SRC_BASE_ADDR_HIGH``
+   - ``0xa01c``
+   - Higher 32bits of input data address when axi araddr is 64bits
+ * - ``D_SRC_LINE_STRIDE``
+   - ``0xa020``
+   - Line stride of input cube
+ * - ``D_SRC_SURFACE_STRIDE``
+   - ``0xa024``
+   - Surface stride of input cube
+ * - ``D_BRDMA_CFG``
+   - ``0xa028``
+   - Configuration of BRDMA: enable/disable, data size, Ram type, etc.
+ * - ``D_BS_BASE_ADDR_LOW``
+   - ``0xa02c``
+   - Lower 32bits address of the bias data cube
+ * - ``D_BS_BASE_ADDR_HIGH``
+   - ``0xa030``
+   - Higher 32bits address of the bias data cube when axi araddr is 64bits
+ * - ``D_BS_LINE_STRIDE``
+   - ``0xa034``
+   - Line stride of bias data cube
+ * - ``D_BS_SURFACE_STRIDE``
+   - ``0xa038``
+   - Surface stride of bias data cube
+ * - ``D_BS_BATCH_STRIDE``
+   - ``0xa03c``
+   - Stride of bias data cube in batch mode
+ * - ``D_NRDMA_CFG``
+   - ``0xa040``
+   - Configuration of NRDMA: enable/disable, data size, Ram type, etc.
+ * - ``D_BN_BASE_ADDR_LOW``
+   - ``0xa044``
+   - Lower 32bits address of the bias data cube
+ * - ``D_BN_BASE_ADDR_HIGH``
+   - ``0xa048``
+   - Higher 32bits address of the bias data cube when axi araddr is 64bits
+ * - ``D_BN_LINE_STRIDE``
+   - ``0xa04c``
+   - Line stride of bias data cube
+ * - ``D_BN_SURFACE_STRIDE``
+   - ``0xa050``
+   - Surface stride of bias data cube
+ * - ``D_BN_BATCH_STRIDE``
+   - ``0xa054``
+   - Stride of bias data cube in batch mode
+ * - ``D_ERDMA_CFG``
+   - ``0xa058``
+   - Configuration of ERDMA: enable/disable, data size, Ram type, etc.
+ * - ``D_EW_BASE_ADDR_LOW``
+   - ``0xa05c``
+   - Lower 32bits address of the bias data cube
+ * - ``D_EW_BASE_ADDR_HIGH``
+   - ``0xa060``
+   - Higher 32bits address of the bias data cube when axi araddr is 64bits
+ * - ``D_EW_LINE_STRIDE``
+   - ``0xa064``
+   - Line stride of bias data cube
+ * - ``D_EW_SURFACE_STRIDE``
+   - ``0xa068``
+   - Surface stride of bias data cube
+ * - ``D_EW_BATCH_STRIDE``
+   - ``0xa06c``
+   - Stride of bias data cube in batch mode
+ * - ``D_FEATURE_MODE_CFG``
+   - ``0xa070``
+   - Operation configuration: flying mode, output destination, Direct or Winograd mode, flush NaN to zero, batch number.
+ * - ``D_SRC_DMA_CFG``
+   - ``0xa074``
+   - RAM type of input data cube
+ * - ``D_STATUS_NAN_INPUT_NUM``
+   - ``0xa078``
+   - Input NaN element number
+ * - ``D_STATUS_INF_INPUT_NUM``
+   - ``0xa07c``
+   - Input Infinity element number
+ * - ``D_PERF_ENABLE``
+   - ``0xa080``
+   - Enable/Disable performance counting
+ * - ``D_PERF_MRDMA_READ_STALL``
+   - ``0xa084``
+   - Count stall cycles of M read DMA for one layer
+ * - ``D_PERF_BRDMA_READ_STALL``
+   - ``0xa088``
+   - Count stall cycles of B read DMA for one layer
+ * - ``D_PERF_NRDMA_READ_STALL``
+   - ``0xa08c``
+   - Count stall cycles of N read DMA for one layer
+ * - ``D_PERF_ERDMA_READ_STALL``
+   - ``0xa090``
+   - Count stall cycles of E read DMA for one layer
 
-CACC
-^^^^
+SDP
+^^^
 
-.. list-table:: CACC registers.
- :name: tab_cacc_registers
+.. list-table:: SDP registers.
+ :name: tab_sdp_registers
+ :header-rows: 1
+ :widths: auto
+
+ * - Name
+   - Address
+   - Description
+ * - ``S_STATUS``
+   - ``0xb000``
+   - Idle status of two register groups
+ * - ``S_POINTER``
+   - ``0xb004``
+   - Pointer for CSB master and data path to access groups
+ * - ``S_LUT_ACCESS_CFG``
+   - ``0xb008``
+   - LUT access address and type
+ * - ``S_LUT_ACCESS_DATA``
+   - ``0xb00c``
+   - Data register of read or write LUT
+ * - ``S_LUT_CFG``
+   - ``0xb010``
+   - LUT’s type: exponent or linear. And the selection between LE and LO tables.
+ * - ``S_LUT_INFO``
+   - ``0xb014``
+   - LE and LO LUT index offset and selection
+ * - ``S_LUT_LE_START``
+   - ``0xb018``
+   - Start of LE LUT’s range
+ * - ``S_LUT_LE_END``
+   - ``0xb01c``
+   - End of LE LUT’s range
+ * - ``S_LUT_LO_START``
+   - ``0xb020``
+   - Start of LO LUT’s range
+ * - ``S_LUT_LO_END``
+   - ``0xb024``
+   - End of LO LUT’s range
+ * - ``S_LUT_LE_SLOPE_SCALE``
+   - ``0xb028``
+   - Slope scale parameter for LE LUT underflow and overflow, signed value
+ * - ``S_LUT_LE_SLOPE_SHIFT``
+   - ``0xb02c``
+   - Slope shift parameter for LE\_LUT underflow and overflow, signed value
+ * - ``S_LUT_LO_SLOPE_SCALE``
+   - ``0xb030``
+   - Slope scale parameter for LO LUT underflow and overflow, signed value
+ * - ``S_LUT_LO_SLOPE_SHIFT``
+   - ``0xb034``
+   - Slope shift parameter for LO\_LUT underflow and overflow, signed value
+ * - ``D_OP_ENABLE``
+   - ``0xb038``
+   - Set it to 1 to kick off operation for current register group
+ * - ``D_DATA_CUBE_WIDTH``
+   - ``0xb03c``
+   - Input cube’s width
+ * - ``D_DATA_CUBE_HEIGHT``
+   - ``0xb040``
+   - Input cube’s height
+ * - ``D_DATA_CUBE_CHANNEL``
+   - ``0xb044``
+   - Input cube’s channel
+ * - ``D_DST_BASE_ADDR_LOW``
+   - ``0xb048``
+   - Lower 32bits of output data address
+ * - ``D_DST_BASE_ADDR_HIGH``
+   - ``0xb04c``
+   - Higher 32bits of output data address when axi awaddr is 64bits
+ * - ``D_DST_LINE_STRIDE``
+   - ``0xb050``
+   - Line stride of output data cube
+ * - ``D_DST_SURFACE_STRIDE``
+   - ``0xb054``
+   - Surface stride of output data cube
+ * - ``D_DP_BS_CFG``
+   - ``0xb058``
+   - Configurations of BS module: bypass, algorithm, etc.
+ * - ``D_DP_BS_ALU_CFG``
+   - ``0xb05c``
+   - Source type and shifter value of BS ALU
+ * - ``D_DP_BS_ALU_SRC_VALUE``
+   - ``0xb060``
+   - Operand value of BS ALU
+ * - ``D_DP_BS_MUL_CFG``
+   - ``0xb064``
+   - Source type and shifter value of BS MUL
+ * - ``D_DP_BS_MUL_SRC_VALUE``
+   - ``0xb068``
+   - Operand value of BS MUL
+ * - ``D_DP_BN_CFG``
+   - ``0xb06c``
+   - Configurations of BN module: bypass, algorithm, etc.
+ * - ``D_DP_BN_ALU_CFG``
+   - ``0xb070``
+   - Source type and shifter value of BN ALU
+ * - ``D_DP_BN_ALU_SRC_VALUE``
+   - ``0xb074``
+   - Operand value of BN ALU
+ * - ``D_DP_BN_MUL_CFG``
+   - ``0xb078``
+   - Source type and shifter value of BN MUL
+ * - ``D_DP_BN_MUL_SRC_VALUE``
+   - ``0xb07c``
+   - Operand value of BN MUL
+ * - ``D_DP_EW_CFG``
+   - ``0xb080``
+   - Configurations of EW module: bypass, algorithm, etc.
+ * - ``D_DP_EW_ALU_CFG``
+   - ``0xb084``
+   - Source type and bypass control of EW ALU
+ * - ``D_DP_EW_ALU_SRC_VALUE``
+   - ``0xb088``
+   - Operand value of EW ALU
+ * - ``D_DP_EW_ALU_CVT_OFFSET_VALUE``
+   - ``0xb08c``
+   - Converter offset of EW ALU
+ * - ``D_DP_EW_ALU_CVT_SCALE_VALUE``
+   - ``0xb090``
+   - Converter scale of EW ALU
+ * - ``D_DP_EW_ALU_CVT_TRUNCATE_VALUE``
+   - ``0xb094``
+   - Converter truncate of EW ALU
+ * - ``D_DP_EW_MUL_CFG``
+   - ``0xb098``
+   - Source type and bypass control of EW MUL
+ * - ``D_DP_EW_MUL_SRC_VALUE``
+   - ``0xb09c``
+   - Operand value of EW MUL
+ * - ``D_DP_EW_MUL_CVT_OFFSET_VALUE``
+   - ``0xb0a0``
+   - Converter offset of EW MUL
+ * - ``D_DP_EW_MUL_CVT_SCALE_VALUE``
+   - ``0xb0a4``
+   - Converter scale of EW MUL
+ * - ``D_DP_EW_MUL_CVT_TRUNCATE_VALUE``
+   - ``0xb0a8``
+   - Converter truncate of EW MUL
+ * - ``D_DP_EW_TRUNCATE_VALUE``
+   - ``0xb0ac``
+   - Truncate of EW
+ * - ``D_FEATURE_MODE_CFG``
+   - ``0xb0b0``
+   - Operation configuration: flying mode, output destination, Direct or Winograd mode, flush NaN to zero, batch number.
+ * - ``D_DST_DMA_CFG``
+   - ``0xb0b4``
+   - Destination RAM type
+ * - ``D_DST_BATCH_STRIDE``
+   - ``0xb0b8``
+   - Stride of output cubes in batch mode
+ * - ``D_DATA_FORMAT``
+   - ``0xb0bc``
+   - Data precision
+ * - ``D_CVT_OFFSET``
+   - ``0xb0c0``
+   - Output converter offset
+ * - ``D_CVT_SCALE``
+   - ``0xb0c4``
+   - Output converter scale
+ * - ``D_CVT_SHIFT``
+   - ``0xb0c8``
+   - Output converter shifter value
+ * - ``D_STATUS``
+   - ``0xb0cc``
+   - Output of equal mode
+ * - ``D_STATUS_NAN_INPUT_NUM``
+   - ``0xb0d0``
+   - Input NaN element number
+ * - ``D_STATUS_INF_INPUT_NUM``
+   - ``0xb0d4``
+   - Input Infinity element number
+ * - ``D_STATUS_NAN_OUTPUT_NUM``
+   - ``0xb0d8``
+   - Output NaN element number
+ * - ``D_PERF_ENABLE``
+   - ``0xb0dc``
+   - Enable/Disable performance counting
+ * - ``D_PERF_WDMA_WRITE_STALL``
+   - ``0xb0e0``
+   - Count stall cycles of write DMA for one layer
+ * - ``D_PERF_LUT_UFLOW``
+   - ``0xb0e4``
+   - Element number of both table underflow
+ * - ``D_PERF_LUT_OFLOW``
+   - ``0xb0e8``
+   - Element number of both table overflow
+ * - ``D_PERF_OUT_SATURATION``
+   - ``0xb0ec``
+   - Element number of both table saturation
+ * - ``D_PERF_LUT_HYBRID``
+   - ``0xb0f0``
+   - Element number of both hit, or both miss situation that element underflow one table and at the same time overflow the other.
+ * - ``D_PERF_LUT_LE_HIT``
+   - ``0xb0f4``
+   - Element number of only LE table hit
+ * - ``D_PERF_LUT_LO_HIT``
+   - ``0xb0f8``
+   - Element number of only LO table hit
+
+PDP_RDMA
+^^^^^^^^
+
+.. list-table:: PDP_RDMA registers.
+ :name: tab_pdp_rdma_registers
  :header-rows: 1
  :widths: auto
 
@@ -2068,42 +2443,60 @@ CACC
  * - ``D_OP_ENABLE``
    - ``0xc008``
    - Set it to 1 to kick off operation for current register group
- * - ``D_MISC_CFG``
+ * - ``D_DATA_CUBE_IN_WIDTH``
    - ``0xc00c``
-   - Configuration of operation: convolution mode, precision, etc.
- * - ``D_DATAOUT_SIZE_0``
+   - Input data cube’s width
+ * - ``D_DATA_CUBE_IN_HEIGHT``
    - ``0xc010``
-   - Input cube’s width and height after extension
- * - ``D_DATAOUT_SIZE_1``
+   - Input data cube’s height
+ * - ``D_DATA_CUBE_IN_CHANNEL``
    - ``0xc014``
-   - Input cube’s channel after extension
- * - ``D_DATAOUT_ADDR``
+   - Input data cube’s channel
+ * - ``D_FLYING_MODE``
    - ``0xc018``
-   - Address of output cube
- * - ``D_BATCH_NUMBER``
+   - Indicate source is SDP or external memory
+ * - ``D_SRC_BASE_ADDR_LOW``
    - ``0xc01c``
-   - Number of batches
- * - ``D_LINE_STRIDE``
+   - Lower 32bits of input data address
+ * - ``D_SRC_BASE_ADDR_HIGH``
    - ``0xc020``
-   - Line stride of output cube
- * - ``D_SURF_STRIDE``
+   - Higher 32bits of input data address when axi araddr is 64bits
+ * - ``D_SRC_LINE_STRIDE``
    - ``0xc024``
-   - Line stride of surface cube
- * - ``D_DATAOUT_MAP``
+   - Line stride of input cube
+ * - ``D_SRC_SURFACE_STRIDE``
    - ``0xc028``
-   - Whether output cube is line packed or surface packed
- * - ``D_CLIP_CFG``
+   - Surface stride of input cube
+ * - ``D_SRC_RAM_CFG``
    - ``0xc02c``
-   - Number of bits to be truncated before sending to SDP
- * - ``D_OUT_SATURATION``
+   - RAM type of input data cube
+ * - ``D_DATA_FORMAT``
    - ``0xc030``
-   - Output saturation count
+   - Input data cube
+ * - ``D_OPERATION_MODE_CFG``
+   - ``0xc034``
+   - Split number
+ * - ``D_POOLING_KERNEL_CFG``
+   - ``0xc038``
+   - Kernel width and kernel stride
+ * - ``D_POOLING_PADDING_CFG``
+   - ``0xc03c``
+   - Padding width
+ * - ``D_PARTIAL_WIDTH_IN``
+   - ``0xc040``
+   - Partial width for first, last and middle partitions
+ * - ``D_PERF_ENABLE``
+   - ``0xc044``
+   - Enable/Disable performance counting
+ * - ``D_PERF_READ_STALL``
+   - ``0xc048``
+   - Element number that for both LUT underflow.
 
-SDP\_RDMA
-^^^^^^^^^
+PDP
+^^^
 
-.. list-table:: SDP\_RDMA registers.
- :name: tab_sdp_rdma_registers
+.. list-table:: PDP registers.
+ :name: tab_pdp_registers
  :header-rows: 1
  :widths: auto
 
@@ -2119,114 +2512,120 @@ SDP\_RDMA
  * - ``D_OP_ENABLE``
    - ``0xd008``
    - Set it to 1 to kick off operation for current register group
- * - ``D_DATA_CUBE_WIDTH``
+ * - ``D_DATA_CUBE_IN_WIDTH``
    - ``0xd00c``
-   - Input cube’s width
- * - ``D_DATA_CUBE_HEIGHT``
+   - Input data cube’s width
+ * - ``D_DATA_CUBE_IN_HEIGHT``
    - ``0xd010``
-   - Input cube’s height
- * - ``D_DATA_CUBE_CHANNEL``
+   - Input data cube’s height
+ * - ``D_DATA_CUBE_IN_CHANNEL``
    - ``0xd014``
-   - Input cube’s channel
- * - ``D_SRC_BASE_ADDR_LOW``
+   - Input data cube’s channel
+ * - ``D_DATA_CUBE_OUT_WIDTH``
    - ``0xd018``
+   - Output data cube’s width
+ * - ``D_DATA_CUBE_OUT_HEIGHT``
+   - ``0xd01c``
+   - Output data cube’s height
+ * - ``D_DATA_CUBE_OUT_CHANNEL``
+   - ``0xd020``
+   - Output data cube’s channel
+ * - ``D_OPERATION_MODE_CFG``
+   - ``0xd024``
+   - Split number
+ * - ``D_NAN_FLUSH_TO_ZERO``
+   - ``0xd028``
+   - Option to flush input NaN to zero
+ * - ``D_PARTIAL_WIDTH_IN``
+   - ``0xd02c``
+   - Partial width for first, last and middle partitions of input cube
+ * - ``D_PARTIAL_WIDTH_OUT``
+   - ``0xd030``
+   - Partial width for first, last and middle partitions of output cube
+ * - ``D_POOLING_KERNEL_CFG``
+   - ``0xd034``
+   - Kernel width and kernel stride
+ * - ``D_RECIP_KERNEL_WIDTH``
+   - ``0xd038``
+   - Reciprocal of pooling kernel width, set to actual value \* (2^16) when INT8/INT16 format enabled. and set to actual value for fp16 precision mode with fp17 data format.
+ * - ``D_RECIP_KERNEL_HEIGHT``
+   - ``0xd03c``
+   - Reciprocal of pooling kernel height, set to actual value \* (2^16) when INT8/INT16 format enabled. and set to actual value for fp16 precision mode with fp17 data format.
+ * - ``D_POOLING_PADDING_CFG``
+   - ``0xd040``
+   - Left/right/top/bottom padding size
+ * - ``D_POOLING_PADDING_VALUE_1_CFG``
+   - ``0xd044``
+   - Padding\_value\*1
+ * - ``D_POOLING_PADDING_VALUE_2_CFG``
+   - ``0xd048``
+   - Padding\_value\*2
+ * - ``D_POOLING_PADDING_VALUE_3_CFG``
+   - ``0xd04c``
+   - Padding\_value\*3
+ * - ``D_POOLING_PADDING_VALUE_4_CFG``
+   - ``0xd050``
+   - Padding\_value\*4
+ * - ``D_POOLING_PADDING_VALUE_5_CFG``
+   - ``0xd054``
+   - Padding\_value\*5
+ * - ``D_POOLING_PADDING_VALUE_6_CFG``
+   - ``0xd058``
+   - Padding\_value\*6
+ * - ``D_POOLING_PADDING_VALUE_7_CFG``
+   - ``0xd05c``
+   - Padding\_value\*7
+ * - ``D_SRC_BASE_ADDR_LOW``
+   - ``0xd060``
    - Lower 32bits of input data address
  * - ``D_SRC_BASE_ADDR_HIGH``
-   - ``0xd01c``
+   - ``0xd064``
    - Higher 32bits of input data address when axi araddr is 64bits
  * - ``D_SRC_LINE_STRIDE``
-   - ``0xd020``
+   - ``0xd068``
    - Line stride of input cube
  * - ``D_SRC_SURFACE_STRIDE``
-   - ``0xd024``
-   - Surface stride of input cube
- * - ``D_BRDMA_CFG``
-   - ``0xd028``
-   - Configuration of BRDMA: enable/disable, data size, Ram type, etc.
- * - ``D_BS_BASE_ADDR_LOW``
-   - ``0xd02c``
-   - Lower 32bits address of the bias data cube
- * - ``D_BS_BASE_ADDR_HIGH``
-   - ``0xd030``
-   - Higher 32bits address of the bias data cube when axi araddr is 64bits
- * - ``D_BS_LINE_STRIDE``
-   - ``0xd034``
-   - Line stride of bias data cube
- * - ``D_BS_SURFACE_STRIDE``
-   - ``0xd038``
-   - Surface stride of bias data cube
- * - ``D_BS_BATCH_STRIDE``
-   - ``0xd03c``
-   - Stride of bias data cube in batch mode
- * - ``D_NRDMA_CFG``
-   - ``0xd040``
-   - Configuration of NRDMA: enable/disable, data size, Ram type, etc.
- * - ``D_BN_BASE_ADDR_LOW``
-   - ``0xd044``
-   - Lower 32bits address of the bias data cube
- * - ``D_BN_BASE_ADDR_HIGH``
-   - ``0xd048``
-   - Higher 32bits address of the bias data cube when axi araddr is 64bits
- * - ``D_BN_LINE_STRIDE``
-   - ``0xd04c``
-   - Line stride of bias data cube
- * - ``D_BN_SURFACE_STRIDE``
-   - ``0xd050``
-   - Surface stride of bias data cube
- * - ``D_BN_BATCH_STRIDE``
-   - ``0xd054``
-   - Stride of bias data cube in batch mode
- * - ``D_ERDMA_CFG``
-   - ``0xd058``
-   - Configuration of ERDMA: enable/disable, data size, Ram type, etc.
- * - ``D_EW_BASE_ADDR_LOW``
-   - ``0xd05c``
-   - Lower 32bits address of the bias data cube
- * - ``D_EW_BASE_ADDR_HIGH``
-   - ``0xd060``
-   - Higher 32bits address of the bias data cube when axi araddr is 64bits
- * - ``D_EW_LINE_STRIDE``
-   - ``0xd064``
-   - Line stride of bias data cube
- * - ``D_EW_SURFACE_STRIDE``
-   - ``0xd068``
-   - Surface stride of bias data cube
- * - ``D_EW_BATCH_STRIDE``
    - ``0xd06c``
-   - Stride of bias data cube in batch mode
- * - ``D_FEATURE_MODE_CFG``
+   - Surface stride of input cube
+ * - ``D_DST_BASE_ADDR_LOW``
    - ``0xd070``
-   - Operation configuration: flying mode, output destination, Direct or Winograd mode, flush NaN to zero, batch number.
- * - ``D_SRC_DMA_CFG``
+   - Lower 32bits of output data address
+ * - ``D_DST_BASE_ADDR_HIGH``
    - ``0xd074``
-   - RAM type of input data cube
- * - ``D_STATUS_NAN_INPUT_NUM``
+   - Higher 32bits of output data address when axi awaddr is 64bits
+ * - ``D_DST_LINE_STRIDE``
    - ``0xd078``
-   - Input NaN element number
- * - ``D_STATUS_INF_INPUT_NUM``
+   - Line stride of output cube
+ * - ``D_DST_SURFACE_STRIDE``
    - ``0xd07c``
-   - Input Infinity element number
- * - ``D_PERF_ENABLE``
+   - Surface stride of output cube
+ * - ``D_DST_RAM_CFG``
    - ``0xd080``
-   - Enable/Disable performance counting
- * - ``D_PERF_MRDMA_READ_STALL``
+   - RAM type of destination cube
+ * - ``D_DATA_FORMAT``
    - ``0xd084``
-   - Count stall cycles of M read DMA for one layer
- * - ``D_PERF_BRDMA_READ_STALL``
+   - Precision of input data
+ * - ``D_INF_INPUT_NUM``
    - ``0xd088``
-   - Count stall cycles of B read DMA for one layer
- * - ``D_PERF_NRDMA_READ_STALL``
+   - Input infinity element number
+ * - ``D_NAN_INPUT_NUM``
    - ``0xd08c``
-   - Count stall cycles of N read DMA for one layer
- * - ``D_PERF_ERDMA_READ_STALL``
+   - Input NaN element number
+ * - ``D_NAN_OUTPUT_NUM``
    - ``0xd090``
-   - Count stall cycles of E read DMA for one layer
+   - Output NaN element number
+ * - ``D_PERF_ENABLE``
+   - ``0xd094``
+   - Enable/disable performance counting
+ * - ``D_PERF_WRITE_STALL``
+   - ``0xd098``
+   - Counting stalls of write requests
 
-SDP
-^^^
+CDP_RDMA
+^^^^^^^^
 
-.. list-table:: SDP registers.
- :name: tab_sdp_registers
+.. list-table:: CDP_RDMA registers.
+ :name: tab_cdp_rdma_registers
  :header-rows: 1
  :widths: auto
 
@@ -2239,195 +2638,54 @@ SDP
  * - ``S_POINTER``
    - ``0xe004``
    - Pointer for CSB master and data path to access groups
- * - ``S_LUT_ACCESS_CFG``
-   - ``0xe008``
-   - LUT access address and type
- * - ``S_LUT_ACCESS_DATA``
-   - ``0xe00c``
-   - Data register of read or write LUT
- * - ``S_LUT_CFG``
-   - ``0xe010``
-   - LUT’s type: exponent or linear. And the selection between LE and LO tables.
- * - ``S_LUT_INFO``
-   - ``0xe014``
-   - LE and LO LUT index offset and selection
- * - ``S_LUT_LE_START``
-   - ``0xe018``
-   - Start of LE LUT’s range
- * - ``S_LUT_LE_END``
-   - ``0xe01c``
-   - End of LE LUT’s range
- * - ``S_LUT_LO_START``
-   - ``0xe020``
-   - Start of LO LUT’s range
- * - ``S_LUT_LO_END``
-   - ``0xe024``
-   - End of LO LUT’s range
- * - ``S_LUT_LE_SLOPE_SCALE``
-   - ``0xe028``
-   - Slope scale parameter for LE LUT underflow and overflow, signed value
- * - ``S_LUT_LE_SLOPE_SHIFT``
-   - ``0xe02c``
-   - Slope shift parameter for LE\_LUT underflow and overflow, signed value
- * - ``S_LUT_LO_SLOPE_SCALE``
-   - ``0xe030``
-   - Slope scale parameter for LO LUT underflow and overflow, signed value
- * - ``S_LUT_LO_SLOPE_SHIFT``
-   - ``0xe034``
-   - Slope shift parameter for LO\_LUT underflow and overflow, signed value
  * - ``D_OP_ENABLE``
-   - ``0xe038``
+   - ``0xe008``
    - Set it to 1 to kick off operation for current register group
  * - ``D_DATA_CUBE_WIDTH``
-   - ``0xe03c``
-   - Input cube’s width
+   - ``0xe00c``
+   - Input data cube’s width
  * - ``D_DATA_CUBE_HEIGHT``
-   - ``0xe040``
-   - Input cube’s height
+   - ``0xe010``
+   - Input data cube’s height
  * - ``D_DATA_CUBE_CHANNEL``
-   - ``0xe044``
-   - Input cube’s channel
- * - ``D_DST_BASE_ADDR_LOW``
-   - ``0xe048``
-   - Lower 32bits of output data address
- * - ``D_DST_BASE_ADDR_HIGH``
-   - ``0xe04c``
-   - Higher 32bits of output data address when axi awaddr is 64bits
- * - ``D_DST_LINE_STRIDE``
-   - ``0xe050``
-   - Line stride of output data cube
- * - ``D_DST_SURFACE_STRIDE``
-   - ``0xe054``
-   - Surface stride of output data cube
- * - ``D_DP_BS_CFG``
-   - ``0xe058``
-   - Configurations of BS module: bypass, algorithm, etc.
- * - ``D_DP_BS_ALU_CFG``
-   - ``0xe05c``
-   - Source type and shifter value of BS ALU
- * - ``D_DP_BS_ALU_SRC_VALUE``
-   - ``0xe060``
-   - Operand value of BS ALU
- * - ``D_DP_BS_MUL_CFG``
-   - ``0xe064``
-   - Source type and shifter value of BS MUL
- * - ``D_DP_BS_MUL_SRC_VALUE``
-   - ``0xe068``
-   - Operand value of BS MUL
- * - ``D_DP_BN_CFG``
-   - ``0xe06c``
-   - Configurations of BN module: bypass, algorithm, etc.
- * - ``D_DP_BN_ALU_CFG``
-   - ``0xe070``
-   - Source type and shifter value of BN ALU
- * - ``D_DP_BN_ALU_SRC_VALUE``
-   - ``0xe074``
-   - Operand value of BN ALU
- * - ``D_DP_BN_MUL_CFG``
-   - ``0xe078``
-   - Source type and shifter value of BN MUL
- * - ``D_DP_BN_MUL_SRC_VALUE``
-   - ``0xe07c``
-   - Operand value of BN MUL
- * - ``D_DP_EW_CFG``
-   - ``0xe080``
-   - Configurations of EW module: bypass, algorithm, etc.
- * - ``D_DP_EW_ALU_CFG``
-   - ``0xe084``
-   - Source type and bypass control of EW ALU
- * - ``D_DP_EW_ALU_SRC_VALUE``
-   - ``0xe088``
-   - Operand value of EW ALU
- * - ``D_DP_EW_ALU_CVT_OFFSET_VALUE``
-   - ``0xe08c``
-   - Converter offset of EW ALU
- * - ``D_DP_EW_ALU_CVT_SCALE_VALUE``
-   - ``0xe090``
-   - Converter scale of EW ALU
- * - ``D_DP_EW_ALU_CVT_TRUNCATE_VALUE``
-   - ``0xe094``
-   - Converter truncate of EW ALU
- * - ``D_DP_EW_MUL_CFG``
-   - ``0xe098``
-   - Source type and bypass control of EW MUL
- * - ``D_DP_EW_MUL_SRC_VALUE``
-   - ``0xe09c``
-   - Operand value of EW MUL
- * - ``D_DP_EW_MUL_CVT_OFFSET_VALUE``
-   - ``0xe0a0``
-   - Converter offset of EW MUL
- * - ``D_DP_EW_MUL_CVT_SCALE_VALUE``
-   - ``0xe0a4``
-   - Converter scale of EW MUL
- * - ``D_DP_EW_MUL_CVT_TRUNCATE_VALUE``
-   - ``0xe0a8``
-   - Converter truncate of EW MUL
- * - ``D_DP_EW_TRUNCATE_VALUE``
-   - ``0xe0ac``
-   - Truncate of EW
- * - ``D_FEATURE_MODE_CFG``
-   - ``0xe0b0``
-   - Operation configuration: flying mode, output destination, Direct or Winograd mode, flush NaN to zero, batch number.
- * - ``D_DST_DMA_CFG``
-   - ``0xe0b4``
-   - Destination RAM type
- * - ``D_DST_BATCH_STRIDE``
-   - ``0xe0b8``
-   - Stride of output cubes in batch mode
+   - ``0xe014``
+   - Input data cube’s channel
+ * - ``D_SRC_BASE_ADDR_LOW``
+   - ``0xe018``
+   - Lower 32bits of input data address
+ * - ``D_SRC_BASE_ADDR_HIGH``
+   - ``0xe01c``
+   - Higher 32bits of input data address when axi araddr is 64bits
+ * - ``D_SRC_LINE_STRIDE``
+   - ``0xe020``
+   - Line stride of input cube
+ * - ``D_SRC_SURFACE_STRIDE``
+   - ``0xe024``
+   - Surface stride of input cube
+ * - ``D_SRC_DMA_CFG``
+   - ``0xe028``
+   - RAM type of input data cube
+ * - ``D_SRC_COMPRESSION_EN``
+   - ``0xe02c``
+   - This register is not used in OpenDLA 1.0
+ * - ``D_OPERATION_MODE``
+   - ``0xe030``
+   - Split number
  * - ``D_DATA_FORMAT``
-   - ``0xe0bc``
-   - Data precision
- * - ``D_CVT_OFFSET``
-   - ``0xe0c0``
-   - Output converter offset
- * - ``D_CVT_SCALE``
-   - ``0xe0c4``
-   - Output converter scale
- * - ``D_CVT_SHIFT``
-   - ``0xe0c8``
-   - Output converter shifter value
- * - ``D_STATUS``
-   - ``0xe0cc``
-   - Output of equal mode
- * - ``D_STATUS_NAN_INPUT_NUM``
-   - ``0xe0d0``
-   - Input NaN element number
- * - ``D_STATUS_INF_INPUT_NUM``
-   - ``0xe0d4``
-   - Input Infinity element number
- * - ``D_STATUS_NAN_OUTPUT_NUM``
-   - ``0xe0d8``
-   - Output NaN element number
+   - ``0xe034``
+   - Input data cube
  * - ``D_PERF_ENABLE``
-   - ``0xe0dc``
+   - ``0xe038``
    - Enable/Disable performance counting
- * - ``D_PERF_WDMA_WRITE_STALL``
-   - ``0xe0e0``
-   - Count stall cycles of write DMA for one layer
- * - ``D_PERF_LUT_UFLOW``
-   - ``0xe0e4``
-   - Element number of both table underflow
- * - ``D_PERF_LUT_OFLOW``
-   - ``0xe0e8``
-   - Element number of both table overflow
- * - ``D_PERF_OUT_SATURATION``
-   - ``0xe0ec``
-   - Element number of both table saturation
- * - ``D_PERF_LUT_HYBRID``
-   - ``0xe0f0``
-   - Element number of both hit, or both miss situation that element underflow one table and at the same time overflow the other.
- * - ``D_PERF_LUT_LE_HIT``
-   - ``0xe0f4``
-   - Element number of only LE table hit
- * - ``D_PERF_LUT_LO_HIT``
-   - ``0xe0f8``
-   - Element number of only LO table hit
+ * - ``D_PERF_READ_STALL``
+   - ``0xe03c``
+   - Counting stalls of read requests
 
-PDP_RDMA
-^^^^^^^^
+CDP
+^^^
 
-.. list-table:: PDP_RDMA registers.
- :name: tab_pdp_rdma_registers
+.. list-table:: CDP registers.
+ :name: tab_cdp_registers
  :header-rows: 1
  :widths: auto
 
@@ -2440,63 +2698,144 @@ PDP_RDMA
  * - ``S_POINTER``
    - ``0xf004``
    - Pointer for CSB master and data path to access groups
- * - ``D_OP_ENABLE``
+ * - ``S_LUT_ACCESS_CFG``
    - ``0xf008``
-   - Set it to 1 to kick off operation for current register group
- * - ``D_DATA_CUBE_IN_WIDTH``
+   - LUT access address and type
+ * - ``S_LUT_ACCESS_DATA``
    - ``0xf00c``
-   - Input data cube’s width
- * - ``D_DATA_CUBE_IN_HEIGHT``
+   - Data register of read or write LUT
+ * - ``S_LUT_CFG``
    - ``0xf010``
-   - Input data cube’s height
- * - ``D_DATA_CUBE_IN_CHANNEL``
+   - LUT’s type: exponent or linear. And the selection between LE and LO tables.
+ * - ``S_LUT_INFO``
    - ``0xf014``
-   - Input data cube’s channel
- * - ``D_FLYING_MODE``
+   - LE and LO LUT index offset and selection
+ * - ``S_LUT_LE_START_LOW``
    - ``0xf018``
-   - Indicate source is SDP or external memory
- * - ``D_SRC_BASE_ADDR_LOW``
+   - Lower 32bits of start of LE LUT’s range
+ * - ``S_LUT_LE_START_HIGH``
    - ``0xf01c``
-   - Lower 32bits of input data address
- * - ``D_SRC_BASE_ADDR_HIGH``
+   - Higher 6bits of start of LE LUT’s range
+ * - ``S_LUT_LE_END_LOW``
    - ``0xf020``
-   - Higher 32bits of input data address when axi araddr is 64bits
- * - ``D_SRC_LINE_STRIDE``
+   - Lower 32bits of end of LE LUT’s range
+ * - ``S_LUT_LE_END_HIGH``
    - ``0xf024``
-   - Line stride of input cube
- * - ``D_SRC_SURFACE_STRIDE``
+   - Higher 6bits of end of LE LUT’s range
+ * - ``S_LUT_LO_START_LOW``
    - ``0xf028``
-   - Surface stride of input cube
- * - ``D_SRC_RAM_CFG``
+   - Lower 32bits of start of LO LUT’s range
+ * - ``S_LUT_LO_START_HIGH``
    - ``0xf02c``
-   - RAM type of input data cube
- * - ``D_DATA_FORMAT``
+   - Higher 6bits of start of LO LUT’s range
+ * - ``S_LUT_LO_END_LOW``
    - ``0xf030``
-   - Input data cube
- * - ``D_OPERATION_MODE_CFG``
+   - Lower 32bits of end of LO LUT’s range
+ * - ``S_LUT_LO_END_HIGH``
    - ``0xf034``
-   - Split number
- * - ``D_POOLING_KERNEL_CFG``
+   - Higher 6bits of end of LO LUT’s range
+ * - ``S_LUT_LE_SLOPE_SCALE``
    - ``0xf038``
-   - Kernel width and kernel stride
- * - ``D_POOLING_PADDING_CFG``
+   - Slope scale parameter for LE LUT underflow and overflow, signed value
+ * - ``S_LUT_LE_SLOPE_SHIFT``
    - ``0xf03c``
-   - Padding width
- * - ``D_PARTIAL_WIDTH_IN``
+   - Slope shift parameter for LE\_LUT underflow and overflow, signed value
+ * - ``S_LUT_LO_SLOPE_SCALE``
    - ``0xf040``
-   - Partial width for first, last and middle partitions
- * - ``D_PERF_ENABLE``
+   - Slope scale parameter for LO LUT underflow and overflow, signed value
+ * - ``S_LUT_LO_SLOPE_SHIFT``
    - ``0xf044``
-   - Enable/Disable performance counting
- * - ``D_PERF_READ_STALL``
+   - Slope shift parameter for LO\_LUT underflow and overflow, signed value
+ * - ``D_OP_ENABLE``
    - ``0xf048``
-   - Element number that for both LUT underflow.
+   - Set it to 1 to kick off operation for current register group
+ * - ``D_FUNC_BYPASS``
+   - ``0xf04c``
+   - Square sum process bypass control and multiplier after interpolator bypass control
+ * - ``D_DST_BASE_ADDR_LOW``
+   - ``0xf050``
+   - Lower 32bits of output data address
+ * - ``D_DST_BASE_ADDR_HIGH``
+   - ``0xf054``
+   - Higher 32bits of output data address when axi awaddr is 64bits
+ * - ``D_DST_LINE_STRIDE``
+   - ``0xf058``
+   - Line stride of output cube
+ * - ``D_DST_SURFACE_STRIDE``
+   - ``0xf05c``
+   - Surface stride of output cube
+ * - ``D_DST_DMA_CFG``
+   - ``0xf060``
+   - RAM type of output data cube
+ * - ``D_DST_COMPRESSION_EN``
+   - ``0xf064``
+   - This register is not used in OpenDLA 1.0
+ * - ``D_DATA_FORMAT``
+   - ``0xf068``
+   - Precision of input data
+ * - ``D_NAN_FLUSH_TO_ZERO``
+   - ``0xf06c``
+   - Option to flush input NaN to zero
+ * - ``D_LRN_CFG``
+   - ``0xf070``
+   - Normalization length
+ * - ``D_DATIN_OFFSET``
+   - ``0xf074``
+   - Input data convertor offset
+ * - ``D_DATIN_SCALE``
+   - ``0xf078``
+   - Input data convertor scale
+ * - ``D_DATIN_SHIFTER``
+   - ``0xf07c``
+   - Input data convertor shifter value
+ * - ``D_DATOUT_OFFSET``
+   - ``0xf080``
+   - Output data convertor offset
+ * - ``D_DATOUT_SCALE``
+   - ``0xf084``
+   - Output data convertor scale
+ * - ``D_DATOUT_SHIFTER``
+   - ``0xf088``
+   - Output data convertor shifter value
+ * - ``D_NAN_INPUT_NUM``
+   - ``0xf08c``
+   - input NaN element number
+ * - ``D_INF_INPUT_NUM``
+   - ``0xf090``
+   - input Infinity element number
+ * - ``D_NAN_OUTPUT_NUM``
+   - ``0xf094``
+   - output NaN element number
+ * - ``D_OUT_SATURATION``
+   - ``0xf098``
+   - saturated element number.
+ * - ``D_PERF_ENABLE``
+   - ``0xf09c``
+   - Enable/Disable performance counting
+ * - ``D_PERF_WRITE_STALL``
+   - ``0xf0a0``
+   - Element number that for both LUT under-flow
+ * - ``D_PERF_LUT_UFLOW``
+   - ``0xf0a4``
+   - Element number that for both LUT under-flow
+ * - ``D_PERF_LUT_OFLOW``
+   - ``0xf0a8``
+   - Element number that for both LUT over-flow
+ * - ``D_PERF_LUT_HYBRID``
+   - ``0xf0ac``
+   - Element number that for both LUT miss, one is over-flow and the other is overflow
+ * - ``D_PERF_LUT_LE_HIT``
+   - ``0xf0b0``
+   - Element number that for LE\_lut hit only
+ * - ``D_PERF_LUT_LO_HIT``
+   - ``0xf0b4``
+   - Element number that for LO\_lut hit only
 
-PDP
-^^^
+RUBIK
+^^^^^
 
-.. list-table:: PDP registers.
- :name: tab_pdp_registers
+.. list-table:: RUBIK registers.
+ :name: tab_rubik_registers
  :header-rows: 1
  :widths: auto
 
@@ -2512,414 +2851,75 @@ PDP
  * - ``D_OP_ENABLE``
    - ``0x10008``
    - Set it to 1 to kick off operation for current register group
- * - ``D_DATA_CUBE_IN_WIDTH``
-   - ``0x1000c``
-   - Input data cube’s width
- * - ``D_DATA_CUBE_IN_HEIGHT``
-   - ``0x10010``
-   - Input data cube’s height
- * - ``D_DATA_CUBE_IN_CHANNEL``
-   - ``0x10014``
-   - Input data cube’s channel
- * - ``D_DATA_CUBE_OUT_WIDTH``
-   - ``0x10018``
-   - Output data cube’s width
- * - ``D_DATA_CUBE_OUT_HEIGHT``
-   - ``0x1001c``
-   - Output data cube’s height
- * - ``D_DATA_CUBE_OUT_CHANNEL``
-   - ``0x10020``
-   - Output data cube’s channel
- * - ``D_OPERATION_MODE_CFG``
-   - ``0x10024``
-   - Split number
- * - ``D_NAN_FLUSH_TO_ZERO``
-   - ``0x10028``
-   - Option to flush input NaN to zero
- * - ``D_PARTIAL_WIDTH_IN``
-   - ``0x1002c``
-   - Partial width for first, last and middle partitions of input cube
- * - ``D_PARTIAL_WIDTH_OUT``
-   - ``0x10030``
-   - Partial width for first, last and middle partitions of output cube
- * - ``D_POOLING_KERNEL_CFG``
-   - ``0x10034``
-   - Kernel width and kernel stride
- * - ``D_RECIP_KERNEL_WIDTH``
-   - ``0x10038``
-   - Reciprocal of pooling kernel width, set to actual value \* (2^16) when INT8/INT16 format enabled. and set to actual value for fp16 precision mode with fp17 data format.
- * - ``D_RECIP_KERNEL_HEIGHT``
-   - ``0x1003c``
-   - Reciprocal of pooling kernel height, set to actual value \* (2^16) when INT8/INT16 format enabled. and set to actual value for fp16 precision mode with fp17 data format.
- * - ``D_POOLING_PADDING_CFG``
-   - ``0x10040``
-   - Left/right/top/bottom padding size
- * - ``D_POOLING_PADDING_VALUE_1_CFG``
-   - ``0x10044``
-   - Padding\_value\*1
- * - ``D_POOLING_PADDING_VALUE_2_CFG``
-   - ``0x10048``
-   - Padding\_value\*2
- * - ``D_POOLING_PADDING_VALUE_3_CFG``
-   - ``0x1004c``
-   - Padding\_value\*3
- * - ``D_POOLING_PADDING_VALUE_4_CFG``
-   - ``0x10050``
-   - Padding\_value\*4
- * - ``D_POOLING_PADDING_VALUE_5_CFG``
-   - ``0x10054``
-   - Padding\_value\*5
- * - ``D_POOLING_PADDING_VALUE_6_CFG``
-   - ``0x10058``
-   - Padding\_value\*6
- * - ``D_POOLING_PADDING_VALUE_7_CFG``
-   - ``0x1005c``
-   - Padding\_value\*7
- * - ``D_SRC_BASE_ADDR_LOW``
-   - ``0x10060``
-   - Lower 32bits of input data address
- * - ``D_SRC_BASE_ADDR_HIGH``
-   - ``0x10064``
-   - Higher 32bits of input data address when axi araddr is 64bits
- * - ``D_SRC_LINE_STRIDE``
-   - ``0x10068``
-   - Line stride of input cube
- * - ``D_SRC_SURFACE_STRIDE``
-   - ``0x1006c``
-   - Surface stride of input cube
- * - ``D_DST_BASE_ADDR_LOW``
-   - ``0x10070``
-   - Lower 32bits of output data address
- * - ``D_DST_BASE_ADDR_HIGH``
-   - ``0x10074``
-   - Higher 32bits of output data address when axi awaddr is 64bits
- * - ``D_DST_LINE_STRIDE``
-   - ``0x10078``
-   - Line stride of output cube
- * - ``D_DST_SURFACE_STRIDE``
-   - ``0x1007c``
-   - Surface stride of output cube
- * - ``D_DST_RAM_CFG``
-   - ``0x10080``
-   - RAM type of destination cube
- * - ``D_DATA_FORMAT``
-   - ``0x10084``
-   - Precision of input data
- * - ``D_INF_INPUT_NUM``
-   - ``0x10088``
-   - Input infinity element number
- * - ``D_NAN_INPUT_NUM``
-   - ``0x1008c``
-   - Input NaN element number
- * - ``D_NAN_OUTPUT_NUM``
-   - ``0x10090``
-   - Output NaN element number
- * - ``D_PERF_ENABLE``
-   - ``0x10094``
-   - Enable/disable performance counting
- * - ``D_PERF_WRITE_STALL``
-   - ``0x10098``
-   - Counting stalls of write requests
-
-CDP_RDMA
-^^^^^^^^
-
-.. list-table:: CDP_RDMA registers.
- :name: tab_cdp_rdma_registers
- :header-rows: 1
- :widths: auto
-
- * - Name
-   - Address
-   - Description
- * - ``S_STATUS``
-   - ``0x11000``
-   - Idle status of two register groups
- * - ``S_POINTER``
-   - ``0x11004``
-   - Pointer for CSB master and data path to access groups
- * - ``D_OP_ENABLE``
-   - ``0x11008``
-   - Set it to 1 to kick off operation for current register group
- * - ``D_DATA_CUBE_WIDTH``
-   - ``0x1100c``
-   - Input data cube’s width
- * - ``D_DATA_CUBE_HEIGHT``
-   - ``0x11010``
-   - Input data cube’s height
- * - ``D_DATA_CUBE_CHANNEL``
-   - ``0x11014``
-   - Input data cube’s channel
- * - ``D_SRC_BASE_ADDR_LOW``
-   - ``0x11018``
-   - Lower 32bits of input data address
- * - ``D_SRC_BASE_ADDR_HIGH``
-   - ``0x1101c``
-   - Higher 32bits of input data address when axi araddr is 64bits
- * - ``D_SRC_LINE_STRIDE``
-   - ``0x11020``
-   - Line stride of input cube
- * - ``D_SRC_SURFACE_STRIDE``
-   - ``0x11024``
-   - Surface stride of input cube
- * - ``D_SRC_DMA_CFG``
-   - ``0x11028``
-   - RAM type of input data cube
- * - ``D_SRC_COMPRESSION_EN``
-   - ``0x1102c``
-   - This register is not used in OpenDLA 1.0
- * - ``D_OPERATION_MODE``
-   - ``0x11030``
-   - Split number
- * - ``D_DATA_FORMAT``
-   - ``0x11034``
-   - Input data cube
- * - ``D_PERF_ENABLE``
-   - ``0x11038``
-   - Enable/Disable performance counting
- * - ``D_PERF_READ_STALL``
-   - ``0x1103c``
-   - Counting stalls of read requests
-
-CDP
-^^^
-
-.. list-table:: CDP registers.
- :name: tab_cdp_registers
- :header-rows: 1
- :widths: auto
-
- * - Name
-   - Address
-   - Description
- * - ``S_STATUS``
-   - ``0x12000``
-   - Idle status of two register groups
- * - ``S_POINTER``
-   - ``0x12004``
-   - Pointer for CSB master and data path to access groups
- * - ``S_LUT_ACCESS_CFG``
-   - ``0x12008``
-   - LUT access address and type
- * - ``S_LUT_ACCESS_DATA``
-   - ``0x1200c``
-   - Data register of read or write LUT
- * - ``S_LUT_CFG``
-   - ``0x12010``
-   - LUT’s type: exponent or linear. And the selection between LE and LO tables.
- * - ``S_LUT_INFO``
-   - ``0x12014``
-   - LE and LO LUT index offset and selection
- * - ``S_LUT_LE_START_LOW``
-   - ``0x12018``
-   - Lower 32bits of start of LE LUT’s range
- * - ``S_LUT_LE_START_HIGH``
-   - ``0x1201c``
-   - Higher 6bits of start of LE LUT’s range
- * - ``S_LUT_LE_END_LOW``
-   - ``0x12020``
-   - Lower 32bits of end of LE LUT’s range
- * - ``S_LUT_LE_END_HIGH``
-   - ``0x12024``
-   - Higher 6bits of end of LE LUT’s range
- * - ``S_LUT_LO_START_LOW``
-   - ``0x12028``
-   - Lower 32bits of start of LO LUT’s range
- * - ``S_LUT_LO_START_HIGH``
-   - ``0x1202c``
-   - Higher 6bits of start of LO LUT’s range
- * - ``S_LUT_LO_END_LOW``
-   - ``0x12030``
-   - Lower 32bits of end of LO LUT’s range
- * - ``S_LUT_LO_END_HIGH``
-   - ``0x12034``
-   - Higher 6bits of end of LO LUT’s range
- * - ``S_LUT_LE_SLOPE_SCALE``
-   - ``0x12038``
-   - Slope scale parameter for LE LUT underflow and overflow, signed value
- * - ``S_LUT_LE_SLOPE_SHIFT``
-   - ``0x1203c``
-   - Slope shift parameter for LE\_LUT underflow and overflow, signed value
- * - ``S_LUT_LO_SLOPE_SCALE``
-   - ``0x12040``
-   - Slope scale parameter for LO LUT underflow and overflow, signed value
- * - ``S_LUT_LO_SLOPE_SHIFT``
-   - ``0x12044``
-   - Slope shift parameter for LO\_LUT underflow and overflow, signed value
- * - ``D_OP_ENABLE``
-   - ``0x12048``
-   - Set it to 1 to kick off operation for current register group
- * - ``D_FUNC_BYPASS``
-   - ``0x1204c``
-   - Square sum process bypass control and multiplier after interpolator bypass control
- * - ``D_DST_BASE_ADDR_LOW``
-   - ``0x12050``
-   - Lower 32bits of output data address
- * - ``D_DST_BASE_ADDR_HIGH``
-   - ``0x12054``
-   - Higher 32bits of output data address when axi awaddr is 64bits
- * - ``D_DST_LINE_STRIDE``
-   - ``0x12058``
-   - Line stride of output cube
- * - ``D_DST_SURFACE_STRIDE``
-   - ``0x1205c``
-   - Surface stride of output cube
- * - ``D_DST_DMA_CFG``
-   - ``0x12060``
-   - RAM type of output data cube
- * - ``D_DST_COMPRESSION_EN``
-   - ``0x12064``
-   - This register is not used in OpenDLA 1.0
- * - ``D_DATA_FORMAT``
-   - ``0x12068``
-   - Precision of input data
- * - ``D_NAN_FLUSH_TO_ZERO``
-   - ``0x1206c``
-   - Option to flush input NaN to zero
- * - ``D_LRN_CFG``
-   - ``0x12070``
-   - Normalization length
- * - ``D_DATIN_OFFSET``
-   - ``0x12074``
-   - Input data convertor offset
- * - ``D_DATIN_SCALE``
-   - ``0x12078``
-   - Input data convertor scale
- * - ``D_DATIN_SHIFTER``
-   - ``0x1207c``
-   - Input data convertor shifter value
- * - ``D_DATOUT_OFFSET``
-   - ``0x12080``
-   - Output data convertor offset
- * - ``D_DATOUT_SCALE``
-   - ``0x12084``
-   - Output data convertor scale
- * - ``D_DATOUT_SHIFTER``
-   - ``0x12088``
-   - Output data convertor shifter value
- * - ``D_NAN_INPUT_NUM``
-   - ``0x1208c``
-   - input NaN element number
- * - ``D_INF_INPUT_NUM``
-   - ``0x12090``
-   - input Infinity element number
- * - ``D_NAN_OUTPUT_NUM``
-   - ``0x12094``
-   - output NaN element number
- * - ``D_OUT_SATURATION``
-   - ``0x12098``
-   - saturated element number.
- * - ``D_PERF_ENABLE``
-   - ``0x1209c``
-   - Enable/Disable performance counting
- * - ``D_PERF_WRITE_STALL``
-   - ``0x120a0``
-   - Element number that for both LUT under-flow
- * - ``D_PERF_LUT_UFLOW``
-   - ``0x120a4``
-   - Element number that for both LUT under-flow
- * - ``D_PERF_LUT_OFLOW``
-   - ``0x120a8``
-   - Element number that for both LUT over-flow
- * - ``D_PERF_LUT_HYBRID``
-   - ``0x120ac``
-   - Element number that for both LUT miss, one is over-flow and the other is overflow
- * - ``D_PERF_LUT_LE_HIT``
-   - ``0x120b0``
-   - Element number that for LE\_lut hit only
- * - ``D_PERF_LUT_LO_HIT``
-   - ``0x120b4``
-   - Element number that for LO\_lut hit only
-
-RUBIK
-^^^^^
-
-.. list-table:: RUBIK registers.
- :name: tab_rubik_registers
- :header-rows: 1
- :widths: auto
-
- * - Name
-   - Address
-   - Description
- * - ``S_STATUS``
-   - ``0x13000``
-   - Idle status of two register groups
- * - ``S_POINTER``
-   - ``0x13004``
-   - Pointer for CSB master and data path to access groups
- * - ``D_OP_ENABLE``
-   - ``0x13008``
-   - Set it to 1 to kick off operation for current register group
  * - ``D_MISC_CFG``
-   - ``0x1300c``
+   - ``0x1000c``
    - Operation mode and precision
  * - ``D_DAIN_RAM_TYPE``
-   - ``0x13010``
+   - ``0x10010``
    - RAM type of input cube
  * - ``D_DATAIN_SIZE_0``
-   - ``0x13014``
+   - ``0x10014``
    - Input data cube’s width and height
  * - ``D_DATAIN_SIZE_1``
-   - ``0x13018``
+   - ``0x10018``
    - Input data cube’s channel
  * - ``D_DAIN_ADDR_HIGH``
-   - ``0x1301c``
+   - ``0x1001c``
    - Higher 32bits of input data address when axi araddr is 64bits
  * - ``D_DAIN_ADDR_LOW``
-   - ``0x13020``
+   - ``0x10020``
    - Lower 32bits of input data address
  * - ``D_DAIN_LINE_STRIDE``
-   - ``0x13024``
+   - ``0x10024``
    - Line stride of input data cube
  * - ``D_DAIN_SURF_STRIDE``
-   - ``0x13028``
+   - ``0x10028``
    - Surface stride of input data cube
  * - ``D_DAIN_PLANAR_STRIDE``
-   - ``0x1302c``
+   - ``0x1002c``
    - Input data planar stride, for merge mode only
  * - ``D_DAOUT_RAM_TYPE``
-   - ``0x13030``
+   - ``0x10030``
    - RAM type of output cube
  * - ``D_DATAOUT_SIZE_1``
-   - ``0x13034``
+   - ``0x10034``
    - Output data cube’s channel
  * - ``D_DAOUT_ADDR_HIGH``
-   - ``0x13038``
+   - ``0x10038``
    - Higher 32bits of output data address when axi awaddr is 64bits
  * - ``D_DAOUT_ADDR_LOW``
-   - ``0x1303c``
+   - ``0x1003c``
    - Lower 32bits of output data address
  * - ``D_DAOUT_LINE_STRIDE``
-   - ``0x13040``
+   - ``0x10040``
    - Line stride of output data cube
  * - ``D_CONTRACT_STRIDE_0``
-   - ``0x13044``
+   - ``0x10044``
    - Input stride for each X step.
      
      Equals to (DATAOUT\_CHANNEL+1) \* BPE / 32 \* DAIN\_SURF\_STRIDE
      
      (BPE = (IN\_PRECISION == INT8) ? 1 : 2;)
  * - ``D_CONTRACT_STRIDE_1``
-   - ``0x13048``
+   - ``0x10048``
    - Output stride corresponding to each line in input cube.
    
      equals to (DECONV\_Y\_STRIDE+1) \* DAOUT\_LINE\_STRIDE
  * - ``D_DAOUT_SURF_STRIDE``
-   - ``0x1304c``
+   - ``0x1004c``
    - Surface stride of output data cube
  * - ``D_DAOUT_PLANAR_STRIDE``
-   - ``0x13050``
+   - ``0x10050``
    - Output data planar stride, for split mode only
  * - ``D_DECONV_STRIDE``
-   - ``0x13054``
+   - ``0x10054``
    - Deconvolution x stride and y stride
  * - ``D_PERF_ENABLE``
-   - ``0x13058``
+   - ``0x10058``
    - Enable/Disable performance counting
  * - ``D_PERF_READ_STALL``
-   - ``0x1305c``
+   - ``0x1005c``
    - RD\_STALL Count stall cycles of read DMA for one layer
  * - ``D_PERF_WRITE_STALL``
-   - ``0x13060``
+   - ``0x10060``
    - WR\_STALL Count stall cycles of write DMA for one layer
