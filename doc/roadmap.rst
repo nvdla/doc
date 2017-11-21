@@ -36,7 +36,7 @@ All items listed below have been uploaded to the NVDLA GitHub repository.
      - Hardware
      - Software
    * - Conceptual Overview
-     - Large Config Verilog RTL, early access
+     - Full-precision Config Verilog RTL, early access
      - Performance Estimator Tool
    * - Hardware Architecture
      - Reference testbench and traces
@@ -58,7 +58,7 @@ All items listed below have been uploaded to the NVDLA GitHub repository.
 
 The second set of deliverables will add many of the tools that are needed for full system simulation. A C-model has the performance to run full networks and during this period we will also add drivers, a test application, and compilers to map any network to NVDLA. 
 
-Whereas the large configuration of NVDLA was mostly focussed on performance and features, the second and small configuration will demonstrate low power and small area. 
+Whereas the full-precision configuration of NVDLA was mostly focussed on performance and features, the second and small configuration will demonstrate low power and small area. 
 
 |
 
@@ -70,7 +70,7 @@ Whereas the large configuration of NVDLA was mostly focussed on performance and 
      - Hardware
      - Software
    * - Software Porting Guide
-     - Large config Verilog RTL released
+     - Full-precision config Verilog RTL released
      - Linux Kernel Mode Driver source
    * - 
      - Small config Verilog RTL, early access

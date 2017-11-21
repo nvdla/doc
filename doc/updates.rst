@@ -3,7 +3,20 @@
 Open NVDLA Repository Updates
 *****************************
 
-This document is a quick reference guide to changes in the NVDLA repository. Most recent updates are at the top of the document.  Detailed information can be obtained from the GIT list of commits.  
+This document is a quick reference guide to changes in the NVDLA repository. Most recent updates are at the top of the document.  Detailed information can be obtained from the ``git`` list of commits.  
+
+11/21/2017
+==========
+
+A few updates in the nvdla hardware tree, most notably moving further
+development on the non-configurable NVDLA implementation to its own stable
+branch, ``nvdlav1``, and renaming the full-precision non-configurable
+implementation to ``nv_full``.  The ``master`` branch, from now on, will
+contain potentially-destabilizing ongoing effort for a configurable NVDLA. 
+Note that the default branch has changed, and users may wish to modify which
+upstream branch they are tracking.
+
+This release includes bugfixes for Xilinx Vivado and Mentor Questa simulators.
 
 11/1/2017
 =========

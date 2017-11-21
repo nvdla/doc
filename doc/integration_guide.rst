@@ -210,8 +210,9 @@ Tree Build
 The NVDLA repository supports the build of multiple configurations based on a feature
 specification file.  Each configuration of the NVDLA is defined by a spec file in
 he hw/spec/defs directory.  The filename is the name of the configuration with a ".spec"
-exension.  There are currently two spec files included: "nv_large" which has 2048 INT8 MAC's,
-and "nv_small" which has 64 INT8 MAC's plus some other reductions.  
+exension.  For the configurable release, there are currently two spec files included: "nv_large" which has 2048 INT8 MAC's,
+and "nv_small" which has 64 INT8 MAC's plus some other reductions; the non-configurable
+release has a single spec file, "nv_full", which has 2048 multi-precision MAC units.
 
 The file hw/tree.make specifies a list of configurations to build, as well as paths to tools
 required for building the configured RTL.  To create an initial version of this file, run the
@@ -235,6 +236,32 @@ regression::
 
  ./tools/bin/tmake -build verif_sim
 
+Version control usage
+---------------------
+
+NVDLA is developed in Git, on multiple branches.  It is important to use the
+correct branch to track the development work that is desired.  Currently,
+the following two branches exist:
+
+* ``nvdlav1``: This is the default branch for any new clones of the NVDLA
+  repository from November 21st, 2017, on.  The ``nvdlav1`` branch contains
+  sustaining support work around the non-configurable, full-precision
+  version of NVDLAv1 ("nv_full").  New RTL features will not be added to the
+  ``nvdlav1`` branch, though bug fixes may appear, as may new verification
+  features.  Users who desire a stable version of NVDLA may prefer to choose
+  the ``nvdlav1`` branch.
+
+* ``master``: This branch contains ongoing development work on the NVDLA
+  RTL, including work towards multiple configurations and additional feature
+  development.  This branch is expected to pass "sanity" tests, but may not
+  always be tapeout-quality.  Infrastructure in this branch may change
+  rapidly.  Users who desire the most up-to-date view of NVDLA development
+  may prefer to choose the ``master`` branch.  The ``master`` branch was the
+  default for clones made before November 21st, 2017.
+
+Note that the ``nvdlav1`` branch's history will diverge from the ``master``
+branch; the ``master`` branch will not be a strict superset of the
+``nvdlav1`` branch.
 
 .. _performance_model:
 
