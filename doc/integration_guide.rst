@@ -201,6 +201,8 @@ below.  The versions listed are used for testing.
 * Java - jdk1.7
 * Perl - perl-5.8.8
 * CPP - gcc-4.0
+* Python - python2.6
+* SystemC systemc-2.3
 
 .. _tree_build:
 
