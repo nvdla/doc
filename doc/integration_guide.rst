@@ -200,9 +200,9 @@ below.  The versions listed are used for testing.
 
 * Java - jdk1.7
 * Perl - perl-5.8.8
-* CPP - gcc-4.0
+* CPP - gcc-4.9.3
 * Python - python2.6
-* SystemC systemc-2.3
+* SystemC - systemc-2.3
 
 .. _tree_build:
 
@@ -237,6 +237,13 @@ document :ref:`testbench`, the following command can be used to launch the short
 regression::
 
  ./tools/bin/tmake -build verif_sim
+
+Additionally, there is a tmake target for the Cmodel of NVDLA, which lives
+in the ``cmod/`` directory.  If building the Virtual Platform, or another
+application that uses the NVDLA Cmodel, the following command will build it
+and install it into ``outdir/nv_full/cmod/release``:
+
+ ./tools/bin/tmake -build cmod_top
 
 Version control usage
 ---------------------
