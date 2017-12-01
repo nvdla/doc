@@ -202,7 +202,13 @@ below.  The versions listed are used for testing.
 * Perl - perl-5.8.8
 * CPP - gcc-4.9.3
 * Python - python2.6
-* SystemC - systemc-2.3
+* SystemC - systemc-2.3.0
+
+.. warning::
+  NVDLA requires the exact SystemC version specified (2.3.0).  Despite the
+  subminor version change, 2.3.1 and 2.3.2 have compatibility issues with
+  NVDLA, including issues with hierarchical binding, and the NVDLA Cmodel
+  will fail at runtime when compiled with those versions.
 
 .. _tree_build:
 
