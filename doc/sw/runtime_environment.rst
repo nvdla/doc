@@ -30,60 +30,88 @@ User Mode Driver
 
 UMD provides standard :ref:`umd_api` (API) for processing loadable images, binding input and output tensors to memory locations, and submitting inference jobs to KMD. This layer loads the network into memory in a defined set of data structures, and passes it to the KMD in an implementation-defined fashion. On Linux, for instance, this could be an ``ioctl()``, passing data from the user-mode driver to the kernel-mode driver; on a single-process system in which the KMD runs in the same environment as the UMD, this could be a simple function call. Low-level functions are implemented in :ref:`user_mode_driver`
 
+^^^^^
+
 .. _umd_api:
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Application Programming Interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-NVDLA namespace
----------------
-
-.. cpp:namespace:: nvdla
-
-.. cpp:type:: NvError
-
-   Enum for error codes
+|
 
 Runtime Interface
 -----------------
 
-This is the interface for runtime library. It implements functions to process loadable buffer passed from application after reding it from file, allocate memory for tensors and intermediate buffers, prepare synchronization points and finally submit inference job to KMD. Inference job submitted to KMD is referred as DLA task.
+    This is the interface for runtime library. It implements functions to process loadable buffer passed from application after reding it from file, allocate memory for tensors and intermediate buffers, prepare synchronization points and finally submit inference job to KMD. Inference job submitted to KMD is referred as DLA task.
+
+.. cpp:namespace:: nvdla
 
 .. cpp:class:: nvdla::IRuntime
 
-   Runtime interface
 
-.. cpp:function:: nvdla::IRuntime* nvdla::createRuntime()
+Submitting task for inference using runtime interface includes below steps
 
-   Create runtime instance
+#. :ref:`create_runtime_instance`
+#. :ref:`device_information`
+#. :ref:`load_network`
+#. :ref:`tensor_information`
+#. :ref:`update_tensors`
+#. :ref:`allocate_memory`
+#. :ref:`bind_tensor`
+#. :ref:`submit_task`
+#. :ref:`unload_network`
 
-   :returns: IRuntime object
+|
 
-**Device information**
+.. _create_runtime_instance:
 
-.. cpp:function:: int nvdla::IRuntime::getMaxDevices()
+Create NVDLA runtime instance
+-----------------------------
+
+.. cpp:function:: IRuntime* nvdla::createRuntime()
+
+:returns: IRuntime object
+
+|
+
+.. _device_information:
+
+Get NVDLA device information
+----------------------------
+
+.. cpp:function:: NvU16 nvdla::IRuntime::getMaxDevices()
 
    Get maximum number of device supported by HW configuration. Runtime driver supports submitting inference jobs to  multiple DLA devices. User application can select device to use. One task can't splitted across devices but one task can be submitted to only one devices.
 
    :returns: Maximum number of devices supported
 
-.. cpp:function:: int nvdla::IRuntime::getNumDevices()
+.. cpp:function:: NvU16 nvdla::IRuntime::getNumDevices()
 
    Get number of available devices from the maximum number of devices supported by HW configuration.
 
    :returns: Number of available devices
 
-**Loading NVDLA loadable image**
+|
 
-.. cpp:function:: NvError nvdla::IRuntime::load(const NvU8 *buf)
+.. _load_network:
+
+Load network data
+-----------------
+
+.. cpp:function:: NvError nvdla::IRuntime::load(const NvU8 *buf, int instance)
 
    Parse loadable from buffer and update ILoadable with information required to create task
 
    :param buf: Loadable image buffer
+   :param instance: Device instance to load this network
    :returns: :cpp:type:`NvError`
 
-**Input tensors**
+|
+
+.. _tensor_information:
+
+Get input and output tensors information
+----------------------------------------
 
 .. cpp:function:: NvError nvdla::IRuntime::getNumInputTensors(int *input_tensors)
 
@@ -92,23 +120,13 @@ This is the interface for runtime library. It implements functions to process lo
    :param input_tensors: Pointer to update number of input tensors value
    :returns: :cpp:type:`NvError`
 
-.. cpp:function:: NvError nvdla::IRuntime::getInputTensorDesc(int id, nvdla::ILoadable::TensorDescListEntry *tensors)
+.. cpp:function:: NvError nvdla::IRuntime::getInputTensorDesc(int id, NvDlaTensor *tensors)
 
    Get network's input tensor descriptor
 
    :param id: Tensor ID
    :param tensors: Tensor descriptor
    :returns: :cpp:type:`NvError`
-
-.. cpp:function:: NvError nvdla::IRuntime::setInputTensorDesc(int id, const nvdla::ILoadable::TensorDescListEntry *tensors)
-
-   Set network's input tensor descriptor
-
-   :param id: Tensor ID
-   :param tensors: Tensor descriptor
-   :returns: :cpp:type:`NvError`
-
-**Output tensors**
 
 .. cpp:function:: NvError nvdla::IRuntime::getNumOutputTensors(int *output_tensors)
 
@@ -117,7 +135,7 @@ This is the interface for runtime library. It implements functions to process lo
    :param output_tensors: Pointer to update number of output tensors value
    :returns: :cpp:type:`NvError`
 
-.. cpp:function:: NvError nvdla::IRuntime::getOutputTensorDesc(int id, nvdla::ILoadable::TensorDescListEntry *tensors)
+.. cpp:function:: NvError nvdla::IRuntime::getOutputTensorDesc(int id, NvDlaTensor *tensors)
 
    Get network's output tensor descriptor
 
@@ -125,7 +143,25 @@ This is the interface for runtime library. It implements functions to process lo
    :param tensors: Tensor descriptor
    :returns: :cpp:type:`NvError`
 
-.. cpp:function:: NvError nvdla::IRuntime::setOutputTensorDesc(int id, const nvdla::ILoadable::TensorDescListEntry *)
+|
+
+.. _update_tensors:
+
+Update input and output tensors information
+-------------------------------------------
+
+.. note:: Required only if tensor information is changed, not all parameters can be changed
+
+.. cpp:function:: NvError nvdla::IRuntime::setInputTensorDesc(int id, const NvDlaTensor *tensors)
+
+   Set network's input tensor descriptor
+
+   :param id: Tensor ID
+   :param tensors: Tensor descriptor
+   :returns: :cpp:type:`NvError`
+
+
+.. cpp:function:: NvError nvdla::IRuntime::setOutputTensorDesc(int id, const NvDlaTensor *tensors)
 
    Set network's output tensor descriptor
 
@@ -133,25 +169,51 @@ This is the interface for runtime library. It implements functions to process lo
    :param tensors: Tensor descriptor
    :returns: :cpp:type:`NvError`
 
-**Binding tensors**
+|
 
-.. cpp:function:: NvError nvdla::IRuntime::bindInputTensor(int id, NvDlaMemHandle hMem)
+.. _allocate_memory:
+
+Allocate memory for input and output tensors
+--------------------------------------------
+
+.. cpp:function:: NvDlaError allocateSystemMemory(void **h_mem, NvU64 size, void **pData)
+
+    Allocate DMA memory accessible by NVDLA for input and output tensors.
+
+    :param h_mem: void pointer to store memory handle address
+    :param size: Size of memory to allocate
+    :param pData: Virtual address for allocated memory
+    :returns: :cpp:type:`NvError`
+
+|
+
+.. _bind_tensor:
+
+Bind memory handle with tensor
+------------------------------
+
+.. cpp:function:: NvError nvdla::IRuntime::bindInputTensor(int id, void *hMem)
 
    Bind network's input tensor to memory handle
 
    :param id: Tensor ID
-   :param hMem: DLA memory handle returned by :c:func:`NvDlaGetMem`
+   :param hMem: DLA memory handle returned by :c:func:`allocateSystemMemory`
    :returns: :cpp:type:`NvError`
 
-.. cpp:function:: NvError nvdla::IRuntime::bindOutputTensor(int id, NvDlaMemHandle hMem)
+.. cpp:function:: NvError nvdla::IRuntime::bindOutputTensor(int id, void *hMem)
 
    Bind network's output tensor to memory handle
 
    :param id: Tensor ID
-   :param hMem: DLA memory handle returned by :c:func:`NvDlaGetMem`
+   :param hMem: DLA memory handle returned by :c:func:`allocateSystemMemory`
    :returns: :cpp:type:`NvError`
 
-**Running inference**
+|
+
+.. _submit_task:
+
+Submit task for inference
+-------------------------
 
 .. cpp:function:: NvError nvdla::IRuntime::submit()
 
@@ -159,66 +221,21 @@ This is the interface for runtime library. It implements functions to process lo
 
    :returns: :cpp:type:`NvError`
 
-.. cpp:function:: NvError nvdla::IRuntime::submitNonBlocking(std::vector<ISync *> *outputSyncs)
+.. _unload_network:
 
-   Submit non-blocking task for inference
+Unload network resources
+------------------------
 
-   :param outputSyncs: List of output ISync objects
+.. cpp:function:: NvError nvdla::IRuntime::unload(int instance)
+
+   Unload network data, free all resourced used for network if no plan to submit inference using same network
+
+   :param instance: Device instance from where to unload
    :returns: :cpp:type:`NvError`
 
-Sync Interface
---------------
+|
 
-Sync interface is used to synchronize between inference tasks. Software implementation can add more synchronization primitives of choice to the ISync wrapper.
-
-.. cpp:class:: nvdla::ISync
-
-   Sync interface
-
-.. cpp:function:: NvError wait(NvU32 timeout)
-
-   Blocks the caller until ISync object has signaled, or the timeout expires
-
-   :param timeout: timeout The timeout value, in milliseconds
-   :returns: :cpp:type:`NvError`
-
-.. cpp:function:: NvError signal()
-
-   Requests the ISync object to be signaled
-
-   :returns: :cpp:type:`NvError`
-
-.. cpp:function:: NvError nvdla::ISync::setWaitValue(NvU32 val)
-
-   Set the comparison value for determining synchronization
-
-   :param val: Comparison value to set
-   :returns: :c:type:`NvError`
-
-.. cpp:function:: NvError nvdla::ISync::getWaitValue(NvU32 *val) const
-
-   Get the comparison value for determining synchronization
-
-   :param val: Pointer to read wait value
-   :returns: :c:type:`NvError`
-
-.. cpp:function:: NvError nvdla::ISync::getValue(NvU32 *val) const
-
-   Get the current value of the semaphore
-
-   :param val: Pointer to read current value
-   :returns: :c:type:`NvError`
-
-Loadable Interface
-------------------
-
-Loadable contains compiled network and model data converted to DLA format. This interface implements functions to read data from loaded image.
-
-.. cpp:class:: nvdla::ILoadable
-
-   Loadable interface
-
-.. cpp:class:: nvdla::ILoadable::TensorDescListEntry
+-------------
 
 .. _umd_layer:
 
@@ -226,126 +243,86 @@ Loadable contains compiled network and model data converted to DLA format. This 
 Portability layer
 ^^^^^^^^^^^^^^^^^
 
-.. c:type:: NvDlaEngineSelect
+    Portability layer for UMD implements functions to access NVDLA device, allocate DMA memory and submit task to low level driver. For this functionality UMD has to communicate with KMD and the communication interface is OS dependent. Portability layer abstracts this OS dependent interface.
 
-   Implementation defined enum to select device instance if there are multiple DLA devices
-
-.. c:type:: NvDlaHandle
-
-   Implementation defined handle used to communicate with portability layer from Runtime driver. :c:func:`NvDlaOpen` allocates this handle and returns to Runtime driver.
-
-.. c:type:: NvDlaMemHandle
-
-   Implementation defined memory handle used for memory operations implemented by portability layer. :c:func:`NvDlaGetMem` allocates and returns this handle to runtime driver for future operation on memory buffer allocated
-
-.. c:type:: NvDlaTask
-
-   DLA task structure. Runtime driver populates it using information from loadable and is used by portability layer to submit inference task to KMD in an implementation define manner.
-
-.. c:type:: NvDlaFence
-
-   Implementation defined sync object descriptor. It is populated by runtime driver in ISync implementation. This object is used by portability layer to send sync object information to KMD.
-
-.. c:type:: NvDlaTaskStatus
-
-   Task status structure used to report the task status to runtime.
-
-.. c:type:: NvDlaHeap
-
-   Implementation defined enum for memory heaps supported by the system.
 
 .. c:type:: NvError
 
    Enum for error codes
 
-.. c:function:: NvError NvDlaOpen(NvDlaEngineSelect DlaSelect, NvDlaHandle *phDla)
+.. c:type:: NvDlaHeap
 
-   This API should initialize portability layer which includes opening DLA device instance, allocating required structures, initializing session. It is implementation defined how integrator wants to implement portability layer. It should allocate NvDlaHandle and update phDla with it. This handle will be used for any future requests to portability layer for this session such as memory allocation, memory mapping or submit inference job.
+   Memory heap to allocate memory, NVDLA supports two memory interfaces. Generally these interfaces are connected to DRAM (System memory) and internal SRAM. KMD can maintain separate heaps for allocation depending on memory type.
 
-   :param DlaSelect: Engine to initialize
-   :param phDla: DLA handle updated if initializaton is successful
+.. c:type:: NvDlaMemDesc
+
+   Memory descriptor, it includes memory handle and buffer size.
+
+.. c:type:: NvDlaTask
+
+   DLA task structure. Runtime driver populates it using information from loadable and is used by portability layer to submit inference task to KMD in an implementation define manner.
+
+.. c:function:: NvError NvDlaInitialize(void **session_handle)
+
+   This API should initialize session for portability layer which may include allocating some structure required to maintain information such such device context, file descriptors. This function can be empty.
+
+   :param [out] session_handle: Pointer to update session handle address. This address is passed in any APIs called after this which can be used by portability layer to recover session information.
    :returns: :c:type:`NvError`
 
-.. c:function:: void NvDlaClose(NvDlaHandle hDla)
+.. c:function:: void NvDlaDestroy(void *session_handle)
+
+   Release all session resources
+
+   :param session_handle: Session handle address obtained from :c:func:`NvDlaInitialize`
+
+.. c:function:: NvError NvDlaOpen(void *session_handle, NvU32 instance, void **device_handle)
+
+   This API should open DLA device instance. .
+
+   :param session_handle: Session handle address obtained from :c:func:`NvDlaInitialize`
+   :param instance: NVDLA instance to use if there are more than one instances in SoC
+   :param [out] device_handle: Pointer to update device context. It is used to obtain device information required for further callbacks which need device context.
+   :returns: :c:type:`NvError`
+
+.. c:function:: void NvDlaClose(void *session_handle, void *device_handle)
 
    Close DLA device instance
 
-   :param hDla: DLA handle returned by :c:func:`NvDlaOpen`
+   :param session_handle: Session handle address obtained from :c:func:`NvDlaInitialize`
+   :param device_handle: Device handle address obtained from :c:func:`NvDlaOpen`
 
-.. c:function:: NvError NvDlaSubmit(NvDlaHandle hDla, NvDlaTask *tasks, NvU32 num_tasks)
+.. c:function:: NvError NvDlaSubmit(void *session_handle, void *device_handle, NvDlaTask *tasks, NvU32 num_tasks)
 
    Submit inference task to KMD
 
-   :param hDla: DLA handle returned by :c:func:`NvDlaOpen`
+   :param session_handle: Session handle address obtained from :c:func:`NvDlaInitialize`
+   :param device_handle: Device handle address obtained from :c:func:`NvDlaOpen`
    :param tasks: Lists of tasks to submit for inferencing
    :param num_tasks: Number of tasks to submit
    :returns: :c:type:`NvError`
 
-.. c:function:: NvError NvDlaGetMem(NvDlaHandle hDla, NvDlaMemHandle *handle, void **pData, NvU32 size, NvDlaHeap heap, NvU32 flags)
+.. c:function:: NvError NvDlaAllocMem(void *session_handle, void *device_handle, void **mem_handle, void **pData, NvU32 size, NvDlaHeap heap)
 
    Allocate, pin and map DLA engine accessible memory. For example, in case of systems where DLA is behind IOMMU then this call should ensure that IOMMU mappings are created for this memory. In case of Linux, internal implementation can use readily available frameworks such as ION for this.
 
-   :param hDla: DLA handle returned by :c:func:`NvDlaOpen`
-   :param [out] handle: Memory handle updated by this function
+   :param session_handle: Session handle address obtained from :c:func:`NvDlaInitialize`
+   :param device_handle: Device handle address obtained from :c:func:`NvDlaOpen`
+   :param [out] mem_handle: Memory handle updated by this function
    :param size: Size of buffer to allocate
    :param pData: If the allocation and mapping is successful, provides a virtual address through which the memory buffer can be accessed.
    :param heap: Implementation defined memory heap selection
-   :param flags: Implementation defined
    :returns: :c:type:`NvError`
 
-.. c:function:: NvError NvDlaFreeMem(NvDlaHandle hDla, NvDlaMemHandle handle, void *pData, NvU32 size)
+.. c:function:: NvError NvDlaFreeMem(void *session_handle, void *device_handle, void *mem_handle, void *pData, NvU32 size)
 
-   Free DMA memory allocated using :c:func:`NvDlaGetMem`
+   Free DMA memory allocated using :c:func:`NvDlaAllocMem`
 
-   :param hDla: DLA handle returned by :c:func:`NvDlaOpen`
-   :param handle: Memory handle returned by :c:func:`NvDlaGetMem`
-   :param pData: Virtual address returned by :c:func:`NvDlaGetMem`
+   :param session_handle: Session handle address obtained from :c:func:`NvDlaInitialize`
+   :param device_handle: Device handle address obtained from :c:func:`NvDlaOpen`
+   :param mem_handle: Memory handle address obtained from :c:func:`NvDlaAllocMem`
+   :param pData: Virtual address returned by :c:func:`NvDlaAllocMem`
    :param size: Size of the buffer allocated
    :returns: :c:type:`NvError`
-
-.. c:function:: NvError NvDlaMemMap(NvDlaMemHandle hMem, NvU32 Offset, NvU32 Size, NvU32 Flags, void **pVirtAddr)
-
-   Attempts to map a memory buffer into the process's virtual address space.
-
-   :param hMem: A memory handle returned from :c:func:`NvDlaGetMem`
-   :param Offset: Byte offset within the memory buffer to start the map at.
-   :param Size: Size in bytes of mapping requested.  Must be greater than 0.
-   :param Flags: Implementation defined
-   :param pVirtAddr: If the mapping is successful, provides a virtual address through which the memory buffer can be accessed.
-   :returns: :c:type:`NvError`
-
-.. c:function:: void NvDlaMemUnmap(NvDlaMemHandle hMem, void *pVirtAddr, NvU32 length)
-
-   Unmaps a memory buffer from the process's virtual address space.
-
-   :param hMem: A memory handle returned from :c:func:`NvDlaGetMem`
-   :param pVirtAddr: The virtual address returned by a previous call to :c:func:`NvDlaMemMap` with hMem.
-   :param length: The size in bytes of the mapped region. Must be the same as the size value originally passed to :c:func:`NvDlaMemMap`.
-
-.. c:function:: void NvDlaMemRead(NvDlaMemHandle hMem, NvU32 Offset, void *pDst, NvU32 Size)
-
-   Reads a block of data from a buffer.
-
-   :param hMem: A memory handle returned from :c:func:`NvDlaGetMem`
-   :param Offset: Byte offset relative to the base of hMem.
-   :param pDst: The buffer where the data should be placed.
-   :param Size: The number of bytes of data to be read.
-
-.. c:function:: void NvDlaMemWrite(NvDlaMemHandle hMem, NvU32 Offset, const void *pSrc, NvU32 Size)
-
-   Writes a block of data to a buffer
-
-   :param hMem: A memory handle returned from :c:func:`NvDlaGetMem`
-   :param Offset: Byte offset relative to the base of hMem.
-   :param pSrc: The buffer to obtain the data from.
-   :param Size: The number of bytes of data to be written.
-
-.. c:function:: NvU64 NvDlaMemGetSize(NvDlaMemHandle hMem)
-
-   Get the size of the buffer associated with a memory handle
-
-   :param hMem: A memory handle returned from :c:func:`NvDlaGetMem`
-   :returns: Size in bytes of memory allocated for this handle or 0 in case of error.
 
 .. c:function:: void NvDlaDebugPrintf(const char *format, ...)
 
@@ -353,29 +330,7 @@ Portability layer
 
    :param format: A pointer to the format string
 
-.. c:function:: void *NvDlaAlloc(size_t size)
-
-   Dynamically allocates memory. Alignment, if desired, must be done by the caller.
-
-   :param size: The size of the memory to allocate
-
-.. c:function:: void NvDlaFree(void *ptr)
-
-   Frees a dynamic memory allocation. Freeing a null value is okay
-
-   :param ptr: A pointer to the memory to free, which should be from :c:func:`NvDlaAlloc`.
-
-.. c:function:: void NvDlaSleepMS(NvU32 msec)
-
-   Unschedule calling thread for at least the given number of milliseconds. Other threads may run during the sleep time.
-
-   :param msec: The number of milliseconds to sleep.
-
-.. c:function:: NvU32 NvDlaGetTimeMS(void)
-
-   Return the system time in milliseconds. The returned values are guaranteed to be monotonically increasing, but may wrap back to zero (after about 50 days of runtime). In some systems, this is the number of milliseconds since power-on, or may actually be an accurate date.
-
-   :returns: System time in milliseconds
+|
 
 .. _kernel_mode_driver:
 
@@ -393,65 +348,122 @@ The KMD main entry point receives an inference job in memory, selects from multi
     :scale: 70%
     :align: center
 
-^^^^^^^^^
-Interface
-^^^^^^^^^
+.. _kmd_interface:
+
+^^^^^^^^^^^^^^^^^^^^^
+Core Engine Interface
+^^^^^^^^^^^^^^^^^^^^^
+
+   Neural networks are converted to hardware layers for execution on DLA hardware. These layers are connected to each other using dependency graph and executed on DLA by module known as engine scheduler. This scheduler is responsible for updating dependency counts, handling events and programming hardware layers. It is the core module of DLA software and portable across different OS. Portability layer should use below interfaces to enable core engine module. Core engine module is also referenced as firmware as same source code would be used in firmware of companion controller for headed configs.
+
+
+General sequence of execution in KMD is as below
+
+#. :ref:`register_driver`
+#. :ref:`task_execute`
+#. :ref:`driver_interface`
+#. :ref:`isr_handler`
+#. :ref:`bottom_half`
+#. :ref:`clean_task`
+
+|
+
+
+.. _register_driver:
+
+Register driver with firmware during probe
+------------------------------------------
+
+.. c:function:: int32_t dla_register_driver(void **engine_context, void *driver_context)
+
+    This function must be called once during boot to initialize DLA engine scheduler and register driver with firmware before submitting any task. Pass pointer to driver context in @param driver_context which is passed as param when firmware calls any function of portability layer. It also updates pointer to engine context which must be passed in any function call to firmware after this point.
+
+    :param engine_context: Pointer to engine specific data
+    :param driver_context: Pointer to driver specific data
+    :returns: 0 on success and negative on error
+
+.. _task_execute:
+
+Driver submits task information for execution
+---------------------------------------------
 
 .. c:type:: dla_task_descriptor
 
    Task descriptor structure. This structure includes all the information required to execute a network such as number of layers, dependency graph address etc.
 
-.. c:function:: int dla_execute_task(struct dla_task_descriptor *task);
+.. c:function:: int32_t dla_execute_task(void *engine_context, void *task_data)
 
-   Task is submitted to engine scheduler for execution. Engine scheduler initiates all functional blocks if a layer is present for that functional block. Driver should process all the events after this and wait till all layers are completed.
+    This function initializes sub-engines and starts task execution. Further programming and layer scheduling is triggered by events received from hardware.
 
-   :param task: Task descriptor
-   :returns: 0 if success otherwise error code
+    :param engine_context: Engine specific data received in :c:func:`dla_register_driver`
+    :param task_data: Task specific data to be passed when reading task info
+    :returns: 0 on success and negative on error
 
-.. c:function:: int dla_engine_init(void *priv_data)
+.. _isr_handler:
 
-   Initialize engine scheduler. This function should be called when driver is probed at boot time.
+Interrupt received from hardware
+--------------------------------
 
-   :param priv_data: Any data which is required back when scheduler engine calls function implemented in portability layer
-   :returns: 0 if success otherwise error code
+.. c:function:: int32_t dla_isr_handler(void *engine_context)
 
-.. c:function:: int dla_process_events(void);
+    This function is called when DLA interrupt is received. Portability layer should register it's own handler using the mechanism supported by that platform and call this function from the handler. Call to this function must be protected by lock to prevent handling interrupt when firmware is programming layers in process context.
 
-   Process events recorded in interrupt handler. This function must be called from thread/process context and not from interrupt context. It reads the events recorded in interrupt handler, updates dependency using events information and programs next layers in network. Driver should call this function immediately after handling interrupt and it's execution must be atomic, protected by some lock.
+    :param engine_context: Engine specific data received in :c:func:`dla_register_driver`
+    :returns: 0 on success and negative on error
 
-   :returns: 0 if success otherwise error code
+.. _bottom_half:
 
-.. c:function:: int dla_isr_handler(void);
+Bottom half caller to process events after interrupt
+----------------------------------------------------
 
-   Interrupt handler records events by reading interrupt status registers. Driver should call this function from OS interrupt handler and it's execution must be atomic, protected by some lock.
+.. c:function:: int32_t dla_process_events(void *engine_context, uint32_t *task_complete)
 
-   :returns: 0 if success otherwise error code
+    Interrupt handler just records events and does not process those events. Portability layer must call this function in thread/process context after interrupt handler is done.
+
+    :param engine_context: Engine specific data received in :c:func:`dla_register_driver`
+    :param task_complete: Pointer to parameter to indicate task complete, firmare writes 1 to it if all layers are processed.
+    :returns: 0 on success and negative on error
+
+.. _clean_task:
+
+Clean task and engine state
+---------------------------
+
+.. c:function:: void dla_clear_task(void *engine_context)
+
+    This function resets engine scheduler state including op descriptor cache, error values, sub-engine status, events etc and clears previous task state from firmware. This function can be called by portability layer after task completion. It is not mandatory to call it but calling it will ensure clean state before next task execution.
+
+    :param engine_context: Engine specific data received in :c:func:`dla_register_driver`
+    :returns: 0 on success and negative on error
+
+.. _kmd_layer:
 
 ^^^^^^^^^^^^^^^^^
 Portability layer
 ^^^^^^^^^^^^^^^^^
 
-Driver should implement below functions which are called from engine scheduler.
+    Core engine module (firmware) is OS independent but it still needs some OS services such as memory allocation, read/write IO registers, interrupt notifications. Portability layer implemented in KMD should provide implementation for below interfaces to core engine module.
 
-Register read/write
--------------------
+.. _driver_interface:
 
-.. c:function:: void dla_reg_write(uint32_t addr, uint32_t reg)
+Firmware programs hardware layer
+--------------------------------
 
-   Register write. This function implementation depends on how is DLA accessible from CPU. It should take care of adding base address to `addr`.
+.. c:function:: uint32_t dla_reg_read(void *driver_context, uint32_t addr)
 
-   :param addr: Register offset starting from 0 as base address
-   :param reg: Value to write
+    Read DLA HW register. Portability layer is responsible to use correct base address and for any IO mapping if required.
 
-.. c:function:: uint32_t dla_reg_read(uint32_t addr)
+    :param driver_context: Driver specific data received in :c:func:`dla_register_driver`
+    :param addr: Register offset
+    :returns: Register value
 
-   Register read. This function implementation depends on how is DLA accessible from CPU. It should take care of adding base address to `addr`
+.. c:function:: void dla_reg_write(void *driver_context, uint32_t addr, uint32_t reg)
 
-   :param addr: Register offset starting from 0 as base address
-   :returns: Register value
+    Write DLA HW registr. Portability layer is responsible to use correct base address and for any IO mapping if required.
 
-Read address
-------------
+    :param driver_context: Driver specific data received in :c:func:`dla_register_driver`
+    :param addr: Register offset
+    :param reg: Value to write
 
 .. c:function:: int32_t dla_read_dma_address(struct dla_task_desc *task_desc, int16_t index, void *dst)
 
@@ -471,25 +483,90 @@ Read address
    :param dst: Destination pointer to update address
    :returns: 0 in case success, error code in case of failure
 
-Data read/write
----------------
+.. c:function:: int32_t dla_data_read(void *driver_context, void *task_data, uint64_t src, void *dst, uint32_t size, uint64_t offset)
 
-.. c:function:: int32_t dla_data_read(uint64_t src, void* dst, uint32_t size, uint32_t offset)
+    This function reads data from buffers passed by UMD in local memory. Addresses for buffers passed by are shared in address list and network descriptor contains index in address list for those buffers. Firmware reads this data from buffer shared by UMD into local buffer to consume the information.
 
-   Read data from src buffer to dst. Here src is memory buffer shared by UMD and dst is local structure in KMD.
+    :param driver_context: Driver specific data received in :c:func:`dla_register_driver`
+    :param task_data: Task specific data received in :c:func:`dla_execute_task`
+    :param src: Index in address list
+    :param dst: Local memory address
+    :param size: Data size
+    :param offset: Offset from start of UMD buffer
+    :returns: 0 in case success, error code in case of failure
 
-   :param src: Source address to read data from
-   :param dst: Destination to write data data
-   :param size: Size of data to read
-   :param offset: Offset from source address to read data
-   :returns: 0 in case success, error code in case of failure
+.. c:function:: int32_t dla_data_write(void *driver_context, void *task_data, void *src, uint64_t dst, uint32_t size, uint64_t offset)
 
-.. c:function:: int32_t dla_data_write(void* src, uint64_t dst, uint32_t size, uint32_t offset)
+    This function writes data from local buffer to buffer passed by UMD. Addresses for buffers passed by are shared in address list and network descriptor contains index in address list for those buffers. Firmware writes this data to buffer shared by UMD from local buffer to update the information.
 
-   Write data from src to dst. Here src is local structure in KMD and dst is memory buffer shared by UMD.
+    :param driver_context: Driver specific data received in :c:func:`dla_register_driver`
+    :param task_data: Task specific data received in :c:func:`dla_execute_task`
+    :param src: Local memory address
+    :param dst: Index in address list
+    :param size: Data size
+    :param offset: Offset from start of UMD buffer
+    :returns: 0 in case success, error code in case of failure
 
-   :param src: Source to read data
-   :param dst: Destination address to write data
-   :param size: Size of data to write
-   :param offset: Offset from destination address to write data
-   :returns: 0 in case success, error code in case of failure
+.. c:macro:: DESTINATION_PROCESSOR
+
+    Memory will be accessed by processor running firmware.
+
+.. c:macro:: DESTINATION_DMA
+
+    Memory will be accessed by NVDLA DMA engines
+
+.. c:function:: int32_t dla_get_dma_address(void *driver_context, void *task_data, int16_t index, void *dst_ptr, uint32_t destination)
+
+    Some buffers shared by UMD are accessed by processor responsible for programming DLA HW. It would be companion micro-controller in case of headed config while main CPU in case of headless config. Also, some buffers are accessed by DLA DMA engines inside sub-engines. This function should return proper address accessible by destination user depending on config.
+
+    :param driver_context: Driver specific data received in :c:func:`dla_register_driver`
+    :param task_data: Task specific data received in :c:func:`dla_execute_task`
+    :param index: Index in address list
+    :param dst_ptr: Pointer to update address
+    :param destination: Destination user for DMA address, :c:macro:`DESTINATION_PROCESSOR` or :c:macro:`DESTINATION_DMA`
+
+.. c:function:: int64_t dla_get_time_us(void)
+
+    Read system time in micro-seconds
+
+    :returns: Time value in micro-seconds
+
+.. c:function:: void *dla_memset(void *src, int ch, uint64_t len)
+
+    Fills the first len bytes of the memory area pointed to by src with the constant byte ch.
+
+    :param src: Memory area address
+    :param ch: Byte to fill
+    :param len: Length of memory area to fill
+    :returns: Memory area address
+
+.. c:function:: void *dla_memcpy(void *dest, const void *src, uint64_t len)
+
+    :param dest: Destination memory area address
+    :param src: Source memory area address
+    :param len: Length of memory area to copy
+    :returns: Destination memory area address
+
+.. c:function:: void dla_debug(const char *str, ...)
+
+    Print debug message to console
+
+    :param str: Format string and variable arguments
+
+.. c:function:: void dla_info(const char *str, ...)
+
+    Print information message to console
+
+    :param str: Format string and variable arguments
+
+.. c:function:: void dla_warn(const char *str, ...)
+
+    Print warning message to console
+
+    :param str: Format string and variable arguments
+
+.. c:function:: void dla_error(const char *str, ...)
+
+    Print error message to console
+
+    :param str: Format string and variable arguments

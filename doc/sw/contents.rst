@@ -14,4 +14,36 @@ NVDLA has a full software ecosystem including support from compiling network to 
 
    compilation_tool
    runtime_environment
+   test_application
 
+Browsing Source Code
+====================
+
+- top (https://github.com/nvdla/sw)
+    - umd: :ref:`user_mode_driver`
+        - core: NVDLA specific implementation of user mode components
+            - **runtime:** :ref:`runtime_environment`
+            - **compiler:** :ref:`compilation_tools`
+            - **include:** Header file for common implementation
+            - **common:** Implementation shared between runtime and compiler such as loadable and logging
+        - **external:** External modules used in UMD such as flatbuffers
+        - **include:** :ref:`umd_api`
+        - **make:** Make files
+        - port: :ref:`umd_layer`
+            - **linux:** Portability layer for Linux
+        - tests: Test applications
+            - runtime :ref:`runtime_test_app`
+            - compiler :ref:`compiler_test_app`
+    - kmd: :ref:`kernel_mode_driver`
+        - **Documentation:** Device tree bindings for NVDLA device
+        - **firmware:** Core DLA hardware programming including HW layer scheduler
+        - **include:** :ref:`kmd_interface`
+        - **port:** :ref:`kmd_layer`
+            - **linux:** Portability layer for Linux
+    - **prebuilt: Prebuilt binaries**
+    - regression: Test regression framework
+        - flatbufs: Pre-generated loadables for sanity tests
+        - golden: Golden results
+        - scripts: Scripts used for test execution
+        - testplan: Test plans
+    - **scripts: General scripts**
