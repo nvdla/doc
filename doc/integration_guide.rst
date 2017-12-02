@@ -203,6 +203,8 @@ below.  The versions listed are used for testing.
 * CPP - gcc-4.9.3
 * Python - python2.6
 * SystemC - systemc-2.3.0
+* (for Verilator builds) Verilator - Verilator 3.912
+* (for Verilator builds) clang - clang 3.4
 
 .. warning::
   NVDLA requires the exact SystemC version specified (2.3.0).  Despite the
@@ -1431,3 +1433,65 @@ Runtime Configuration
        +max_wr_outstanding_per_channel limits the number of write transactions that are allowed to be outstanding per channel at any moment of time.  The default value is 128.
 
 
+.. _verilator_testbench:
+
+Verilator Testbench
+-------------------
+
+On an experimental basis, the NVDLA release now contains a limited
+Verilator-based testbench, enabling the NVDLA RTL to be built and tested
+entirely without non-commercial software.  The Verilator testbench is
+expected to work, and is validated against the existing traces, but does not
+carry the same level of testing as the SystemVerilog testbench does when
+simulated by VCS.
+
+Setting up
+^^^^^^^^^^
+
+The ``tree.make`` file needs some changes to build with Verilator; in
+particular, the ``VERILATOR`` and ``CLANG`` environment variables need to be
+set.  (The Verilated testbench cannot be built with GCC, because the
+generated C++ source is too big.)  Additionally, ensure that your system has
+enough memory to build the testbench; depending on your version of
+Verilator, you will need a 64-bit system with up to 20GB of RAM (some cases
+have been noted in which the requirements are even higher).
+
+Once the ``tree.make`` file has been updated, you can use ``tmake`` to build
+the simulator::
+
+  ./tools/bin/tmake -build verilator
+
+The ``verif/verilator`` directory contains a Makefile that contains
+additional options for building the simulator.  For instance, if you need to
+dump a ``.vcd`` waveform from the Verilated simulator, you may wish to
+uncomment the line that enables tracing; such traces can be viewed using
+``gtkwave`` (or with more advanced EDA tools of your choice, including
+Verdi).
+
+Running a test
+^^^^^^^^^^^^^^
+
+The Verilated simulation can be run by ``cd``ing into ``verif/verilator``,
+and running a command like::
+
+  make run TEST=sanity0
+
+This will build the simulator (if it has not already been built), compile a
+test to the binary test format needed for the Verilator simulator
+infrastructure, and then finally run the test through the compiled NVDLA
+model.  On an Intel Core i5-6500, the ``googlenet_conv2_3x3_int16`` test
+runs about 98,000 cycles in about 8 minutes.
+
+The Verilated testbench is compatible with all of the traces that are in the
+``traceplayer`` directory.
+
+Testbench design
+^^^^^^^^^^^^^^^^
+
+The Verilator testbench is implemented in the ``verif/verilator/nvdla.cpp``
+file.  It instantiates one instance of the ``VNV_nvdla`` module, and wires
+up the CSB interface to a simulated stimulus, and each of the memory
+interfaces to simulated responders.  The timing of the trace is managed by
+the simulated CSB master, and the main loop handles "external events" (i.e.,
+non-CSB events, such as waiting for an interrupt, or loading data into or
+checking data from a simulated AXI memory).  

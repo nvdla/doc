@@ -5,6 +5,17 @@ Open NVDLA Repository Updates
 
 This document is a quick reference guide to changes in the NVDLA repository. Most recent updates are at the top of the document.  Detailed information can be obtained from the ``git`` list of commits.  
 
+12/1/2017
+=========
+
+Released a SystemC model of the NVDLA hardware, suitable for simulation and
+verification.  This SystemC model lives in ``cmod/``, and information on
+building it is in the :ref:`tree_build` section.
+
+Additionally, this release contains experiemental support for building the
+NVDLA RTL using Verilator; for more information on this, see the
+:ref:`verilator_testbench` section.
+
 11/21/2017
 ==========
 
