@@ -590,8 +590,8 @@ Small sized NVDLA implementations target smaller workloads, as such, these imple
 * SDP function support = Single Scaling
 * BDMA function support = No
 * Rubik function support = No
-* Atomic - C sizing = 16
-* Atomic - K sizing = 4
+* Atomic - C sizing = 8
+* Atomic - K sizing = 8
 * SDP throughput = 4
 * PDP throughput = 2
 * CDP throughput = 2
