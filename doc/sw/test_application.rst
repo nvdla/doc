@@ -17,6 +17,16 @@ Runtime test application provides options to run neural network loadable generat
 
 It demonstrates usage of IRuntime interface to execute a network on NVDLA.
 
+Usage:
+    For sanity tests which has input embedded in it.
+    ./nvdla_runtime --loadable <loadable_file>
+
+    For network tests which need image input
+    ./nvdla_runtime --loadable <loadable_file> --image <image_file>
+
+    Run in server mode
+    ./nvdla_runtime -s
+
 .. _compiler_test_app:
 
 -------------------------
@@ -24,3 +34,7 @@ Compiler test application
 -------------------------
 
 Compiler test application also called as compiler tool gives option to convert caffe model to NVDLA format. It stores compiled network in loadable which can be loaded by runtime test application for execution.
+
+Usage:
+   ./nvdla_compiler [-options] --prototxt <prototxt_file> --caffemodel <caffemodel_file> -o <outputpath>
+
