@@ -11,6 +11,7 @@ of documents that have been written about NVDLA.
    primer
    roadmap
    sw/contents
+   vp
    hwarch
    integration_guide
    updates
@@ -35,6 +36,8 @@ of documents that have been written about NVDLA.
 * :doc:`integration_guide` -- a guide for SoC integrators, including a
   walk-through of the NVDLA build infrastructure, NVDLA's testbenches, and
   synthesis scripts.
+
+* :doc:`vp` -- an introduction of virtual platform for NVDLA.
 
 * :doc:`updates` -- a list of updates to the NVDLA repository
 
