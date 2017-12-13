@@ -199,7 +199,9 @@ Verilog RTL code for a given configuration.  The tools required for this build a
 below.  The versions listed are used for testing.
 
 * Java - jdk1.7
-* Perl - perl-5.8.8
+* Perl - perl-5.10
+    - XML::Simple
+    - Capture::Tiny
 * CPP - gcc-4.9.3
 * Python - python2.6
 * SystemC - systemc-2.3.0
