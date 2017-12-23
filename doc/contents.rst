@@ -13,6 +13,7 @@ of documents that have been written about NVDLA.
    sw/contents
    vp
    hwarch
+   format
    integration_guide
    updates
    license
