@@ -77,6 +77,8 @@ calculation. For example, DLA engine can take a T_R10G10B10A2 image as
 input (for first layer) and convert the component to int8, int16 or
 fp16.
 
+.. _feature_data_format: 
+
 Feature Data Format
 -------------------
 
@@ -114,9 +116,10 @@ The memory mapping rules are:
 compactly. This is called packed feature data. If the line or surface of
 small cubes is not mapped compactly, it is called unpacked. See :numref:`fig_unpacked_feature_diagram`.
 
-**Line stride and surface stride of feature data shall always align to
-32bytes. Start address has same alignment as well. This is mandatory
-requirement.**
+.. note::
+  Line stride and surface stride of feature data shall always align to
+  32bytes. Start address has same alignment as well. This is mandatory
+  requirement.
 
 ..
   image1
@@ -269,6 +272,8 @@ configuration.
  | U16_N444    |             |             |             |             |
  +-------------+-------------+-------------+-------------+-------------+
 
+.. _weight_format: 
+
 Weight Format
 -------------
 
@@ -389,8 +394,9 @@ extension step ahead of mapping steps for direct convolution weight.
 The channel pre-extension for image weight is a mandatory requirement,
 while channel post-extension is an option to improve performance.
 
-**Notice: Channel pre-extension for image weight is different from
-channel extension for Winograd convolution.**
+..note::
+  Channel pre-extension for image weight is different from
+  channel extension for Winograd convolution.
 
 The key idea of per-extension is to turn all weights in same line to a
 single channel. :numref:`fig_dc_channel_extension_for_image_for_weight` 
@@ -432,8 +438,8 @@ Steps of phase 1:
    GWGT. Here W is each 4x4x1 of weight cube, G is a 4 x 3 matrix and GT
    is transpose matrix.
 
--  During conversion, a scaling factor may involve. Please see section
-   7.1.4 for reference.
+-  During conversion, a scaling factor may involve. Please see the Winograd
+   convolution documentation for reference.
 
 -  The width and height of a kernel should be 4 after conversion.
 
@@ -936,7 +942,7 @@ Feature data file (input_feature_map.dat)
 -----------------------------------------
 
 This data file contains input feature data or image for one HW layer.
-Please refer to Section 1.1.2 for the format of 2D data.
+Please refer to :ref:`feature_data_format` for the format of 2D data.
 
 Below table describes the fields in the header. The fields are optional
 and informative.
@@ -977,8 +983,8 @@ and informative.
 Weight/WGS/WMB data file
 ------------------------
 
-This data file contains weight, wgs or wmb data. Please refer to Section
-1.2 for the formats of them.
+This data file contains weight, wgs or wmb data. Please refer to
+:ref:`weight_format` for the formats of them.
 
 Below table describes the fields in the header. The fields are optional
 and informative.

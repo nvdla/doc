@@ -13,7 +13,7 @@ of documents that have been written about NVDLA.
    sw/contents
    vp
    hwarch
-   format
+   hw/format
    integration_guide
    updates
    license
@@ -30,6 +30,9 @@ of documents that have been written about NVDLA.
 
 * :doc:`hwarch` -- a design-level view of the NVDLA hardware architecture,
   including detail on each sub-component, and register-level documentation.
+
+  * :doc:`hw/format` -- an overview of the in-memory format for weight and
+    activation data.
 
 * :doc:`sw/contents` -- an exploration of the software ecosystem that
   supports NVDLA.
