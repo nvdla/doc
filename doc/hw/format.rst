@@ -77,6 +77,261 @@ calculation. For example, DLA engine can take a T_R10G10B10A2 image as
 input (for first layer) and convert the component to int8, int16 or
 fp16.
 
+Precision Conversion
+^^^^^^^^^^^^^^^^^^^^
+
+NVDLA engine supports dynamical precision conversion. There are some
+rules:
+
+-  NVDLA convolution pipeline supports precision conversion for image
+   input mode only.
+
+-  Direct convolution (DC) mode and Winograd convolution mode do not
+   support precision conversion
+
+-  For image input mode (please see section 6.1.1.4), pipeline allows
+   conversion from integer to all 3 types. Floating point images can
+   only be converted to fp16.
+
+-  Batch-normalization and element-wise layer (implemented in SDP)
+   support free conversion of int16 <-> fp16 and int8 <-> int16 for DC
+   mode only.
+
+-  LRN layer (implemented in CDP) does not support any precision
+   conversion
+
+-  Pooling layer (implemented in PDP) does not support any precision
+   conversion.
+
+Here is the summary:
+
+.. table:: Precision conversion for convolutional layer
+ :name: tab_precision_conversion_conv
+
+ +-----------------+-----------------+-----------------+-----------------+
+ | Configured      | Configured      | Real precision  | Corresponding   |
+ | input format    | output          | in pipeline     | weight          |
+ |                 | precision       |                 | precision       |
+ +=================+=================+=================+=================+
+ | image input     | int8            | int8            | int8            |
+ |                 |                 |                 |                 |
+ | (uint8/         |                 |                 |                 |
+ |                 |                 |                 |                 |
+ | int16/uint16)   |                 |                 |                 |
+ +-----------------+-----------------+-----------------+-----------------+
+ |                 | int16           | int16           | int16           |
+ +-----------------+-----------------+-----------------+-----------------+
+ |                 | fp16            | fp16            | fp16            |
+ +-----------------+-----------------+-----------------+-----------------+
+ | image input     | int8            | **Invalid       | **Invalid       |
+ |                 |                 | case**          | case**          |
+ | (fp16)          |                 |                 |                 |
+ +-----------------+-----------------+-----------------+-----------------+
+ |                 | int16           | **Invalid       | **Invalid       |
+ |                 |                 | case**          | case**          |
+ +-----------------+-----------------+-----------------+-----------------+
+ |                 | fp16            | fp16            | fp16            |
+ +-----------------+-----------------+-----------------+-----------------+
+ | int8 feature    | int8            | int8            | int8            |
+ | data            |                 |                 |                 |
+ +-----------------+-----------------+-----------------+-----------------+
+ |                 | int16           | **Invalid       | **Invalid       |
+ |                 |                 | case**          | case**          |
+ +-----------------+-----------------+-----------------+-----------------+
+ |                 | fp16            | **Invalid       | **Invalid       |
+ |                 |                 | case**          | case**          |
+ +-----------------+-----------------+-----------------+-----------------+
+ | int16 feature   | int8            | **Invalid       | **Invalid       |
+ | data            |                 | case**          | case**          |
+ +-----------------+-----------------+-----------------+-----------------+
+ |                 | int16           | int16           | int16           |
+ +-----------------+-----------------+-----------------+-----------------+
+ |                 | fp16            | **Invalid       | **Invalid       |
+ |                 |                 | case**          | case**          |
+ +-----------------+-----------------+-----------------+-----------------+
+ | fp16 feature    | int8            | **Invalid       | **Invalid       |
+ | data            |                 | case**          | case**          |
+ +-----------------+-----------------+-----------------+-----------------+
+ |                 | int16           | **Invalid       | **Invalid       |
+ |                 |                 | case**          | case**          |
+ +-----------------+-----------------+-----------------+-----------------+
+ |                 | fp16            | fp16            | fp16            |
+ +-----------------+-----------------+-----------------+-----------------+
+
+.. table:: Precision conversion for SDP layer (offline mode)
+ :name: tab_precision_conversion_sdp
+
+ +--------------------+-----------------------------+----------------------------+
+ | Configured         | Configured output precision | Real precision in pipeline |
+ | input format       |                             |                            |
+ +====================+=============================+============================+
+ | int8 feature data  | int8                        | int32                      |
+ +--------------------+-----------------------------+----------------------------+
+ |                    | int16                       | int32                      |
+ +--------------------+-----------------------------+----------------------------+
+ |                    | fp16                        | **Invalid case**           |
+ +--------------------+-----------------------------+----------------------------+
+ | int16 feature data | int8                        | int32                      |
+ +--------------------+-----------------------------+----------------------------+
+ |                    | int16                       | int32                      |
+ +--------------------+-----------------------------+----------------------------+
+ |                    | fp16                        | int32                      |
+ +--------------------+-----------------------------+----------------------------+
+ | fp16 feature data  | int8                        | **Invalid case**           |
+ +--------------------+-----------------------------+----------------------------+
+ |                    | int16                       | fp32                       |
+ +--------------------+-----------------------------+----------------------------+
+ |                    | fp16                        | fp32                       |
+ +--------------------+-----------------------------+----------------------------+
+
+Table 6‑3 precision conversion for LRN layer
+
+.. table:: Precision conversion for LRN layer
+ :name: tab_precision_conversion_lrn
+
+ +--------------------+-----------------------------+----------------------------+
+ | Configured         | Configured output precision | Real precision in pipeline |
+ | input format       |                             |                            |
+ +====================+=============================+============================+
+ | int8 feature data  | int8                        | int8                       |
+ +--------------------+-----------------------------+----------------------------+
+ |                    | int16                       | **Invalid case**           |
+ +--------------------+-----------------------------+----------------------------+
+ |                    | fp16                        | **Invalid case**           |
+ +--------------------+-----------------------------+----------------------------+
+ | int16 feature data | int8                        | **Invalid case**           |
+ +--------------------+-----------------------------+----------------------------+
+ |                    | int16                       | int16                      |
+ +--------------------+-----------------------------+----------------------------+
+ |                    | fp16                        | **Invalid case**           |
+ +--------------------+-----------------------------+----------------------------+
+ | fp16 feature data  | int8                        | **Invalid case**           |
+ +--------------------+-----------------------------+----------------------------+
+ |                    | int16                       | **Invalid case**           |
+ +--------------------+-----------------------------+----------------------------+
+ |                    | fp16                        | fp16                       |
+ +--------------------+-----------------------------+----------------------------+
+
+.. table:: Precision conversion for pooling layer
+ :name: tab_precision_conversion_poolong
+
+ +--------------------+-----------------------------+----------------------------+
+ | Configured         | Configured output precision | Real precision in pipeline |
+ | input format       |                             |                            |
+ +====================+=============================+============================+
+ | int8 feature data  | int8                        | int8                       |
+ +--------------------+-----------------------------+----------------------------+
+ |                    | int16                       | **Invalid case**           |
+ +--------------------+-----------------------------+----------------------------+
+ |                    | int16                       | **Invalid case**           |
+ +--------------------+-----------------------------+----------------------------+
+ | int16 feature data | int8                        | **Invalid case**           |
+ +--------------------+-----------------------------+----------------------------+
+ |                    | int16                       | int16                      |
+ +--------------------+-----------------------------+----------------------------+
+ |                    | fp16                        | **Invalid case**           |
+ +--------------------+-----------------------------+----------------------------+
+ | fp16 feature data  | int8                        | **Invalid case**           |
+ +--------------------+-----------------------------+----------------------------+
+ |                    | int16                       | **Invalid case**           |
+ +--------------------+-----------------------------+----------------------------+
+ |                    | fp16                        | fp16                       |
+ +--------------------+-----------------------------+----------------------------+
+
+For pixel formats, the conversion to int8/int16/fp16 follows the
+equation below.
+
+.. math:: d_{int8} = truncate2int8\left( \left( d_{\text{pixel}} - offset \right)*SF \right)
+
+.. math:: d_{int16} = truncate2int16\left( \left( d_{\text{pixel}} - offset \right)*SF \right)
+
+.. math:: d_{fp16} = int2fp\left( \left( d_{\text{pixel}} - offset \right)*SF \right)
+
+Equation 1 pixel precision conversion
+
+Here *SF* refers to scaling factor, *offset* refers to offset value.
+They are both given by programmable register fields.
+
+For conversion between int16 and int8, the equations are:
+
+.. math:: d_{int8} = truncate2int8\left( \left( d_{int16} - offset \right)*SF \right)
+
+.. math:: d_{int16} = truncate2int16\left( \left( d_{int8} - offest \right)*SF \right)
+
+Equation 3 precision conversion between int8 and int16
+
+**The CDMA and SDP convert precision individually.** When working in
+on-flying mode, SDP takes precision of convolution pipeline output as
+input precision then do another precision conversion, but the input
+precision and output precision should have the same bit-depth.
+
+FP16 Supporting 
+^^^^^^^^^^^^^^^^
+
+This section describes NVDLA how to support fp16 in data-path.
+
+-  Infinity
+
+NVDLA treats infinity value as different normalized value module by
+module:
+
++----------------------+-------------------------+
+| Sub-module           | INF converted values    |
++======================+=========================+
+| Convolution pipeline | +/-65536 (DC/IMG)       |
+|                      |                         |
+|                      | +/-65504 (Winograd)     |
++----------------------+-------------------------+
+| SDP                  | +/-3.40282e+38          |
++----------------------+-------------------------+
+| CDP                  | +/-4292870144           |
++----------------------+-------------------------+
+| PDP                  | +/-4292870144 (For AVE) |
+|                      |                         |
+|                      | INF (For Max/Min)       |
++----------------------+-------------------------+
+
+There won’t be any INF output from any NVDLA sub-module, if saturation
+happens, NVDLA will output the maximum representable (+/-65504 for FP16,
+32767/-32768 for INT16, 127/-128 for INT8).
+
+-  NaN
+
+NVDLA won’t generate NaN since no infinity value involves in any
+operation. But it supports NaN propagation. If input data have NaN, any
+result related to NaN operand will be NaN (mantissa propagation behavior
+is undefined).
+
+NVDLA provides a register field to flush NaN to Zeros. If the register
+is set, all input NaNs are treated as zero value in float point
+data-path and output data cube doesn’t have any NaN. Otherwise input
+NaNs propagate to output.
+
+NVDLA also provide input/output NaN counting registers that summarize
+total NaN number in input/output data cube. The counting registers are
+updated when layer is done. When done interrupts arrives, FW can poll
+NaN counting registers to figure out whether input/output data cubes
+have any NaN value.
+
+-  Denormalized value
+
+NVDLA supports denormalized value for both input and output. The dealing
+of denormalized value is completely following the requirement of IEEE754
+standard.
+
+Actually, NVDLA internal float point data-path often provide fp17/fp32
+value for better precision. These fp17 and fp32 format doesn’t support
+denormalized value during calculation. Even though these formats have
+better precision than fp16 with denormalized value. Before writing back
+to memory, fp17/fp32 will convert to fp16 with denormalized value.
+
+-  Rounding
+
+NVDLA supports Rounding to Nearest (or RN) in calculation except
+overflow case. If the result is exceeding maximal normal value, it will
+be clipped to max normalized value.
+
+
 .. _feature_data_format: 
 
 Feature Data Format
