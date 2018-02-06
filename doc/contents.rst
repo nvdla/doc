@@ -31,8 +31,7 @@ of documents that have been written about NVDLA.
   documentation.  This section also includes a programming guide, and an
   overview of in-memory and on-disk data formats for weight data.
 
-* :doc:`sw/contents` -- an exploration of the software ecosystem that
-  supports NVDLA.
+* :doc:`hw/v2/scalability` -- Scalability parameters and ConfigROM contents in nv_large and nv_small configs (XXX to move)
 
 * :doc:`hw/v1/integration_guide` -- a guide for SoC integrators, including a
   walk-through of the NVDLA build infrastructure, NVDLA's testbenches, and

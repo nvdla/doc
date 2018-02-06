@@ -586,17 +586,17 @@ Small sized NVDLA implementations target smaller workloads, as such, these imple
 * Feature supporting - Winograd = No
 * Feature supporting - Second Memory Bus = No
 * Feature supporting - Compression = No
-* Image input support = A8R8G8B8
+* Image input support = R8, A8B8G8R8, A8R8G8B8, B8G8R8A8, R8G8B8A8, X8B8G8R8, X8R8G8B8, B8G8R8X8, R8G8B8X8, Y8___U8V8, Y8___V8U8
 * SDP function support = Single Scaling
 * BDMA function support = No
 * Rubik function support = No
 * Atomic - C sizing = 8
 * Atomic - K sizing = 8
-* SDP throughput = 4
-* PDP throughput = 2
-* CDP throughput = 2
-* BUFF bank # = 4
-* BUFF bank size = 8KB
+* SDP throughput = 1
+* PDP throughput = 1
+* CDP throughput = 1
+* BUFF bank # = 32
+* BUFF bank size = 4KB
  
 Large NVDLA Implementation Example
 -----------------------------------
