@@ -222,7 +222,7 @@ Tree Build
 The NVDLA repository supports the build of multiple configurations based on a feature
 specification file.  Each configuration of the NVDLA is defined by a spec file in
 he hw/spec/defs directory.  The filename is the name of the configuration with a ".spec"
-exension.  For the configurable release, there are currently two spec files included: "nv_large" which has 2048 INT8 MAC's,
+extension.  For the configurable release, there are currently two spec files included: "nv_large" which has 2048 INT8 MAC's,
 and "nv_small" which has 64 INT8 MAC's plus some other reductions; the non-configurable
 release has a single spec file, "nv_full", which has 2048 multi-precision MAC units.
 
@@ -235,7 +235,7 @@ following command::
 
 This command will prompt for the configuration and tool locations.  It will create a tree.make
 file in the hw directory containing the appropriate configuration and tool setup.  
-For subsequent changes the tree.make file can be edited directory with a text editor.  Once
+For subsequent changes the tree.make file can be edited directly with a text editor.  Once
 tree.make setup is complete, the RTL can be built::
 
  cd hw
@@ -251,7 +251,7 @@ regression::
 Additionally, there is a tmake target for the Cmodel of NVDLA, which lives
 in the ``cmod/`` directory.  If building the Virtual Platform, or another
 application that uses the NVDLA Cmodel, the following command will build it
-and install it into ``outdir/nv_full/cmod/release``:
+and install it into ``outdir/nv_full/cmod/release``::
 
  ./tools/bin/tmake -build cmod_top
 
@@ -299,7 +299,7 @@ in the repository at hw/perf/DLA_OpenSource_Performance.xlsx.  The first tab in 
 * Hardware MAC utilization
 * Network MAC utilization
 
-The tool can be used to look at the affect of different hardware configurations on network performance.
+The tool can be used to look at the effect of different hardware configurations on network performance.
 
 
 
@@ -1442,7 +1442,7 @@ Verilator Testbench
 
 On an experimental basis, the NVDLA release now contains a limited
 Verilator-based testbench, enabling the NVDLA RTL to be built and tested
-entirely without non-commercial software.  The Verilator testbench is
+entirely without commercial software.  The Verilator testbench is
 expected to work, and is validated against the existing traces, but does not
 carry the same level of testing as the SystemVerilog testbench does when
 simulated by VCS.
@@ -1473,7 +1473,7 @@ Verdi).
 Running a test
 ^^^^^^^^^^^^^^
 
-The Verilated simulation can be run by ``cd``ing into ``verif/verilator``,
+The Verilated simulation can be run by ``cd`` into ``verif/verilator``,
 and running a command like::
 
   make run TEST=sanity0
