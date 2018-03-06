@@ -2,8 +2,8 @@
 Programming Guide
 =================
 
-(Notice: This version of the *Programming Guide* is only for the nvdlav1
-release.)
+(Notice: This version of *Unit Description* is only for nvdlav1 release. 
+Please refer to *Scalability parameters and ConfigROM* for other configurations)
 
 BDMA programming
 ----------------

@@ -87,8 +87,8 @@ Scalability parameters
 +-----------------+-----------------+-----------------+-----------------+
 | NVDLA_SECONDARY | Support the     | Yes             | No              |
 | _MEMIF_ENABLE   | secondary       |                 |                 |
-|                 | memory          |                 |                 |
-|                 | interface       |                 |                 |
+|                 | memory interface|                 |                 |
+|                 | (SRAMIF)        |                 |                 |
 +-----------------+-----------------+-----------------+-----------------+
 | NVDLA_SDP_LUT_E | SDP support     | Yes             | No              |
 | NABLE           | Look-up-Table   |                 |                 |
@@ -191,6 +191,36 @@ Scalability parameters
 |                 | memory          |                 |                 |
 |                 | interface       |                 |                 |
 +-----------------+-----------------+-----------------+-----------------+
+
+More Details
+------------
+
+NVDLA_MAC_ATOMIC_C_SIZE and NVDLA_MAC_ATOMIC_K_SIZE
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+These two parameters affect determine the number of mac cells and number of multipliers in each mac cell.
+The total number of multipliers is NVDLA_MAC_ATOMI C_C_SIZE * NVDLA_MAC_ATOMI C_K_SIZE.
+The number of kernels in one kernel group is NVDLA_MAC_ATOMI C_K_SIZE.
+
+NVDLA_MEMORY_ATOMIC_SIZE
+^^^^^^^^^^^^^^^^^^^^^^^^
+This parameter determines the size of one atomic cube which is 1x1xNVDLA_MEMORY_ATOMIC_SIZE. 
+Feature, Weight, Bias, PReLU, Batch Normalization and Element-Wise data cubes are split into atomic cubes before loaded or stored into memory. 
+In nvdlav1 and nv_large configurations, size of atomic cbue is 1x1x32. In nv_small configuration, it’s 1x1x8. 
+Line stride and surface stride should also align to NVDLA_MEMORY_ATOMIC_SIZE.
+
+NVDLA_CBUF_BANK_NUMBER, NVDLA_CBUF_BANK_WIDTH and NVDLA_CBUF_BANK_DEPTH
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+These parameters determine the size of cbuf. (NVDLA_CBUF_BANK_NUMBER * NVDLA_CBUF_BANK_WIDTH * NVDLA_CBUF_BANK_DEPTH)
+For nv_small, the size is 32*8*512 = 128KB.
+For nv_small_256, the size is 32*32*128 = 128KB.
+
+Config nv_small_256
+-------------------
+This config is created for higher convolution performance than nv_small.
+Comparing with nv_small, the difference is that CMAC has 256 multipliers, not 64. 
+In this configuration NVDLA_MAC_ATOMIC_C_SIZE is 32 and NVDLA_MAC_ATOMI C_K_SIZE is 8. 
+Accordingly, NVDLA_CBUF_BANK _WIDTH is 32 and NVDLA_CBUF_BANK _DEPTH is 128.
+
 
 Sub-unit identifier table
 =========================

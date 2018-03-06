@@ -7,6 +7,9 @@ design as it exists in the nvdlav1 release.  The other releases and
 configurations are similar but won't contain all features and sizes
 of hardware elements may differ.)
 
+Please refer to *Scalability parameters and ConfigROM* for other
+configurations.)
+
 Bridge DMA
 ----------
 

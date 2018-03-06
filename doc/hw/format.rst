@@ -649,7 +649,7 @@ extension step ahead of mapping steps for direct convolution weight.
 The channel pre-extension for image weight is a mandatory requirement,
 while channel post-extension is an option to improve performance.
 
-..note::
+.. note::
   Channel pre-extension for image weight is different from
   channel extension for Winograd convolution.
 
