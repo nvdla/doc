@@ -1,7 +1,11 @@
 ================
 Unit Description
 ================
-(Notice: This version of *Unit Description* is only for nvdlav1 release.)
+
+(Notice: This version of *Unit Description* describes the NVDLA
+design as it exists in the nvdlav1 release.  The other releases and
+configurations are similar but won't contain all features and sizes
+of hardware elements may differ.)
 
 Bridge DMA
 ----------
@@ -11,14 +15,16 @@ Bridge DMA
 Overview
 ~~~~~~~~
 
-The input images and processed results are stored in external DRAM, but
-external DRAM bandwidth and latency do not meet NVDLA’s requirements.
-NVDLA needs to move data between external DRAM and internal SRAM.
+Input images and processed results are stored in external DRAM, but
+external DRAM bandwidth and latency are generally insufficient to
+allow NVDLA to fully utilize it's MAC arrays.  Therefore NVDLA
+is configured with a secondary memory interface to on-chip SRAM.
 
-Bridge DMA is proposed to full-fill this purpose. There are two
-independent paths, one is copying data from external DRAM to internal
-SRAM , and the other one is copying data from internal SRAM to external
-DRAM. Bi-direction cannot work simultaneously. BDMA can also move data
+To utilize the on-chip SRAM, NVDLA needs to move data between external DRAM
+and SRAM.  Bridge DMA is proposed to full-fill this purpose. There are two
+independent paths, one is copies data from external DRAM to internal
+SRAM , and the other one is copies data from internal SRAM to external
+DRAM. Both directions cannot work simultaneously. BDMA can also move data
 from external DRAM to external DRAM, or from internal SRAM to internal
 SRAM.
 
@@ -48,20 +54,20 @@ Convolution Pipeline
 Overview
 ~~~~~~~~
 
-Convolution pipeline is one of pipelines of NVDLA core logic. It is used
-to accelerate convolution algorithm. It supports comprehensive
-programmable parameters for variable convolution size. Some features
-like Winograd, multi-batch are applied in convolution pipeline to
-improve the performance and reduce the efficiency loss caused by
-limitation.
+The Convolution Pipeline is one of pipelines within the NVDLA core logic. 
+It is used to accelerate the convolution algorithm. It supports comprehensive
+programmable parameters for variable convolution sizes. Some features
+like Winograd and multi-batch are applied within the convolution pipeline to
+improve the performance and increase MAC efficiency.
 
-Convolution pipeline has five stages, which are convolution DMA,
-convolution buffer, convolution sequence controller, convolution MAC and
-convolution accumulator. They are also called CDMA, CBUF, CSC, CMAC and
-CACC. Each stage has its own CSB slave port to receive configuration
-from CPU. The synchronization mechanism is used by all stages.
+The Convolution Pipeline has five stages, which are: Convolution DMA,
+Convolution Buffer, Convolution Sequence Controller, Convolution MAC and
+Convolution Accumulator. They are also called CDMA, CBUF, CSC, CMAC and
+CACC respectively. Each stage has its own CSB slave port to receive configuration
+data from the controlling CPU. A single synchronization mechanism is used 
+by all stages.
 
-Convolution pipeline supports three types of operations. They are:
+The Convolution Pipeline supports three types of operations. They are:
 
 -  Direct convolution for feature data, or DC mode
 
@@ -69,10 +75,12 @@ Convolution pipeline supports three types of operations. They are:
 
 -  Winograd convolution, or Winograd mode
 
-In convolution pipeline, there are 1024 MACs for int16/fp16. Convolution
-pipeline reuses these resources as 2048 MACs for int8 precision. There
-are same adders in convolution pipeline as well. Besides, there are
-512KB SRAM in convolution buffer
+The convolution pipeline contains 1024 MACs for int16 or fp16, along with
+a 32 element accumulator array for partial sum storage.  The 
+MAC resources can also be configured to provide 2048 MACs for int8.
+Additionally, there is 512KB of SRAM in convolution buffer, providing 
+input weight and activation storage. These units are described in detail later 
+in this document.
 
 Below is the diagram of convolution pipeline.
 
@@ -81,12 +89,12 @@ Below is the diagram of convolution pipeline.
 .. figure:: ias_image4_convolution_pipeline.png
   :align: center
 
-  convolution pipeline
+  Convolution Pipeline
 
 Direct Convolution
 ~~~~~~~~~~~~~~~~~~
 
-For convolution pipeline, it always has two parts of input. One is input
+The convolution pipeline always has two parts of input data. One is input
 activation data, the other is weight data. Suppose NVDLA engine has such
 input parameters:
 
@@ -144,46 +152,48 @@ input feature data cube and element *wt* in weight kernels is:
 
 The coordinate *w,h,c,k* in above equations are all start from zero.
 
-To accomplish the convolution operation in the equation, convolution
-pipeline uses a method called **direct convolution**. The key idea of
-direct convolution is to split multiplications in one convolution kernel
-into groups that each group contains 64 multiplications. The basic rules
-are:
+To accomplish the convolution operation in the above equation, the 
+convolution pipeline uses a method called **direct convolution**. The key 
+idea of direct convolution is to split the multiplication oerations from
+each convolution kernel into groups such that each group contains 64 
+multiplications. The basic rules are:
 
-1. Distribute all MACs into 16 sub units. One sub unit is called MAC
-   cell which has 64 MACs for int16/fp16 or 128 MACs for int8.
+1. Distribute all MACs hardware into 16 sub units. One sub unit 
+   is called MAC Cell, and has hardware for 64 int16/fp16 MACs, or
+   for 128 int8 MACs.
 
-2. The assembly of MAC cells is called MAC cell array.
+2. The assembly of MAC Cells is called MAC Cell Array.
 
-3. Divide all input data cube into 1x1x64 elements small cubes for
+3. Divide all input data cubes into 1x1x64 element small cubes for
    int16, fp16 and int8.
 
-4. Divide all weight data cubes into 1x1x64 elements small cubes for
+4. Divide all weight data cubes into 1x1x64 element small cubes for
    int16, fp16 and int8.
 
 5. Multiply one small input data cube by one small weight data cube, and
    add products together. These multiplications and additions are
-   operated in one MAC cell.
+   performed within one MAC cell.
 
-6. Combine these computing into 4 operation levels, which are atomic
+6. Combine these compute operations into 4 operation levels, which are atomic
    operation, stripe operation, block operation and channel operation.
 
-Let’s take with int16 as example.
+The four operations are described below using int6 percision mode as an example.
 
 Atomic Operation
 ^^^^^^^^^^^^^^^^
 
-Atomic operation is the basic step of direct convolution. In one atomic
+Atomic Operation is the base step for direct convolution. In one atomic
 operation, each MAC cell caches one 1x1x64 weight cubes from an
-individual weight kernel. 16 MAC cells cache weights from 16 kernels
-(int16/fp16) or 32 kernels (int8). One 1x1x64 atomic cube of feature
-data shares by all MAC cells. Then MAC cells do computing mentioned in
-rule 5. The output of each MAC cell is called **partial sum**. This
-operation takes 1 cycle to finish the calculation, and gets 16 partial
-sums. Partial sums are sent to convolution accumulator module for
+individual weight kernel. The 16 MAC cells therefor cache weights from 16 
+int16/fp16 kernels or 32 int8 kernels.
+One 1x1x64 atomic cube of feature
+data is shared by all MAC cells. The MAC cells perform computing mentioned in
+rule 5 above. The output of each MAC cell is called a **partial sum**. This
+operation takes 1 cycle to complete, resulting in 16 partial
+sums per cycle. Partial sums are sent to the convolution accumulator module for
 further calculation.
 
-The equation of partial sum is:
+The equation for the partial sum is:
 
 .. math:: \text{PS}_{w,\ h,k,r,s,\ c} = \ \sum_{i = c}^{min(c + 63,\ C - 1)}{x_{(w*SX - LP + r),(h*SY - TP + s),\ i}*\text{wt}_{r,\ s,\ i,k}}
 
@@ -192,7 +202,7 @@ The equation of partial sum is:
 In the equation, *PS* refers to partial sum. Variable *c* is always
 divisible by 64.
 
-The diagram of atomic operation is as below.
+A diagram showing the Atomic Operation is as below.
 
 .. _fig_image7_atomic_operation:
 
@@ -205,20 +215,24 @@ Stripe Operation
 ^^^^^^^^^^^^^^^^
 
 A stripe operation combines a group of atomic operations from several
-convolutions. During one stripe operation, the weight data in MAC cell
-array keep unchanged. And input data cubes slides in input data cube.
+convolutions. During one stripe operation the weight data in MAC cell
+array is kept unchanged. Input data slides along input data cube.
 
 Notice the partial sums in one stripe operation cannot be added
-together.
+together as the correspond to different points in the output cube.
 
 The length of stripe operation has limitations. The lower limit 16 is
 due to internal bandwidth to fetch weights for next stripe operation.
-The upper limit 32 is due to buffer size in ACCU. But the length may be
-less than lower limit in extreme cases.
+The upper limit is 32 due to buffer size in the accumulator. The 
+length may be less than lower limit in some extreme cases.
 
 The figure below shows an example of stripe operation which contains 16
 atomic operations. The padding size is 0 in this case. Notice it’s not a
-progressive scanning of input data cube!
+progressive scanning of input data cube.  Though generally, a stripe
+does scan along the w dimension first.  The figure below shows an example
+with no padding so the last two columns aren't part of the first stripe
+(with a 3x3 kernel, no padding, and an input with w=6, the output will
+have a w of 4).
 
 .. _fig_image8_stripe_operation:
 
@@ -230,10 +244,13 @@ progressive scanning of input data cube!
 Block operation
 ^^^^^^^^^^^^^^^
 
-Block operation is a higher level to stripe operations. During block
-operation, each kernel in kernel group uses RxSx64 weight elements. And
-small cube of input feature data shifts properly, to guarantee that the
-results can add together across stripe operations.
+A Block Operation is a higher level operation consisting of multiple 
+stripe operations. During Block
+Operation, each kernel in a kernel group uses RxSx64 
+weight elements, along with
+a small cube of input feature data sized properly to ensure that the
+results can add together across stripe operations and accumulated into
+the 16-32 element accumulator.
 
 .. _fig_image9_block_operation:
 
@@ -244,8 +261,8 @@ results can add together across stripe operations.
 
 All stripe operations in one block operation have the same atomic
 operation number. The partial sums from the same block operation are
-added together per stripe operation in convolution accumulator. These
-results are called accumulative sum
+added together per stripe operation in the convolution accumulator. 
+These results are called accumulative sum.
 
 The equation of accumulative sum is:
 
@@ -275,22 +292,26 @@ All partial sums of one channel operation can be added together by
 stripe operation. After a channel operation, the result in convolution
 accumulator is exactly the convolution result.
 
-The equation is:
+The equation for the result of a channel operation s:
 
 .. math:: y_{w,\ h,k} = \ \sum_{i = 0}^{\left\lfloor C/64 \right\rfloor - 1}{\sum_{r = 0}^{R - 1}{\sum_{s = 0}^{S - 1}{\sum_{j = c}^{min(c + 63,\ C - 1)}{x_{(w*SX - LP + r),(h*SY - TP + s),\ (i*64 + j)}*\text{wt}_{r,\ s,\ (i*64 + j),k}}}}}
 
 ..  equation of channel operation
 
-This equation is identically equal to the original convolution equation.
+This equation is identically equal to the original convolution equation
+for a stripe of 16-32 output points.  After one channel operation, the
+accumulator is unloaded and sent to the post-processor, making room for 
+the next channel operation.
 
 Group Operation
 ^^^^^^^^^^^^^^^
 
 Group operation is a higher-level operation than channel operation. It
 includes about int((dataout_height \* dataout_width) / stripe_size)
-channel operations. After a group operation, the output data compose a W
+channel operations. After a group operation, the output data composes a W
 x H x K’ output surface. Here K’ refers to kernel size in a kernel
-group.
+group, with one kernel group being the number of kernels processed at a time, 
+one per MAC Cell.
 
 Output Sequence
 ^^^^^^^^^^^^^^^
@@ -314,20 +335,22 @@ mapping order.
 Operation for Int8 and fp16
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The operations mentioned above are almost about int16. For fp16, the
-operations are the same. While for int8 precision, the parameters of
-operations are various.
+The operations mentioned above reflect int16 precision.  Fp16 is
+handled identically.  However, int8 is handled a bit differently.
 
-In convolution pipeline, each MAC for int16/fp16 is combined from two
-MACs for int8, as well as adders. The element throughput of int8 is
-doubled. Table below records parameters of one atomic operation.
+In convolution pipeline, each multiply-accumulate primitive for 
+int16/fp16 is split into two MACs for int8.  
+The element throughput of int8 is
+therefore double the int16 element throughput.  
+
+The table below records parameters of one atomic operation.
 
 .. table:: Precision parameters of atomic operation
  :name: tab_precision_atomic_operation
 
  +-------------+-------------+-------------+-------------+-------------+
- | convolution | input data  | weights per | kernels     | Output      |
- | precision   | elements    | kernel      |             | elements    |
+ | Convolution | Input Data  | Weights per | Kernels     | Output      |
+ | Precision   | Elements    | Kernel      |             | Elements    |
  +=============+=============+=============+=============+=============+
  | int16       | 64          | 1024        | 16          | 16          |
  +-------------+-------------+-------------+-------------+-------------+
@@ -340,13 +363,18 @@ Winograd Convolution
 ~~~~~~~~~~~~~~~~~~~~
 
 Winograd convolution refers to an optional algorithm to optimize the
-performance of direct convolution. Convolution pipeline only support
-Winograd for 3x3xC kernel.
+performance of direct convolution. The Convolution Pipeline supports
+Winograd only for 3x3xC size kernels.
 
-The key idea for Winograd convolution is to reduce the number of
-multiplication, while increase adders to deal with additional
-transformation. The equation of Winograd convolution used in convolution
-pipeline is:
+The motivation for the Winograd convolution is to reduce the number of
+multiplications required, resulting in drastically increased performance for
+a given number of MAC hardware elements.
+
+Winograd requires some additional adders to perform the Winograd transform
+on input and output activation data.
+
+The equation for the Winograd Convolution used in the Convolution
+Pipeline is:
 
 .. math:: S = \ A^{T}\left\lbrack \left( \text{Gg}G^{T} \right) \odot \left( C^{T}\text{dC} \right) \right\rbrack A
 
@@ -405,7 +433,7 @@ data.
 
 ..  matrices of transform
 
-Suppose *U = GgG\ :sup:`T`* and *V = C\ :sup:`T` dC*, then the equation
+Suppose :math:`U=GgG^{T}` and :math:`V=C^{T}dC`, then the equation
 is:
 
 .. math:: S = \ A^{T}\left\lbrack U \odot V \right\rbrack A
@@ -413,32 +441,35 @@ is:
 ..  equation of Winograd convolution
 
 According to the equation, the multiplication with *A*, *G* and *C* can
-be implemented by adders. Only 16 multiplications are required to
-calculate 4 results for a 3x3 kernel. While in direct convolution mode,
-it needs 36 multiplications. So based on multiplications, the
-performance of Winograd is 2.25 times of direct convolution.
+be implemented with adders. Only 16 multiplications are required to
+calculate 4 results for a 3x3 kernel, while in direct convolution mode
+36 multiplications are required. Winograd is therefore 2.25 times the 
+performance of Direct Convolution.
 
-Step *U = GgGT* is to convert 3x3 kernel to 4x4 kernel. Software should
-convert weight kernel before NVDLA engine is running. Convolution
-pipeline handles the conversion of input feature data and the result of
+Step :math:`U=GgG^{T}` converts 3x3 kernel to 4x4 kernel used for a point-wise
+multiplication against a 4x4 patch of the input activation cube. 
+Software should
+convert weight kernel before NVDLA engine is running. The Convolution
+Pipeline handles the conversion of input feature data and the result of
 multiplications.
 
-Unlike direct convolution, convolution pipeline divide kernels and input
-feature data into 4x4x4 elements small data cubes. Before MAC cell,
-extra adders are used to convert these cubes with matrix *C\ :sup:`T`*
+Unlike in Direct Convolution, the Winograd Convolution Pipeline 
+will divide kernels and input
+feature data into 4x4x4 element small data cubes. Before the MAC Cell,
+extra adders are used to convert these cubes with matrix :math:`C^{T}`
 and *C*. This step is called PRA.
 
-In one atomic operation, 64 products in the same MAC cell are not added
-together. The addition has three phases:
+In one Winograd atomic operation, 64 products in one MAC cell are not 
+simply added together as in Direct Convolution. The addition has three phases:
 
--  Phase 1, each 4 products in channel direction is added together. The
-   output of phase 1 is 16 partial sums
+-  Phase 1, each of 4 products in the channel direction are added together. The
+   output of phase 1 is 16 partial sums, representing a 4x4 matrix.
 
--  Phase 2, each 4 partial sums is multiplied with matrix *A\ :sup:`T`*.
-   The output of phase 2 is 8 partial sums
+-  Phase 2, each 4x4 partial sum matrix is multiplied with matrix :math:`A^{T}`.
+   The output of phase 2 is 8 partial sums, or a 4x2 matrix.
 
--  Phase 3, each 4 partial sums is multiplied with matrix *A*. The
-   output is 4 partial sums.
+-  Phase 3, each 4x2 partial sum matrix from phase 2 is multiplied 
+   with matrix *A*. The output is 4 partial sums.
 
 Then 4 partial sums are stored in accumulator for further calculation.
 Both phase 2 and phase 3 are called POA.
@@ -480,9 +511,7 @@ listed in table below.
  +-------------+-------------+-------------+-------------+-------------+
 
 The output sequence of Winograd convolution is similar to direct
-convolution.
-
-Some difference of Winograd:
+convolution.  Some differences of Winograd:
 
 -  For Winograd operation, the output width and height shall be
    divisible by 4. It’s a mandatory requirement. It’s for special scan
@@ -510,12 +539,13 @@ Deconvolution is a type of special convolution. It is some kind of
 inverse operation of normal convolution. Unlike normal convolution case,
 deconvolution layer always enlarges the data cube after calculation.
 
-In NVDLA architecture deconvolution is a SW feature. From HW
+In the NVDLA architecture, deconvolution is a SW feature. From HW
 perspective, a SW deconvolution layer consists of a serial convolution
-layer and a contract layer supported by RUBIK unit.
+layer and a contract layer supported by the RUBIK unit.
 
-:numref:`fig_image13_1d_deconvolution` is an example of one-dimensional deconvolution layer. Input
-data cube is W x 1 x 1 and kernel size is 3 x 1 x 1. Though the
+:numref:`fig_image13_1d_deconvolution` is an example of a one-dimensional 
+deconvolution layer. The Input data cube has dimensions W x 1 x 1 and 
+kernel dimensions are 3 x 1 x 1. Though the
 calculation flow is different from convolution, the result formula is:
 
 .. math:: DAOUT_{i} = \sum_{j = 0}^{2}{DAIN_{i + j - 2}*W_{2 - j}}
@@ -540,11 +570,11 @@ with (S-1) and (R-1) zero padding and reversed R/S weight order
 
   One-dimensional deconvolution, x stride = 1
 
-If deconvolution X stride or Y stride is not 1, the calculation flow is
-a bit different. We use set split to generate smaller kernel sets. Each
-set of kernel acts like a convolution layer, which X and Y strides are
-equal to 1. That is how to use several convolution layers to calculate
-the result of a deconvolution layer.
+If the deconvolution X stride or Y stride is not 1, the calculation flow is
+a bit different. The weight kernels are split into smaller kernel sets. Each
+set of kernels operates as a convolution layer where X and Y strides are
+equal to 1. Several convolution layers are therefore used to generate a 
+deconvolution layer result.
 
 After a serial convolution layer, all deconvolution result values are
 ready but the mapping order is not expected result. If we append the
@@ -552,8 +582,8 @@ convolutional output cube one after another in C direction, then the
 total output data cube is the Winograd channel-extended data cube. The
 extension parameter is deconv_x_stride and deconv_y_stride.
 
-So, NVDLA uses a special layer contract layer (performed by Rubik) to reorder these output
-values to get the ideal deconvolutional output cube.
+So, NVDLA uses a special layer contract layer (performed by Rubik) 
+to reorder these output values to get the desired deconvolutional output cube.
 
 In conclusion, NVDLA supports deconvolution layer by below strategy:
 
@@ -572,15 +602,17 @@ In conclusion, NVDLA supports deconvolution layer by below strategy:
 -  Rubik unit does an inverse operation to Winograd channel-extended
    data cube.
 
--  After second HW-layer, output data cube is expected result.
+-  After the second HW-layer, the output data cube is formated as per the expected result.
+
 
 Convolution with Image Input
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-NVDLA support convolution with image data. Here image data could be a
+NVDLA supports convolution with image data with a special mode to 
+improve MAC utilization. Here image data could be a
 part or whole image surface. However, NVDLA can only support it for
 direct convolution. **DC**, **Winograd and deconvolution layer cannot
-use pixel formats**. Besides, multi-batch option is not supported for
+use pixel formats**. Multi-batch option is also not supported for
 image input.
 
 Comparing to DC, image input case has some difference:
@@ -588,8 +620,9 @@ Comparing to DC, image input case has some difference:
 -  Channel pre-extension. The weight kernel should do channel
    pre-extension. It is unlike DC mode or Winograd mode.
 
--  Data mapping in convolution buffer. The image data mapping in
-   convolution buffer is very different. All element of left/right
+-  Data mapping in convolution buffer. The image data mapping in the
+   convolution buffer is different from DC and Winograd mode. 
+   All elements of left and right
    padding and input pixel line are compactly residing in CBUF entries.
    See figure below. If channel size is 4, the element mapping order is
    R(Y)->G(U)->B(V)->A(X). If channel size is 3, the order is
@@ -597,7 +630,7 @@ Comparing to DC, image input case has some difference:
 
 -  Distribution of stripe operation. The stripe operation length is
    fixed to 64. And stripe operation shall never across lines. So that
-   every stripe operation is started from first byte of CBUF entry.
+   every stripe operation is started from first byte of a CBUF entry.
 
 -  Use channel post-extension for speedup. Even with channel
    pre-extension, usually kernel channel size is less than 32.
@@ -614,12 +647,12 @@ Comparing to DC, image input case has some difference:
 Channel Post-Extension
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Channel post-extension is an option of saving MAC performance for
-convolution with image input case.
+Channel post-extension is an option for improving MAC utilization for
+convolution with image input.
 
-In convolution pipeline, one atomic operation requires 64 elements in
-channel dimension (exclude Winograd case). If the channel size of input
-data cube is less than 64, MACs are not 100% activation in each cycle.
+In the Convolution Pipeline, one atomic operation requires 64 elements in
+channel dimension (excluding Winograd mode). If the channel size of the input
+data cube is less than 64, MACs are not 100% utilized in each cycle.
 Thus, MAC efficiency depends on channel size in DC mode and image input
 mode.
 
@@ -629,7 +662,7 @@ to enlarge the channel size during runtime.
 For example, an image input layer has 4x4x4 kernel size. If
 post-extension is not enabled, the pre-extended channel size is 16 and
 efficiency of MACs drops to 25%. However, if post-extension parameter is
-set to 4, every atomic cycle convolution pipeline will fetch 4 neighbor
+set to 4, every atomic cycle convolution pipeline will fetch 4 neighboring
 lines and combine them as a C=64 line. Then MAC efficiency rise back to
 100%.
 
@@ -637,7 +670,7 @@ Some limitation of channel post-extension:
 
 -  Channel post-extension is only for image input convolution.
 
--  Channel post-extension support 2-line extending and 4-line extending.
+-  Channel post-extension only supports 2-line extending and 4-line extending.
 
 -  Channel post-extension is limited by pre-extended channel size and
    convolution x stride
@@ -660,9 +693,10 @@ Some limitation of channel post-extension:
  |                      | <=16                 |                      |
  +----------------------+----------------------+----------------------+
 
-It’s necessary to mention that the channel pos-extension number (N)
-doesn’t need to be less than kernel height (R), hardware can
-automatically tailor the redundant lines to avoid them be involved to
+
+It’s necessary to mention that the channel post-extension number (N)
+doesn’t need to be less than kernel height (R).  Hardware can
+automatically tailor the redundant lines to avoid them be involved in
 computation. However, this also means the user shouldn’t expect N times
 of MAC efficiency improvements for this case.
 
@@ -670,21 +704,22 @@ Multi-Batch Mode
 ~~~~~~~~~~~~~~~~
 
 NVDLA engine also supports multi-batch to enhance the performance and
-reduce the bandwidth, especially for FC (fully-connected) layers. The
+reduce the bandwidth, especially for Fully-Connected (FC) layers. The
 output of one FC layer is a 1x1xC data cube. That means all weights in
 one FC layer are used only once. One stripe operation in FC layer has
-only one atomic operation. But convolution pipeline needs 16 cycles to
-load weight for next atomic operation. That makes a lot of bubble in
-pipeline and MAC efficiency falls to 6.25%. To save the efficiency,
-NVDLA engine applies multi-batch mode.
+only one atomic operation. But the convolution pipeline needs 16 cycles to
+load weight for next atomic operation. This introduces a lot of bubbles in
+the pipeline and MAC efficiency falls to 6.25%. To save the efficiency,
+the NVDLA engine can apply multi-batch mode.
 
 The multi-batch is a special option for DC mode with multiple input
-feature data cube. Convolution pipeline will fetch multiple input data
-cubes with only one set of weight kernels. It also changes the atomic
+feature data cubes being processed at once. The Convolution pipeline 
+will fetch multiple input data
+cubes for one set of weight kernels. This also changes the atomic
 operation. Small cubes from different input data cubes are loaded
 interlaced for atomic operation one after another. The stripe operation
-contains atomic operations for multiple batches. By that part of weight
-loading cycles are hidden and the efficiency rises.
+then contains atomic operations for multiple batches. Since weights are reused
+accross a stripe weight loading cycles are hidden and the efficiency increases.
 
 The length of stripe operation with different batch size are:
 
@@ -722,9 +757,9 @@ Dilation
 ~~~~~~~~
 
 Dilation is an option that enlarges the kernel in R and S dimensions
-with zero values. This function is enabled by SW according to algorithm.
+with zero values. This function can be enabled by SW according as needed.
 
-Diagram below shows a case that dilation parameter = 3.
+The diagram below shows a case with the dilation parameter = 3.
 
 .. _fig_image16_weight_dilation:
 
@@ -733,7 +768,7 @@ Diagram below shows a case that dilation parameter = 3.
 
   Weight dilation
 
-NVDLA support dilation in both R and S dimensions.
+NVDLA supports dilation in both R and S dimensions.
 
 Limits of dilation:
 
@@ -744,10 +779,10 @@ Limits of dilation:
 Power Consideration
 ~~~~~~~~~~~~~~~~~~~
 
-Convolution pipeline supports SLCG for each pipeline stage. If the
+Convolution pipeline supports clock gating for each major pipeline stage. If the
 pipeline stage is idle and no valid HW-layer is available, the data path
-of pipeline stage will be clock gated. But the regfile sub models inside
-pipeline stage cannot be gated by SLCG.
+of pipeline stage will be clock gated. 
+
 
 Convolution DMA
 ---------------
@@ -757,9 +792,9 @@ Convolution DMA
 Overview
 ~~~~~~~~
 
-Convolution DMA (CDMA) is a pipeline stage of convolution pipeline. It
-fetches data from SRAM/DRAM for convolution operation and stores them
-into convolution buffer with particular order. The supported input
+Convolution DMA (CDMA) is a pipeline stage in the convolution pipeline. It
+fetches data from SRAM/DRAM for the convolution operation and stores it
+into a convolution buffer in a particular order. The supported input
 formats are:
 
 -  Pixel data
@@ -780,37 +815,36 @@ below records the sharing in all use cases.
 .. table:: Channel sharing in CDMA
  :name: tab_channel_sharing_in_cdma
 
- +-------------+-------------+-------------+-------------+-------------+
- | Input       | Image Case  | Uncompresse | Uncompresse | Compressed  |
- | Format      |             | d           | d           | Weight Case |
- |             |             | Feature     | Weight Case |             |
- |             |             | Case        |             |             |
- +=============+=============+=============+=============+=============+
- | Pixel data  | data        | NA          | NA          | NA          |
- |             | channel     |             |             |             |
- +-------------+-------------+-------------+-------------+-------------+
- | Uncompresse | NA          | data        | NA          | NA          |
- | d           |             | channel     |             |             |
- | feature     |             |             |             |             |
- | data        |             |             |             |             |
- +-------------+-------------+-------------+-------------+-------------+
- | Uncompresse | NA          | NA          | weight      | NA          |
- | d           |             |             | channel     |             |
- | weight      |             |             |             |             |
- +-------------+-------------+-------------+-------------+-------------+
- | Sparse      | NA          | NA          | NA          | weight      |
- | compressed  |             |             |             | channel     |
- | weight      |             |             |             |             |
- +-------------+-------------+-------------+-------------+-------------+
- | WMB         | NA          | NA          | NA          | weight      |
- |             |             |             |             | channel     |
- +-------------+-------------+-------------+-------------+-------------+
- | WGS         | NA          | NA          | NA          | weight      |
- |             |             |             |             | channel     |
- +-------------+-------------+-------------+-------------+-------------+
+ +--------------+-------------+-------------+-------------+-------------+
+ | Input        | Image Case  | Uncompressed| Uncompressed| Compressed  |
+ | Format       |             | Feature     | Weight Case | Weight Case |
+ |              |             | Case        |             |             |
+ |              |             |             |             |             |
+ +==============+=============+=============+=============+=============+
+ | Pixel data   | data        | NA          | NA          | NA          |
+ |              | channel     |             |             |             |
+ +--------------+-------------+-------------+-------------+-------------+
+ | Uncompressed | NA          | data        | NA          | NA          |
+ | feature      |             | channel     |             |             |
+ | data         |             |             |             |             |
+ +--------------+-------------+-------------+-------------+-------------+
+ | Uncompressed | NA          | NA          | weight      | NA          |
+ | weight       |             |             | channel     |             |
+ +--------------+-------------+-------------+-------------+-------------+
+ | Sparse       | NA          | NA          | NA          | weight      |
+ | compressed   |             |             |             | channel     |
+ | weight       |             |             |             |             |
+ +--------------+-------------+-------------+-------------+-------------+
+ | WMB          | NA          | NA          | NA          | weight      |
+ |              |             |             |             | channel     |
+ +--------------+-------------+-------------+-------------+-------------+
+ | WGS          | NA          | NA          | NA          | weight      |
+ |              |             |             |             | channel     |
+ +--------------+-------------+-------------+-------------+-------------+
 
-Convolution DMA sends read requests only. All requests sent by
-convolution DMA are 64-byte aligned.
+
+Convolution DMA sends memory read requests only. All memory read requests sent by
+Convolution DMA are 64-byte aligned.
 
 .. _fig_image17_cdma:
 
@@ -819,7 +853,7 @@ convolution DMA are 64-byte aligned.
 
   Convolution DMA
 
-CDMA uses three sub modules, which are CDMA_DC, CDMA_WG and CDMA_IMG, to
+CDMA uses three sub modules, CDMA_DC, CDMA_WG and CDMA_IMG, to
 fetch pixel data or feature data for convolution. The procedures of
 these sub modules are similar. At any time, only one of the sub modules
 is activated to fetch pixel/feature data.
@@ -828,7 +862,7 @@ Take CDMA_DC as an example to introduce the procedures:
 
 -  Check status of convolution buffer for enough free space.
 
--  Generate reading transactions
+-  Generate read transactions
 
 -  Cache feature data in shared buffers
 
@@ -840,24 +874,24 @@ Take CDMA_DC as an example to introduce the procedures:
 
 -  Update status of convolution buffer in CDMA_STATUS module
 
-Convolution DMA module use a dedicate sub module to handle the
-requirement of Winograd. CDMA_WG has very similar structure and
+Convolution DMA uses a dedicated engine to handle the
+requirements of Winograd. CDMA_WG has very similar structure and
 functionality to CDMA_DC. But the feature data mapping in convolution
 buffer is different. Thus CDMA_WG has a special fetching sequence.
-Besides, CDMA_WG always do Winograd channel extension.
+Additionally, CDMA_WG always performs Winograd channel extension.
 
-The module CDMA_IMG fetches pixel data from external memory. It
-generates the address according to data format, reorders the pixel
-elements and writes them into the proper entry of the convolution
-buffer. The basic behavior of CDMA_IMG is like CDMA_DC, but tt only
-services for pixel data.
+The CDMA_IMG engine fetches pixel data from external memory. It
+generates the address according to the data format, reorders the pixel
+elements, and writes them into the proper entry of the convolution
+buffer. The basic behavior of CDMA_IMG is like CDMA_DC, but it
+operates on pixel data.
 
-Only CDMA_DC module supports multi-batch mode. That is fetching more
+Only the CDMA_DC engine supports multi-batch mode. That is, fetching more
 than one input feature data cube in one HW-layer to improve the
-performance. The max batch size is up to 32.
+performance. The max batch size can be up to 32.
 
-CDMA also use a dedicate sub module to weight fetching. The sub module
-is called CDMA_WT. CDMA_WT is very simple to other sub modules, except
+CDMA also use a dedicated engine for weight fetching: CDMA_WT. 
+CDMA_WT is simple compared to other DMA engines, except
 that it can support three read steams at a time. If the input weight
 format is uncompressed, it only fetches weight data. If the input weight
 format is compressed, weight/WMB/WGS are all fetched. Please see `Data Formats
