@@ -1,5 +1,5 @@
-Data Formats
-============
+In-memory data formats
+======================
 
 Overview
 --------
@@ -935,8 +935,8 @@ Here is the conclusion of requirements of alignment:
  | wise     |          |          |          |          |          |
  +----------+----------+----------+----------+----------+----------+
 
-Data file format
-================
+Testbench data file format
+==========================
 
 Feature data file (input_feature_map.dat)
 -----------------------------------------

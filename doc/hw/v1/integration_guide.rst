@@ -31,7 +31,7 @@ After downloading, to understand more about the NVDLA design, you can try out th
 
 5) Open up the :ref:`performance_model` spreadsheet to look at 
    performance with different NVDLA configurations.  Configurable RTL
-   is on the :doc:`roadmap`.
+   is on the :doc:`../../roadmap`.
 
 6) Integrate the NVDLA RTL into your SoC.  The sanity tests that are run in the stand-alone NVDLA 
    testbench can also be run at the SoC level and used to validate the integration.  

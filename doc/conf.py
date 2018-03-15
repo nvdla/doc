@@ -155,7 +155,11 @@ html_static_path = ['../static']
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
-html_additional_pages = {'index': 'index.html'}
+html_additional_pages = {
+    'index': 'index.html',
+    'hwarch': 'hwarch.html',
+    'integration_guide' : 'integration_guide.html'
+}
 
 # If false, no module index is generated.
 #html_domain_indices = True

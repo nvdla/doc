@@ -21,7 +21,7 @@ NVDLA has two modes of operation: independent mode and fused mode. Independent o
 
 .. _fig_arch_nvdla_block_diagram:
 
-.. figure:: nvdla-primer-core-diagram.svg
+.. figure:: ../../nvdla-primer-core-diagram.svg
   :alt: "Headless NVDLA core" architectural drawing.  A configuration interface block is connected to the outside world through the CSB/interrupt interface.  The memory interface block is connected outside with a DBB interface and a second, optional, DBB interface.  The memory interface connects to a convolution buffer, which connects to a convolution core; the memory interface also connects to the activation engine, the pooling engine, local response normalization engine, reshape engine, and bridge DMA engine.   The convolution core, activation engine, pooling engine, and local response normalization engine also form a pipeline.
   :align: center
 
