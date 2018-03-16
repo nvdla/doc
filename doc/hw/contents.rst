@@ -13,3 +13,4 @@ the hardware that has been released so far.
    format
    v1/contents
    v2/scalability
+   v2/verif_guide
