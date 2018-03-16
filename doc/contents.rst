@@ -13,8 +13,6 @@ of documents that have been written about NVDLA.
    sw/contents
    vp
    hw/contents
-   ias/unit_description
-   ias/programming_guide
    updates
    license
    conduct
@@ -34,10 +32,10 @@ of documents that have been written about NVDLA.
   * :doc:`hw/format` -- an overview of the in-memory format for weight and
     activation data.
 
-  * :doc:`ias/unit_description` -- description of internal architecture 
+  * :doc:`hw/v1/ias/unit_description` -- description of internal architecture 
     of sub-units
 
-  * :doc:`ias/programming_guide` -- programming guide of precision architecture 
+  * :doc:`hw/v1/ias/programming_guide` -- programming guide of precision architecture 
     and sub-units
 
 * :doc:`sw/contents` -- an exploration of the software ecosystem that
