@@ -2,91 +2,82 @@
 Programming Guide
 =================
 
-(Notice: This version of *Programming Guide* is only for nvdlav1 release.)
+(Notice: This version of the *Programming Guide* is only for the nvdlav1
+release.)
 
-Precision programming
----------------------
+Precision Preservation
+----------------------
 
-Precision architecture
-~~~~~~~~~~~~~~~~~~~~~~
-
-Overall
-^^^^^^^
-
-Though most software based DNN are FP32 based, lots of study already
-proved low precision are good enough for inference thus NVDLA choose to
+Though most software-based DNN implementations are FP32-based, many studies have already
+shown that lower precision is sufficient for inference.  As such, NVDLA chooses to
 support INT8/INT16/FP16 as a trade-off between precision and
-performance/area, at the same time, there’re technologies adopted to
-keep the precision loss under control. Here’s a diagram about NVDLA
-precision architecture.
+performance/area.  At the same time, NVDLA adopts technologies to
+keep the precision loss under control.  Below, we give a diagram with an overview of NVDLA's
+precision-preservation architecture.
 
 .. _fig_image53_nvdla_precision:
 
 .. figure:: ias_image53_nvdla_precision.svg
   :align: center
 
-  NVDLA precision architecture
+  NVDLA precision-preservation architecture
 
-There’re totally 4 types of precision control technologies in NVDLA
+In total, there are four types of approaches to precision control in the NVDLA
 pipeline:
 
 -  Convertor:
 
-   The formula for convertor in INT8/INT16 is :math:`y = saturation\_round{(x - offset_{int}) * scaling_{int} >> shifter_{uint}}`
+   The formula for a convertor in INT8 and INT16 is: :math:`y = saturation\_round{(x - offset_{int}) * scaling_{int} >> shifter_{uint}}`
 
-   *offset, scaling, shifter* are programmable registers to allow
-   software control the output dynamic range. Saturation is output bits
-   dependent.
+   `offset`, `scaling`, and `shifter` are programmable registers to allow
+   software to control the output dynamic range. Saturation is dependent on the number of output bits.
 
-   For INT8/16, offset/scaling are treated as signed int and the exact
-   bits is depends on its input operands.
-   Shifter is a 5 bits unsigned integer (always right shift), the
-   rounding method used after shifter is “round half away from zero”;
+   For INT8 and INT16, `offset` and `scaling` are treated as signed integers, and the exact
+   number of bits is depends on the input operands.
+   `shifter` is a 5 bits unsigned integer (always specifying a right shift); the
+   rounding method used after the shift is to “round half away from zero”.
 
-   For FP16, the dynamic range for FP16 representable is big thus
-   convertor/shifter logics are not implemented in hardware;
+   For FP16, the dynamic range that can be represented by FP16 representable is large, and so
+   convertor and shifter logic is not implemented in hardware.
 
-   Convertor is able to keep best precision even input data are not
-   symmetric to 0 and dynamic range is not 2\ :sup:`N`, NVDLA uses it
-   to convert internal precision(high) to external(low, typically
-   INT8/16/FP16).
+   The convertor is able to keep the best possible precision even if input data are not
+   symmetric to 0, or dynamic range is not 2\ :sup:`N`; NVDLA uses it
+   to convert internal precision (high) to external (low, typically
+   INT8/INT16/FP16).
 
 -  Truncate:
 
-   Truncate is enabled for INT8/INT16 only, the formula of truncate is: :math:`y = saturate\_round (x[msb : lsb])`
+   Truncation is enabled for INT8/INT16 only.  The formula for truncation is: :math:`y = saturate\_round (x[msb : lsb])`
 
-   lsb is a programmable register, msb=lsb+output_bits.
+   `lsb` is a programmable register; `msb` is defined as `lsb` + `output_bits`.
 
-   Same as convertor, the rounding method used in truncate also “Round
+   Similarly to the convertor, the rounding method used in truncation is also “round
    half away from zero”.
 
-   Truncate is used in NVDLA internal pipe where the y has enough bits
-   (comparing with convertor case), it’s the result of trade-off
+   Truncation is used in NVDLA internal pipe where the :math:`y` has enough bits
+   (compared to convertor case); it is the result of a trade-off
    between precision and area.
 
 -  Shifter:
 
-   Shifter is enabled to make sure bias is addable with convolution
-   results, it has the formula :math:`y = saturate ( x << shifter )`
+   The shifter exists to make sure that the bias can be added to convolution
+   results; it has the formula :math:`y = saturate ( x << shifter )`.
 
-   Shifter is a programmable register. Saturate is output_bits
-   dependent.
+   `shifter` is a programmable register. The saturate function depends on the number of output bits.
 
 -  LUT:
 
-   LUT are used to deal with non-linear function in a network such as
-   sigmoid/Tanh activation or local response normalization as mentioned
-   in `Data Formats <http://nvdla.org/hw/format.html>`_, we use an innovated 2 level hybrid LUT to mimic those
-   non-linear functions, see `LUT programming`_ for detail.
+   Look-up tables are used to deal with non-linear function in networks; these functions include
+   sigmoid/tanh activation, or local response normalization as mentioned
+   in `Data Formats <http://nvdla.org/hw/format.html>`_.  We use an innovative 2 level hybrid LUT to mimic those
+   non-linear functions; for more detail, see see `LUT programming`_.
 
 FP16 error threshold
-^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~
 
-We know FP output results are highly depending on computation sequence,
-this means, for any FP16 tests, we should allow certain threshold when
-compare NVDLA output against reference.
-
-Here’s a summary about the threshold:
+We know that the output of computations on floating-point data are highly depending on computation order.
+As a result, when comparing the results of tests that are computed in FP16 space, we should allow some certain threshold of error when
+comparing NVDLA's output against reference.  Below is a summary of the thresholds that are applied for each module.
 
 +-------------+---------------------------------------------------------------------------------+
 | Sub-module  | Threshold                                                                       |
@@ -102,22 +93,20 @@ Here’s a summary about the threshold:
 | PDP         | :math:`(fabs(a-b) \leq 0.0001) \&\& (\frac{fabs(a-b)}{max\_value} \leq 0.001)`  |
 +-------------+---------------------------------------------------------------------------------+
 
-Comments:
+In the above table, note that:
 
-**exp**\ (a) in DC/Winograd is the operation to extract exponential
-field of an input: :math:`exp(a) = ((a>>10) \& 0x1f) - 15` .
+- :math:`exp(a)` in DC/Winograd is the operation to extract exponential
+  field of an input: :math:`exp(a) = ((a>>10) \& 0x1f) - 15` .
 
-**max_exp** in DC/Winograd is the maximum exponential value of wt*data
-inside a convolution kernel, as data is moving in a sliding window,
-max_exp is different element-by-element:
+- :math:`max\_exp: in DC/Winograd is the maximum exponential value of :math:`wt*data`
+  inside a convolution kernel.  As data moves in a sliding window,
+  max_exp is different element-by-element:
 
-.. math:: max\_exp=\max_{s=0...S-1\\r=0...R-1\\c=0...C-1}(exp(data_{r,s,c})\&(\sim\ 0x3)+exp(wt_{r,s,c})\&(\sim\ 0x3))
+  .. math:: max\_exp=\max_{s=0...S-1\\r=0...R-1\\c=0...C-1}(exp(data_{r,s,c})\&(\sim\ 0x3)+exp(wt_{r,s,c})\&(\sim\ 0x3))
 
-..
+- **max_value** in CDP is the maximum value inside one square sum window.
 
-**max_value** in CDP is the maximum value inside one square sum window;
-
-**max_value** in PDP is the maximum value inside one pooling window;
+- **max_value** in PDP is the maximum value inside one pooling window.
 
 Convertor programming
 ~~~~~~~~~~~~~~~~~~~~~
@@ -125,9 +114,9 @@ Convertor programming
 Programming interface
 ^^^^^^^^^^^^^^^^^^^^^
 
-As mentioned above, for a given convertor, there’re 3 parameters:
-offset, scaling and shifter. According to different use scenario, those
-parameters have different encoding:
+As mentioned above, for a given convertor, there are 3 parameters:
+`offset`, `scaling` and `shifter`.  Depending on the use cases, those
+parameters have different encodings:
 
 +-----------+----------+-----------+---------------+---------------+
 | Parameter | INT->INT | INT->FP16 | FP16->INT     | FP16->FP16    |
@@ -142,7 +131,7 @@ parameters have different encoding:
 Convolution convertors
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Here’s a list of convertor/truncate might be used for a convolution
+The following is a list of place where convertors or truncation might be used for a convolution
 layer (please refer to :numref:`fig_image53_nvdla_precision` about
 where’re the convertors in system):
 
@@ -1750,7 +1739,7 @@ SDP programming
 
 Not all the use scenarios in :numref:`tab_sdp_supported_use_scenarios` are necessary to explain, we’ll
 discuss bias addition/batch-norm/element-wise operations below (other
-features are precision related which already covered by `Precision Programming`_):
+features are precision related which already covered by `Precision Preservation`_):
 
 .. bias-addition-2:
 
