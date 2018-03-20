@@ -12,5 +12,8 @@ information, you may also consider the general :doc:`../contents`, or the
    
    hwarch
    integration_guide
+   ias/precision
+   ias/lut-programming
    ias/unit_description
    ias/programming_guide
+   
