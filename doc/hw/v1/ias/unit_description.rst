@@ -1110,9 +1110,16 @@ Convolution Accumulator
 Overview
 ~~~~~~~~
 
-The Convolution Accumulator (CACC) the stage of convolution pipeline
-after CMAC. It is used to accumulate partial sums from Convolution MAC,
-and round/saturate the result before sending to SDP. 
+The Convolution Accumulator (CACC) is the stage of the convolution pipeline
+after CMAC.  It is used to accumulate partial sums from Convolution MAC, and
+round/saturate the result before sending to SDP.  Additionally, the large
+buffer in the convolution accumulator can smooth the peak throughput of the convolution pipeline.
+
+The final result of accumulator in CACC is 48bits for INT16 and 34bits for INT8. 
+The bit width between CACC and SDP is 32.
+For precisions INT8 and INT16, there is a round and saturation operation before sending the result to SDP.
+The precision of rounding is configured by field CLIP_TRUNCATE in register D_CLIP_CFG.
+For FP16, the value is just converted from FP48 to FP32.
 
 The components in CACC include assembly SRAM group, delivery SRAM group,
 adder array, truncating array, valid-credit controller and a checker.
@@ -1132,11 +1139,11 @@ Here is the CACC working flow:
 5. Repeat step1~ step3 in terms of stripe operation until a channel
    operation is done.
 
-6. If a channel operation is done, the output of adders is truncated.
+6. If a channel operation is done, the output of adders is rounded and saturated.
 
-7. Gather truncated results and store them into delivery SRAM group.
+7. Gather results of previous step and store them into delivery SRAM group.
 
-8. Load truncated results from delivery buffer group and send them to
+8. Load results from delivery buffer group and send them to
    SDP
 
 .. _fig_image21_cacc:
@@ -1155,7 +1162,7 @@ buffer for int8. It takes at least 11 cycles to do a read-store circle
 for assembly group.
 
 The delivery SRAM group contains 8 64Bx32 SRAMs. The buffer group is
-used to cache truncated result to be delivered to SDP. The input varies
+used to cache the result to be delivered to SDP. The input varies
 from 16 elements to 128 elements per cycle, while the output is always
 16 elements per cycle.
 
