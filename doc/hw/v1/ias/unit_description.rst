@@ -794,12 +794,12 @@ Overview
 
 Convolution DMA (CDMA) is a pipeline stage in the convolution pipeline. It
 fetches data from SRAM/DRAM for the convolution operation and stores it
-into a convolution buffer in a particular order. The supported input
-formats are:
+into a buffer (Convolution Buffer or CBUF) in the order needed for the 
+convolution engine. Supported input formats are:
 
 -  Pixel data
 
--  feature data
+-  Feature data
 
 -  Uncompressed/compressed weight
 
@@ -807,10 +807,10 @@ formats are:
 
 -  WGS
 
-Two read channels connect from convolution DMA to AXI interface. They
-are weight read channel and data read channel. To fetch input format
-listed above, the channels are shared by one or more formats. The table
-below records the sharing in all use cases.
+Two read channels connect from CDMA to the AXI interface.  These are the
+weight read channel, and data read channel. To fetch the input formats
+listed above, the channels are configured for that format formats. The table
+below records the input data format to read channel mapping.
 
 .. table:: Channel sharing in CDMA
  :name: tab_channel_sharing_in_cdma
@@ -853,9 +853,11 @@ Convolution DMA are 64-byte aligned.
 
   Convolution DMA
 
-CDMA uses three sub modules, CDMA_DC, CDMA_WG and CDMA_IMG, to
-fetch pixel data or feature data for convolution. The procedures of
-these sub modules are similar. At any time, only one of the sub modules
+CDMA consists of three sub-modules to
+fetch pixel data or feature data for convolution: CDMA_DC, CDMA_WG 
+and CDMA_IMG. The procedures of
+these sub modules are similar, but differ in how they order the data
+into the CBUF RAM. At any time, only one of the sub modules
 is activated to fetch pixel/feature data.
 
 Take CDMA_DC as an example to introduce the procedures:
@@ -872,11 +874,12 @@ Take CDMA_DC as an example to introduce the procedures:
 
 -  Write feature data into convolution buffer
 
--  Update status of convolution buffer in CDMA_STATUS module
+-  Update status of convolution buffer in the CDMA_STATUS sub-module
 
 Convolution DMA uses a dedicated engine to handle the
 requirements of Winograd. CDMA_WG has very similar structure and
-functionality to CDMA_DC. But the feature data mapping in convolution
+functionality to CDMA_DC. However, the resulting feature data 
+orginization in the convolution
 buffer is different. Thus CDMA_WG has a special fetching sequence.
 Additionally, CDMA_WG always performs Winograd channel extension.
 
@@ -894,33 +897,33 @@ CDMA also use a dedicated engine for weight fetching: CDMA_WT.
 CDMA_WT is simple compared to other DMA engines, except
 that it can support three read steams at a time. If the input weight
 format is uncompressed, it only fetches weight data. If the input weight
-format is compressed, weight/WMB/WGS are all fetched. Please see `Data Formats
+format is compressed, weight, WMB, and WGS are all fetched. 
+Please see `Data Formats
 <http://nvdla.org/hw/format.html>`_ for more details of weight formats.
 
 If the input weight data is compressed, two arbiters are enabled for
 order of read streams. First a weighted round-robin arbiter grants a
-request from weight stream and WMB stream. Then the winner competes with
-WGS request steam by a static priority arbiter. WGS always has priority.
-At last, the final winner is sent to weight channel for data fetching.
+request from the weight stream or the WMB stream. Then the winner competes with
+the WGS request steam with a static priority arbitration. WGS always has priority.
+The final winning request is sent to weight channel for data fetching.
 
-CDMA_WT is always trying to fill convolution buffer as much as possible,
-until the free entries runs out or weight fetching is done.
+CDMA_WT always tries to fill the convolution buffer as much as possible,
+until the free entries runs out or weight fetching is complete.
 
-CDMA maintains and communicates status of both weight buffer and input
+CDMA maintains and communicates status of both the weight buffer and input
 data buffer in CBUF. There are two copies of status in CDMA and CSC. Two
-modules exchange the update/release information like an asynchronous
-FIFO, and decide when to fetch new feature/pixel/weight data and when to
-release these data.
+modules exchange the update/release information to decide when to fetch 
+new feature/pixel/weight data and when to release these data elements.
 
 .. power-consideration-1:
 
 Power Consideration
 ~~~~~~~~~~~~~~~~~~~
 
-Convolution DMA applies SLCG in data path. The clock of data path of
-convolution DMA is gated by SLCG when it is idle and no HW-layer is
-available from programmable registers. While SLCG does not clock gate
-the regfile sub module inside convolution DMA.
+Convolution DMA applies clock gating in the data path. The clock of data path of
+convolution DMA is gated when it is idle and no hardware layer is
+configured in the programmable registers. The regfile sub module inside 
+convolution DMA is not clock gated so that new commands can be programmed.
 
 Convolution Buffer
 ------------------
@@ -930,15 +933,16 @@ Convolution Buffer
 Overview
 ~~~~~~~~
 
-Convolution buffer (CBUF) is one stage of convolution pipeline. It has
-totally 512KB SRAMs. The SRAMs cache input pixel data, input feature
+The Convolution Buffer (CBUF) is a stage in convolution pipeline. It 
+contains a total of 512KB of SRAM. The SRAMs cache input pixel data, 
+input feature
 data, weight data and WMB data from CDMA module, and are read by
 convolution sequence generator module. CBUF has two write ports and
 three read ports.
 
-CBUF contains of 16 32KB banks. Each bank consists of two 512-bit-wise,
-256-entry two-port SRAMs. These banks are acts as three logical circular
-buffers. They are:
+CBUF contains of 16 32KB banks. Each bank consists of two 512-bit-wide,
+256-entry two-port SRAMs. These banks act as three logical circular
+buffers:
 
 -  Input data buffer
 
@@ -950,11 +954,11 @@ If the weight format is compressed, bank15 is assigned for WMB buffer,
 while two other buffers can use bank0~bank14. If weight format is
 uncompressed, WMB buffer is not assigned with any bank. In this case
 data buffer and weight buffer can fully use all 16 banks. If total
-required banks are less than 16, remaining banks are used.
+required banks are less than 16, the remaining banks are unused.
 
-Each buffers act like circular buffers. New input data/weight/WMB has
-incremental entry address. If the address reaches the max, it turns to
-zero and increase again.
+Each buffer acts as circular buffers. New input data/weight/WMB has
+incremental entry address. If the address reaches the max, it wraps to
+zero and then starts increasing again.
 
 .. _fig_image18_cbuf:
 
@@ -968,11 +972,12 @@ zero and increase again.
 Power Consideration
 ~~~~~~~~~~~~~~~~~~~
 
-Convolution buffer applies SLCG for registers in data path beyond SRAMs.
-The clock of data path of convolution buffer is gated by SLCG when it is
-idle and no HW-layer is available from programmable registers. While
-SLCG does not clock gate the regfile sub module inside convolution
-buffer.
+The Convolution Buffer applies clock gating for registers in the data path 
+beyond the SRAMs.
+The clock of Convolution Buffer data path is gated by SLCG when it is
+idle and no HW-layer is available from the programmable registers. 
+The configuration register block inside the convolution buffer is not 
+clock gated so that a new configuration can be programmed.
 
 Convolution Sequence Controller
 -------------------------------
@@ -982,30 +987,31 @@ Convolution Sequence Controller
 Overview
 ~~~~~~~~
 
-Convolution sequence controller (CSC) is response to load input
-feature/pixel data and weight data from CBUF and sends them to
-convolution MAC in proper order. It’s the key module to perform
-computing sequences of convolution which is mentioned in `Convolution Pipeline`_.
+The Convolution Sequence Controller (CSC) is responsible for loading input
+feature data, pixel data, and weight data from CBUF and sending it to the
+Convolution MAC unit. It’s the key module 
+computing and controlling the convolution sequence descrbied in the
+`Convolution Pipeline`_ seciton.
 
-Convolution sequence controller (CSC) includes three sub modules, which
-are CSC_SG, CSC_WL and CSC_DL. See :numref:`fig_image19_csc`.
+The Convolution Sequence Controller (CSC) includes three sub modules:
+CSC_SG, CSC_WL and CSC_DL. See :numref:`fig_image19_csc`.
 
-CSC_SG is short of convolution sequence generator. This module generates
-the whole sequence.
+CSC_SG is the convolution sequence generator. This module generates
+the sequence to control convolution operation.
 
 The working flow of CSC_SG is as below:
 
 1. Poll for enough data and weights in CBUF
 
 2. Generate a pair of sequence package, including weight loading package
-   and data loading package. Each package represents for one stripe
+   and data loading package. Each package represents one stripe
    operation.
 
-3. Push packages into two FIFO
+3. Push the two packages into two FIFOs
 
 4. Two counters for weight and feature/pixel are both down counting
 
-5. When counters reach zero, check signals from convolution accumulator
+5. When the counters reach zero, check signals from the convolution accumulator
    for any back pressure
 
 6. If all conditions are ready, send weight and data packages in proper
@@ -1018,29 +1024,30 @@ The working flow of CSC_SG is as below:
 
   Convolution sequence controller
 
-CSC_DL is short of convolution data loader. This module is the logic to
-execute feature/pixel loading sequence. It receives packages from
-sequence generator, loads feature/pixel from CBUF and sends them to
-convolution MAC. Besides it maintains status of data buffer and
+CSC_DL is the convolution data loader. This module contains the logic to
+execute the feature/pixel loading sequence. It receives packages from
+sequence generator, loads feature/pixel data from CBUF and sends them to
+the Convolution MAC. It also maintains the data buffer status and
 communicates with CDMA to keep the status up to date. For winograd mode,
-it also does PRA (pre-addition) to transform input feature data.
+it also performs PRA (pre-addition) to transform the input feature data.
 
-CSC_WL is short of convolution weight loader. This module is the logic
-to execute weight loading sequence. It receives packages from sequence
-generator, loads weights from CBUF, does necessary decompression and
-sends them to convolution MAC. Besides it maintains status of weight
-buffer and communicates with CDMA_WT to keep the status up to date
+CSC_WL is short of convolution weight loader. This module contains the logic
+to execute the weight loading sequence. It receives packages from the sequence
+generator, loads weights from CBUF, and does necessary decompression and
+sends them to convolution MAC. It maintains the weight buffer status
+and communicates with CDMA_WT to keep the status up to date.
 
 .. power-consideration-3:
 
 Power Consideration
 ~~~~~~~~~~~~~~~~~~~
 
-Convolution sequence controller applies SLCG for registers in data path.
-The clock of data path of convolution sequence controller is gated by
-SLCG when it is idle and no HW-layer is available from programmable
-registers. While SLCG does not clock gate the regfile sub module inside
-convolution sequence controller.
+The Convolution Sequence Controller applies clock gating for registers 
+in the data path.
+The clock of data path for the convolution sequence controller is gated when 
+idle and no HW-layer is available from the programmable
+registers. The register file sub module inside
+convolution sequence controller is not clock gated so that new 
 
 Convolution MAC
 ---------------
@@ -1050,21 +1057,22 @@ Convolution MAC
 Overview
 ~~~~~~~~
 
-Convolution MAC (CMAC) module is one stage of convolution pipeline for
-convolution operation. It receives input data and weight from
-convolution sequence controller(CSC), does multiplication and addition
-and output the result to convolution accumulator. When working in
-Winograd mode convolution MAC takes response to do POA (post addition).
+The Convolution MAC (CMAC) module is one stage of the convolution pipeline for
+convolution operation. It receives input data and weight from the
+convolution sequence controller (CSC), performs multiplication and addition,
+and outputs the result to the convolution accumulator. When working in
+Winograd mode the Convolution MAC performs POA (post addition) on the ouptut
+to transform the result back to standard activation format.
 
-CMAC has 16 same sub modules called MAC cell. Each MAC cell contains 64
-16-bit multipliers for int16/fp16. Besides it contains 72 adders for
-int16/fp16 which are for POA. Each multiplier and adder can split into
-two calculation unit for int8 format. The throughput of int8 is 2 times
+CMAC has 16 identical sub modules called MAC cells. Each MAC cell contains 64
+16-bit multipliers for int16/fp16. It also contains 72 adders for
+int16/fp16 which are for Winograd POA. Each multiplier and adder can split into
+two calculation units for int8 format. The throughput of int8 is twice
 of int16 in any mode. The output result is called partial sum. The
 pipeline depth is 7 cycles.
 
 One bypassed pipeline in Convolution MAC is used to deliver status. The
-status includes start and end flag of operations. It takes status 4
+status includes start and end operation flags. It takes status 4
 cycles to go through pipeline, which is 3 cycles ahead of partial sum to
 prefetch assembly buffer in CACC.
 
@@ -1075,8 +1083,8 @@ prefetch assembly buffer in CACC.
 
   Convolution MAC
 
-For physical design limit, CMAC is divided into two parts, CMAC_A and
-CMAC_B. Each part has individual CSB interface and regfile. But they are
+For physical design optimization the CMAC is divided into two parts, CMAC_A and
+CMAC_B. Each part has an individual CSB interface and register file. But they are
 considered as one pipeline stage in usage.
 
 .. power-consideration-4:
@@ -1084,10 +1092,11 @@ considered as one pipeline stage in usage.
 Power Consideration
 ~~~~~~~~~~~~~~~~~~~
 
-Convolution MAC (CACC) applies SLCG in data path. The clock of data path
-of convolution MAC is gated by SLCG when it is idle and no HW-layer is
-available from programmable registers. While SLCG does not clock gate
-the regfile sub module inside convolution MAC.
+The clock of data path
+of the Convolution MAC is gated when it is idle and no hardware layer is
+available from the programmable registers. The 
+the programmable registers are not clock gated in the Convolution MAC so 
+that software can program 
 
 Besides, convolution MAC can clock gate the MAC cells individually. When
 the number of kernels is not enough to fill all the MAC cells, the empty
@@ -1101,18 +1110,16 @@ Convolution Accumulator
 Overview
 ~~~~~~~~
 
-Convolution accumulator (CACC) is one stage of convolution pipeline
-after CMAC. It is used to accumulate partial sums from convolution MAC,
-and truncate the result before sending to SDP. Besides, the big buffer
-in convolution accumulator can smooth the peak throughput of convolution
-pipeline.
+The Convolution Accumulator (CACC) the stage of convolution pipeline
+after CMAC. It is used to accumulate partial sums from Convolution MAC,
+and round/saturate the result before sending to SDP. 
 
 The components in CACC include assembly SRAM group, delivery SRAM group,
 adder array, truncating array, valid-credit controller and a checker.
 
 Here is the CACC working flow:
 
-1. Prefetch accumulative sums from assembly SRAM group.
+1. Prefetch accumulative sums from the assembly SRAM group.
 
 2. When partial sums arrive, send them to adder array along with
    accumulative sums. If the partial sums are from the first stripe
@@ -1120,7 +1127,7 @@ Here is the CACC working flow:
 
 3. Gather new accumulative sums from output side of adder array.
 
-4. Stores into assembly SRAM group
+4. Store into assembly SRAM group
 
 5. Repeat step1~ step3 in terms of stripe operation until a channel
    operation is done.
@@ -1215,10 +1222,12 @@ overflow, CACC uses valid-credit protocol to back pressure CSC.
 Power Consideration
 ~~~~~~~~~~~~~~~~~~~
 
-Convolution accumulator applies SLCG in data path. The clock of data
-path of convolution accumulator is gated by SLCG when it is idle and no
-HW-layer is available from programmable registers. While SLCG does not
-clock gate the regfile sub module inside convolution accumulator.
+The Convolution Accumulator applies clock gating in the data path. 
+The clock of data
+path of Convolution Accumulator is gated when it is idle and no
+HW-layer is available from programmable registers. 
+The programmable registers within CACC aren't clock gated to allow 
+for new instructions to be programmed.
 
 Single Point Data Processor
 ---------------------------
@@ -1228,14 +1237,14 @@ Single Point Data Processor
 Overview
 ~~~~~~~~
 
-Single point data processor responses for performing post processing
-operations on element level. In NVDLA version 1.0, point processing is
-designed to accomplish following operations.
+The Single Point Data Processor (SDP) is performs post processing
+operations at the single data element level. In NVDLA version 
+1.0, point processing is designed to accomplish following operations.
 
 Bias Addition
 ~~~~~~~~~~~~~
 
-For convolution layer, there’re always bias addition after convolution.
+For a convolutional layer, there’re always a bias addition after convolution.
 In NVDLA, we implement bias addition in SDP.
 
 The mathematic formula for bias addition is:
@@ -1248,7 +1257,7 @@ The mathematic formula for bias addition is:
 x is the input data can either come from Convolution Pipeline or SDP
 M-RDMA;
 
-bias is the pre-trained parameter which can be one of 3 options:
+bias is a pre-trained parameter which can be one of 3 options:
 
 a) Register: If bias is unique for entire data cube;
 
@@ -1261,10 +1270,11 @@ c) SDP B/N/E-RDMA per-element mode: If bias is different
 Non-Linear Function
 ~~~~~~~~~~~~~~~~~~~
 
-Non-Linear function is to accomplish activation layer operation.
+The Non-Linear function hardware in SDP is used to accomplish activation 
+layer operations.
 
 Based on current network analysis, there are three activation functions
-are used:
+are commonly used:
 
 -  ReLU, for an input :math:`x`, the output is :math:`max(x,0)`.
 
@@ -1286,17 +1296,18 @@ are used:
 .. figure:: ias_image27_hyperbolic.png
   :align: center
 
-  Hyperbolic Function
+  Hyperbolic Tangent Function
 
-In case of ReLU activation function, it could be implemented in hardware
-logic. In cases of Sigmoid and hyperbolic tangent functions, the
-non-linear functions, so they are expected to be implemented in look-up
-table manner (see Section "LUT programming" of Programming Guide document for detail).
+In the case of the ReLU activation function, it could be implemented directly by hardware
+logic. Sigmoid and hyperbolic tangent functions are
+non-linear functions, so they are expected to be implemented through a look-up
+table which can be loaded with a function as needed. (see the Section "LUT programming" 
+of Programming Guide document for details).
 
 Batch Normalization
 ~~~~~~~~~~~~~~~~~~~
 
-Batch normalization is widely used layer. It can be descripted by
+Batch normalization a is widely used layer. It can be descripted by
 formula below:
 
 .. math:: x^{'} = \frac{x - \mu}{\theta}
@@ -1311,13 +1322,13 @@ SDP can support per layer parameter or per channel parameter to do batch
 normalization operation. When the parameter is per channel, they are
 interleaved in memory (see `Data Formats <http://nvdla.org/hw/format.html>`_). 
 And a DMA in SDP will fetch the
-parameter and calculate the feature data cube from convolution pipeline.
+parameter and calculate the feature data cube from the convolution pipeline.
 
 Element-Wise Layer
 ~~~~~~~~~~~~~~~~~~
 
-Element-wise layer refers to a type of operation between two feature
-data cube which have the same W, H and C size. These two W x H x C
+An Element-Wise layer refers to a type of operation between two feature
+data cubes which have the same W, H and C size. These two W x H x C
 feature data cubes do element-wise addition, multiplication or max/min
 comparison operation and output one W x H x C feature data cube.
 
@@ -1328,11 +1339,11 @@ comparison operation and output one W x H x C feature data cube.
 
   Element-wise operation
 
-SDP unit can support element-wise layer for all 3 types of data
+The SDP unit can support element-wise layers for all 3 types of data
 precisions. Every element-wise layer on SDP is configured to do addition
 or multiplication.
 
-SDP support both online mode and offline mode for element-wise layer.
+SDP supports both online mode and offline mode for element-wise layer.
 When online mode, one data cube comes from convolution pipeline, and the
 other input data cube is fetched from memory. When offline mode, SDP
 fetches both input data cubes from memory.
@@ -1353,12 +1364,12 @@ Different from ReLU which clip negative values to 0, PReLU acts as:
 The scaling factor k can be either per cube constant or per-channel
 variant.
 
-SDP support it by update the multiplier behavior: If PReLU mode is
+SDP supports it by update the multiplier behavior: If PReLU mode is
 selected, multiplier will bypass the positive value and apply scaling on
-negative values only. PReLU mode is supported by multiplier in all the 3
+negative values only. PReLU mode is supported by a multiplier in all the 3
 sub-modules.
 
-Be noticed that:
+Note that:
 
 1. BatchNorm and PReLU feature are exclusive for a specific sub-unit,
 this is due to only one multiplier is available for a subunit;
@@ -1370,34 +1381,35 @@ negative/positive requires different truncate here.
 Format conversion
 ~~~~~~~~~~~~~~~~~
 
-NVDLA supports INT8/INT16/FP16 precisions, lower precision delivers high
-performance while higher precision gives better inference results.
+NVDLA supports INT8, INT16, and FP16 precisions.  Lower precision delivers higher
+performance, while higher precision provides better inference results.
 
-It’s possible that software need to different precision on different
+It’s possible that software requires different precision for different
 hardware layers thus precision conversion is necessary.
 
-SDP is responsible for precision conversion, the supported conversions
-in one hardware layer are listed in :numref:`tab_precision_conversion_sdp` precision conversion for
-SDP layer (offline). If SDP plays with CC, the supported format
-conversion is listed in :numref:`tab_precision_conversion_conv`.
+SDP is responsible for precision conversion. The supported conversions
+in one hardware layer are listed in :numref:`tab_precision_conversion_sdp`, "precision conversion for
+SDP layer (offline)". If SDP sources data from the convolution core, 
+the supported format conversion is listed in :numref:`tab_precision_conversion_conv`.
 
-The precision conversion and normal SDP function are irrelevant, which
+Precision conversion and normal SDP function are independent, which
 means SDP is able to do conversion and operation (e.g.: Bias addition,
 BatchNorm, EW, etc) at the same time.
 
 Comparison
 ~~~~~~~~~~
 
-Comparison mode in SDP_Y takes 2 inputs then compare them. If any element in those input data
-cube mismatch, it will be updated to status register after HWL done.
+Comparison mode in SDP_Y takes 2 inputs then compares them. If any element pair from
+the input data cubes mismatches, a status register is updated after the hardware layer
+is complete.
 
-In order to save bandwidth, there won’t be any output write to external
-memory for comparison mode.
+To save bandwidth, there won’t be any output write to external
+memory in comparison mode.
 
 Function Description
 ~~~~~~~~~~~~~~~~~~~~
 
-Following diagram shows internal blocks of point processing sub-unit and
+Following diagram shows the internal blocks of the point processing sub-unit and
 connections to other sub-units.
 
 .. _fig_image33_sdp:
@@ -1409,27 +1421,26 @@ connections to other sub-units.
 
 Function Blocks:
 
-There are several function blocks, each of which aims to different main
+There are several function blocks, each of which targets a different
 purpose:
 
--  Block M is to select input data from MEM or Conv Core, which can be
+-  Block M is used to select input data from MEM or Conv Core, which can be
    set from register
 
--  Block X1/X2 has the same architecture which supports: Bias addition,
+-  Block X1/X2 have the same architecture and supports: Bias addition,
    BatchNorm, PReLU, ReLU, Eltwise.
 
 -  Block Y is primarily designed for element-wise, but it’s also able to
-   support Bias addition, PReLU. An extra LUT operation can be appended
-   before output, which is for any non-linear operation
+   support Bias addition, PReLU. An extra LUT operation which can be selected
+   before output to implement any non-linear operation.
 
--  Block C1/C2 is for additional scaling and offset to save bits but
-   still try to keep accuracy
+-  Block C1/C2 is for additional scaling and offset to save bits while
+   keeping accuracy high.
 
 -  A Demux on the very end to send the output data to either WDMA for
-   wring back to memory, or to PDP for pooling operation without writing
-   back.
+   writing back to memory, or to PDP for a subsequent pooling operation.
 
-Most of function unit have bypass mode by configuration, so SW can
+Most of function units have a configurable bypass mode so SW can
 choose full function or partial to match all the operations needed in
 one hardware layer.
 
@@ -1451,11 +1462,11 @@ The throughput for each sub-unit is:
 
 2. Bias Addition:
 
-   a. operand data can be per element, per channel or per cube, the
-      actual operation can be happened at any of X1/X2/Y based on
+   a. Operand data can be per element, per channel or per cube, the
+      actual operation can be performed at any of X1/X2/Y based on
       software configuration
 
-      i.  Bias data will be fetched from MEM if per element/channel, if
+      i.  Bias data will be fetched from MEM if per element/channel. If
           truncate is enabled, all elements shares a same truncate value
 
       ii. Bias data will be set by register if per cube
@@ -1464,35 +1475,36 @@ The throughput for each sub-unit is:
 
 3. Batch Normalization
 
-   a. operand data can be per element, per channel or per cube, the
-      actual operation can be happened at X1/X2/Y based on software
-      configuration
+   a. Operand data can be per element, per channel or per cube, the
+      actual operation can be performed in X1/X2/Y based on the software
+      configuration.
 
-      i.  operand data will be fetched from MEM if per element/channel,
-          if truncate is enabled, all elements shares a same truncate
-          value
+      i.  Operand data will be fetched from MEM if per element/channel.
+          If truncate is enabled, all elements shares a same truncate
+          value.
 
-      ii. operand data will be set by register if per cube
+      ii. Operand data will be set through a software configuration 
+          register if per cube.
 
-   b. operand data for addition and for multiplier should be packed
+   b. Operand data for the adder and multiplier should be packed
       together and in same format of per element, per channel or per
-      cube, see `Data Formats <http://nvdla.org/hw/format.html>`_ for detail.
+      cube.  See `Data Formats <http://nvdla.org/hw/format.html>`_ for details.
 
-   c. ReLU can be bypassed or operated
+   c. ReLU can be bypassed or enabled.
 
 4. Element-Wise
 
-   a. operand data can be per element, per channel or per cube
+   a. Operand data can be per element, per channel or per cube
 
-      i.  operand data will be fetched from MEM if per element/channel,
+      i.  Operand data will be fetched from MEM if per element/channel,
           if truncate is enabled, all elements shares a same truncate
           value
 
-      ii. operand data will be set by register if per cube
+      ii. Operand data will be set by software configuration register if per cube
 
-   b. operand data should be either for max/min/sum or for multiplier
+   b. Operand data should be either for max/min/sum, or for the multiplier
 
-   c. LUT can be bypassed or operated
+   c. LUT can be bypassed or enabled
 
 5. PReLU:
 
@@ -1503,15 +1515,15 @@ The throughput for each sub-unit is:
 
       ii. Operand data will be set by register if per cube;
 
-   b. PReLU mode bit should be set as true for multiplier (after set
-      this bit, hardware will bypass positive input samples, the scaling
-      applied on negative input only)
+   b. PReLU mode bit should be set as true for multiplier.  After this bit 
+      is set, hardware will bypass positive input samples, and the scaling will be 
+      applied on negative iputs.
 
-   c. LUT can be bypassed or operated
+   c. LUT can be bypassed or enabled
 
 6. Hybrid Mode (SW feature)
 
-   Bias addition/BatchNorm operations are linear operation this means
+   Bias addition/BatchNorm operations are linear operations. This means
    software can fuse those operation into one sub-module to optimize
    power/perf. Take BiasAddition + BatchNorm for example, if they’re
    working on separated submodule, the formula is: :math:`x^{'} = x + bias`,
@@ -1548,10 +1560,10 @@ Data Sequence:
 
 Take BIAS addition as an example, If BIAS/Operand Data is per element:
 
-Point processing input/output sequence is determined by convolution
-output sequences. In most of cases, input and output sequence orders in
+Point processing input/output sequence is determined by the convolution
+output sequence. In most of cases, input and output sequence orders in
 all input/output interfaces are the same, and it is exactly the
-convolution output sequence which is shown in following diagram.
+convolution output sequence which is shown in the following diagram.
 
 .. _fig_image37_sdp_sequence:
 
@@ -1562,32 +1574,33 @@ convolution output sequence which is shown in following diagram.
 
 Bias/Operand Data is Per Channel:
 
-Data will be fetched from memory, and stick on one value for multiple
-cycles when feature data is processing on the same surface, and update
-to the value of the next surface when feature data is changing to next
+Data will be fetched from memory, and maintain one value for multiple
+cycles when feature data is processing on the same surface.  It will then
+update to the value of the next surface when feature data changes to the next
 surface.
 
 Bias/Operand Data is Per Cube:
 
-Data will be set by register, and will not change after the current
-hardware lay start to operand till the end.
+Data will be set in a software configuration register, and will not change 
+throughout the execution time for a hardware layer.
+
 
 Buffer Size Estimation
 ~~~~~~~~~~~~~~~~~~~~~~
 
-There are three major buffers in single data processing subunit, LUT in
-activation block, read DMA buffer, and write DMA buffer. LUT size is
+There are three major buffers in the single data processing subunit: LUT in
+the activation block, read DMA buffer, and write DMA buffer. LUT size is
 (65+ 257) \*2(BPE) = 644Bytes.
 
-For feature read DMA buffer in M, there are two constraints for
-determining its size. One is covering internal SRAM accessing latency,
-currently the latency is 128 cycles. The other is accessing bandwidth.
+For feature read DMA buffer in the M block there are two constraints to
+consider to determine its size. One is covering internal SRAM access latency.
+The latency is expected to be about 128 cycles. The other is access bandwidth.
 Each partial feature data element is 16 bits, and SDP needs to process
-16 elements per cycle, so the required bandwidth is 32 bytes. So, read
-DMA buffer size is\ :math:`128 \times 32 = 4\ KBytes`.
+16 elements per cycle, so the required bandwidth is 32 bytes. The read
+DMA buffer size is therefore\ :math:`128 \times 32 = 4\ KBytes`.
 
-Different from feature data, if BS/BN/EW has to support BatchNorm mode
-which has 32bits per element thus the read DMA buffer size for those 2
+Unlinke feature data, if BS/BN/EW has to support BatchNorm mode
+which has 32bits per element.  Thus the read DMA buffer size for those 2
 modules are: 32(bits)*128(cycles)*16(elements)/8=8Kbytes.
 
 .. power-consideration-6:
@@ -1595,9 +1608,9 @@ modules are: 32(bits)*128(cycles)*16(elements)/8=8Kbytes.
 Power Consideration
 ~~~~~~~~~~~~~~~~~~~
 
-Element wise/BatchNorm operation are not always included in a network,
-which means for most of time, BS/BN/EW are not fully running thus clock
-gating is mandatory.
+Element-Wise/BatchNorm operation are not always included in a given network.
+So for uch of the operations, BS/BN/EW are not fully running thus clock
+gating is utilized.
 
 Planar Data Processor
 ---------------------
@@ -1607,12 +1620,12 @@ Planar Data Processor
 Overview
 ~~~~~~~~
 
-Planar processing responses for executing operations among width x
-height plane. In NVDLA version 1.0, planar processing is designed to
-accomplish pooling layer. In NVDLA version 1.0, max/min/mean pooling
+The Planar Data Processor (PDP) executes operations along the width x
+height plane. In NVDLA version 1.0, the PDPD is designed to
+accomplish pooling layers. Max, min, and mean pooling
 methods are supported. Several neighboring input elements within a plane
-will send to a non-linear function to compute one output element.
-Following diagram shows an example for max-pooling, the maximum value
+will be sent to a non-linear function to compute one output element.
+The following diagram shows an example for max-pooling.  The maximum value
 among 3x2 neighboring elements is the pooling result value.
 
 .. _fig_image38_max_pooling:
@@ -1622,9 +1635,10 @@ among 3x2 neighboring elements is the pooling result value.
 
   Max-pooling example
 
-Following diagram shows internal blocks of planar processing sub-unit
-and connections to other sub-units. The diagram is just for capturing
-ideas, is not the actual RTL modules and hierarchies. Planar data
+The following diagram shows the internal blocks of the PDP sub-unit,
+along with connections to other units and sub-units. The diagram is 
+captures the functionality conceptually and 
+is does not show the actual RTL modules and hierarchies. The planar data
 processing sub-unit receives data from SDP or MCIF/SRAMIF, and sends
 data to MCIF/SRAMIF.
 
@@ -1644,19 +1658,19 @@ data to MCIF/SRAMIF.
 
 Pooling operations are done within a plane. There is no interference
 between different planes. :numref:`fig_image41_pdp_in_mode0` shows a complete scheme of
-pooling in one plane. The offset of two neighboring kernel is called
+pooling in one plane. The offset of two neighboring kernels is called
 stride. When stride is less than *R* and *S* of a kernel, there are
 overlapped lines. Some line may be used by more than two neighboring
-kernels. Input data is streaming in raster-scan order. For each pooling
+kernels. Input data is streamed in raster-scan order. For each pooling
 kernel, the operated data is also streaming in raster scan order.
 
 If an input data element is the first element of a kernel, it will be
-stored to the share line buffer, data in the share line buffer is called
-partial result. If an input data element is neither the first element
-nor the last element of a kernel, it will be operated with the existed
+stored to the share line buffer.  Data in the share line buffer is referred 
+to as the partial result. If an input data element is neither the first element
+nor the last element of a kernel, it will be operated on with the existed
 partial result from share buffer, and the result will be stored to the
 same entry of the original partial result. Partial result calculation is
-done in pre-processing block.
+done in the pre-processing block.
 
 1. In cases of max/min pooling schemes, the partial result is the
    maximum/minimum value of the input element and the original partial
@@ -1667,9 +1681,9 @@ done in pre-processing block.
 
 If an input data element is the last element of a kernel, it will be
 operated with the existed partial result from the share line buffer to
-generate a pre-final result. Post-processing block fetch pre-final
-result from shared line buffer, after proper operations, it generates
-the final result, and then send out to SRAMIF/MCIF.
+generate a pre-final result. The post-processing block will fetch pre-final
+results from share line buffer, and after proper operations it generates
+the final result.  This final result is sent out to SRAMIF or MCIF.
 
 1. In cases of max/min pooling schemes, the pre-final result is the
    final result, no extra operation is needed.
@@ -1677,17 +1691,17 @@ the final result, and then send out to SRAMIF/MCIF.
 2. In case of mean pooling scheme, the final result could be calculated
    by
    :math:`pre\_ final\_ result \times \frac{1}{\text{Kerne}l_{\text{width}} \times Kernel_{\text{height}}} = pre\_ final\_ result \times scale\_ factor\_ width \times scale\_ factor\_ height`.
-   Division is hard for hardware implementation, so a pair of
-   :math:`scale\_ factor` is used to transform division into
+   Division is expensive for a hardware implementation, so a pair of
+   :math:`scale\_ factors` are used to transform division into
    multiplication.
 
 The greatest number of kernels which share the same line of data is
 determined by
 :math:`\text{ceiling}\left( \frac{Kernel\_ Height}{Stride\_ H} \right)`.
 The total buffer entry number needed within a plane
-is\ :math:`width\_ out \times ceiling\left( \frac{Kernel\_ Height}{Stride\_ H} \right)`
-, and in RTL design the assigned total buffer entry number
-:math:`total\_ buf\_ entry` within one plane is as below, and 112bits
+is :math:`width\_ out \times ceiling\left( \frac{Kernel\_ Height}{Stride\_ H} \right)`
+, and in the RTL design the assigned total buffer entry number
+:math:`total\_ buf\_ entry` within one plane is as below, and 112 bits
 for each entry:
 
 (a) if
@@ -1706,9 +1720,9 @@ for each entry:
     :math:`\text{ceiling}\left( \frac{Kernel\_ Height}{Stride\_ H} \right)`
     > 4, :math:`total\_ buf\_ entry`\ =16*4*1=64;
 
-Since pooling operation is a down sampling method, there are a
-significant amount of information are discarded, pooling in a large
-kernels are too destructive. In current analyzed networks, there are
+Since the pooling operation is a down sampling method, there is a
+significant amount of information are discarded.  Pooling in a large
+kernel is too destructive. In current analyzed networks, there are
 three most common cases, one is pooling size 3x3, with
 stride 2x2. The other is pooling
 size 2x2, with stride 2x2, and the last
@@ -1743,18 +1757,19 @@ is pooling size 7x7, with stride 1x1.
  | x540    |         |         |         |         |         |         |
  +---------+---------+---------+---------+---------+---------+---------+
 
+
 So 2 ~ 8 pooling kernel size (both in width and height) range and 1~8
-stride range is enough for normal usage. In real RTL design, we set the
+stride range is enough for normal usage. In the RTL design, we set the
 pooling kernel size range to 1~8, and set the stride range to 1 ~ 16.
 
-There are two input paths for planar data processing sub-unit, one is
-single point data processing sub-unit, and the other is external ram
+There are two input paths for the planar data processing sub-unit.  One is
+the single point data processing sub-unit, and the other is external RAM
 (MC/SRAM). There is one output data path for planar processing
-sub-unit, output data is always sent to external ram (MC/SRAM). In
-common practices, a pooling layer is inserted after a convolutional
-layer. To save memory accessing consumptions, planar data processing
+sub-unit.  Output data is always sent to RAM outside PDP (MC/SRAM). In
+common practice, a pooling layer is inserted after a convolutional
+layer. To save memory accessing consumptions, the planar data processing
 sub-unit shall directly receive data from point processing unit if
-following condition is meet. Suppose output width is
+following condition is met. Suppose output width is
 :math:`\text{Width}_{\text{output}}`, total buffer size in byte is
 :math:`\text{Size}_{\text{buffer}}`, overlapped line number
 :math:`\text{Num}_{overlapped\_ line}`, Data width in byte is
@@ -1766,7 +1781,7 @@ planar processing on-fly operation condition.
 
 .. math:: Width_{output} \leq \frac{{Size}_{{buffer}}}{{Data}_{{width}} \times {Num}_{ongoing\_ channels} \times {Num}_{overlapped\_ line}} = \frac{{Size}_{{buffer}}}{{Data}_{{width}} \times {Num}_{ongoing\_ channels} \times f(ceil\left( \frac{{Height}_{{poolin}g_{{kernel}}}}{{Strid}e_{h}} \right))}
 
-.. Planar processing on-fly operation condition
+.. Planar processing on-the-fly operation condition
 
 If
 :math:`\text{ceil}\left( \frac{\text{Height}_{\text{poolin}g_{\text{kernel}}}}{\text{Strid}e_{h}} \right) = 1`
@@ -1788,7 +1803,7 @@ If
 ,
 :math:`f\left( \text{ceil}\left( \frac{\text{Height}_{\text{poolin}g_{\text{kernel}}}}{\text{Strid}e_{h}} \right) \right) = 8`
 
-When data is from point processing sub-unit, input data sequence is the
+When input data is sourced from the point processing sub-unit, the input data sequence is the
 same as convolution output sequences which is shown in following
 diagram.
 
@@ -1808,10 +1823,10 @@ And output sequence is shown in following diagram.
 
   Planar processing output sequence, mode 0
 
-If planar processing on-fly operation condition is not meet, planar processing shall work in off-fly
+If planar processing on-the-fly operation condition is not meet, planar processing shall work in off-fly
 mode, it receives data from PDMA, and the ongoing channel number is
 always 16. There are two sub-cases, one is non-split-width, and the
-other is split-width. Input data sequence is shown in following diagram
+other is split-width. The input data sequence is shown in following diagram.
 
 .. _fig_image43_pdp_in_mode1_2:
 
@@ -1820,7 +1835,7 @@ other is split-width. Input data sequence is shown in following diagram
 
   Planar processing input sequence, mode 1 and 2
 
-And output data sequence is shown in following diagram.
+The output data sequence is shown in following diagram.
 
 .. _fig_image44_pdp_out_mode1_2:
 
@@ -1844,23 +1859,24 @@ And output data sequence is shown in following diagram.
 Buffer Size Estimation
 ~~~~~~~~~~~~~~~~~~~~~~
 
-There are three major buffers in planar data processing subunit, share
+There are three major buffers in planar data processing subunit: share
 line buffer, read DMA buffer, and write DMA buffer. For share line
-buffer, its size determines PDP would on-fly co-working with SDP or not.
+buffer, its size determines whether PDP could work directly on data from
+SDP or not.
 Based on input data cube
-height\ :math:`\text{Height}_{\text{input data cube}}`, pooling kernel
-height\ :math:`\text{Height}_{\text{pooling kernel}}`, pooling kernel
+height :math:`\text{Height}_{\text{input data cube}}`, pooling kernel
+height :math:`\text{Height}_{\text{pooling kernel}}`, pooling kernel
 stride in height
-direction\ :math:`\text{stride}_{\text{pooling kernel}}`, output data
-cube width\ :math:`\text{Width}_{\text{output data cube}}`, group size
+direction :math:`\text{stride}_{\text{pooling kernel}}`, output data
+cube width :math:`\text{Width}_{\text{output data cube}}`, group size
 (16 elements of int16/FP16 or 32 elements of int8, ~32
-byte)\ :math:`\ \text{Group}_{\text{size}}` and bytes_per_element(14/8
+byte) :math:`\ \text{Group}_{\text{size}}` and bytes_per_element(14/8
 for INT8, 28/8 for INT16, 28/8 for FP16).
 
 .. math:: Buffer\ Size = \text{Width}_{\text{output data cube}}*\frac{\text{Height}_{\text{pooling kernel}}}{\text{stride}_{\text{pooling kernel}}}*\text{Group}_{\text{size}}*bytes\_ per\_ element
 
-If those share line buffer size is less than the consumption size, PDP
-have to work in off-fly mode, so there will be performance drop since
+If the share line buffer capacity is less than the required  consumption size, PDP
+have to work in off-fly mode, so there will be a performance drop since
 extra-time is needed to store data to MC/SRAM, and then fetch back to
 PDP for pooling processing.
 
@@ -2012,9 +2028,9 @@ minimum cases are less than 7Kbytes. So as a result of balancing
 performance and the share line buffer size is set as 7Kbyte.
 
 For read DMA buffer, there are two constraints for determining its size.
-One is covering MC accessing latency, currently the latency is 128
-cycles. The other is accessing bandwidth, the peak performance case is 8
-Bytes per cycle (8 elements in int8, 4 elements in int16/fp16). So read
+One is covering MC accessing latency, assumed to be 128
+cycles. The other is access bandwidth.  The peak performance case is 8
+Bytes per cycle (8 elements in int8, 4 elements in int16/fp16). So the read
 DMA buffer size is\ :math:`128 \times 8 = 1KBytes`.
 
 .. power-consideration-7:
@@ -2023,31 +2039,31 @@ Power Consideration
 ~~~~~~~~~~~~~~~~~~~
 
 Planar processing sub-unit targets for pooling layer in NVDLA 1.0, based
-on analysis on current network, planar processing usage is not so
-popular.
+on analysis on current networks, planar processing usage is not 
+expected to be high.
 
 .. table:: Pooling Layer Percentage Summary
  :name: tab_pooling_layer_percentage
 
- +-----------------+-----------------+-----------------+-----------------+
- | Network         | Total Pooling   | Total Layer     | Percentage      |
- |                 | Layer Number    | Number\*        |                 |
- +=================+=================+=================+=================+
- | AlexNet         | 3               | 13              | 23%             |
- +-----------------+-----------------+-----------------+-----------------+
- | Overfeat-Accura | 3               | 12              | 25%             |
- | te              |                 |                 |                 |
- +-----------------+-----------------+-----------------+-----------------+
- | VGG 19          | 5               | 24              | 21%             |
- +-----------------+-----------------+-----------------+-----------------+
- | GoogLeNet       | 14              | 74              | 19%             |
- +-----------------+-----------------+-----------------+-----------------+
+ +-------------------+-----------------+-----------------+-----------------+
+ | Network           | Total Pooling   | Total Layer     | Percentage      |
+ |                   | Layer Number    | Number\*        |                 |
+ +===================+=================+=================+=================+
+ | AlexNet           | 3               | 13              | 23%             |
+ +-------------------+-----------------+-----------------+-----------------+
+ | Overfeat-Accurate | 3               | 12              | 25%             |
+ +-------------------+-----------------+-----------------+-----------------+
+ | VGG 19            | 5               | 24              | 21%             |
+ +-------------------+-----------------+-----------------+-----------------+
+ | GoogLeNet         | 14              | 74              | 19%             |
+ +-------------------+-----------------+-----------------+-----------------+
 
 \* Total Layer Number = Convolution (including FC) + Pooling + LRN
 
-Base on pooling layer number percentage (we don’t have calculation time
-percentage yet), it’s highly possible that planar processing sub-unit is
-idle most of the time. Sub-unit level clock gating is a must.
+Based on the pooling layer number percentage it’s highly likely that the
+planar processing sub-unit is idle most of the time. Sub-unit level clock gating 
+is therefore important.
+
 
 Cross Channel Data Processor
 ----------------------------
@@ -2057,21 +2073,21 @@ Cross Channel Data Processor
 Overview
 ~~~~~~~~
 
-Channel processing responses for executing operations along channel
+Cross Channel Data Processor (CDP) executes operations along channel
 direction. In NVDLA version 1.0, channel processing is designed to
-address local response normalization layer. The local response
+address local response normalization (LRN) layers. Local response
 normalization performs a kind of lateral inhibition by normalizing over
-local input region along channel direction. The normalization function
+local input region along the channel direction. The normalization function
 is shown as follow
 
 .. math:: \text{Result}_{w,h,c} = \frac{\text{Source}_{w,h,c}}{{(j + \frac{\alpha}{n}\sum_{i = max(0,c - \frac{n}{2})}^{min(C - 1,\ c + \frac{n}{2})}\text{Source}_{w,h,i}^{2})}^{\beta}}
 
 .. 19 Local response normalization formula
 
-Local region shape is always\ :math:`1 \times 1 \times n`. Number
+Local region shape is always :math:`1 \times 1 \times n`. Number
 :math:`n` is configurable, and its range
-is\ :math:`\lbrack 3,5,7,9\rbrack`. Arithmetic such as division and
-fractional exponents are not friendly with ASIC design. The above equation
+is :math:`\lbrack 3,5,7,9\rbrack`. Arithmetic functions such as division and
+fractional exponents are expensive to implement with hard-wired gates. The above equation
 could be decomposed into
 
 .. math:: \text{Result}_{w,h,c} = \text{Source}_{w,h,c} \times f(\sum_{i = max(0,c - \frac{n}{2})}^{min(C - 1,\ c + \frac{n}{2})}\text{Source}_{w,h,i}^{2})
@@ -2083,10 +2099,10 @@ could be decomposed into
 Be noticed the
 :math:`\sum_{i = max(0,c - \frac{n}{2})}^{min(C - 1,\ c + \frac{n}{2})}\text{Source}_{w,h,i}^{2}`
 and :math:`\text{Source}_{w,h,c} \times f(x)` can be bypassed by
-programming corresponding register so that CDP can be treated as a
-standalone LUT function.
+programming corresponding registers so that CDP can be treated as a
+standalone lookup table (LUT) function.
 
-Look-up table approach is adopted for the RESMO
+The Look-up table approach is adopted for the RESMO
 (reciprocation-exponent-sum-multi operation)\ :math:`f\left( x \right)`.
 
 .. _fig_image45_cdp_curve:
@@ -2096,9 +2112,9 @@ Look-up table approach is adopted for the RESMO
 
   Curve for reciprocation-exponent-sum-multi operation
 
-Following diagram shows internal blocks of channel data processing
+The following diagram shows internal blocks of the channel data processing
 sub-unit and connections to other sub-units. The diagram is just for
-capturing ideas, is not the actual RTL modules and hierarchies.
+capturing ideas and does not represent the actual RTL modules boundaries and hierarchies.
 
 .. _fig_image46_cdp:
 
@@ -2120,7 +2136,7 @@ diagram, and output sequence is the same as input sequence.
 
   Channel Processing input/output sequence
 
-Following table shows LRN layers parameters in current well know network
+The following table shows LRN layers parameters in current well know networks.
 
 .. table:: LRN Layer Parameter Summary
  :name: tab_lrn_layer
@@ -2139,30 +2155,30 @@ Following table shows LRN layers parameters in current well know network
 
 Data elements on stripe edge may be used by to neighboring stripes.
 Those data needs to be buffered, buffer entry number shall
-be\ :math:`\left\lbrack \text{Max}\left( \text{loca}l_{\text{regio}n_{\text{size}}} \right) - 1 \right\rbrack \times 8 = 7 \times 8 = 56\ byte`.
+be :math:`\left\lbrack \text{Max}\left( \text{loca}l_{\text{regio}n_{\text{size}}} \right) - 1 \right\rbrack \times 8 = 7 \times 8 = 56\ byte`.
 
 .. buffer-size-estimation-2:
 
 Buffer Size Estimation
 ~~~~~~~~~~~~~~~~~~~~~~
 
-There are three major buffers in cross-channel data processing subunit,
-LUT in activation block, read DMA buffer, and write DMA buffer. LUT size
+There are three major buffers in the cross-channel data processing subunit:
+LUT in the activation block, read DMA buffer, and write DMA buffer. The LUT size
 is the same as SDP (644Bytes).
 
-For read DMA buffer, there are two constraints for determining its size.
-One is covering MC accessing latency, currently the latency is 128
-cycles. The other is accessing bandwidth, the peak performance case is 8
-Bytes per cycle (8 elements in int8, 4 elements in int16/fp16). So read
-DMA buffer size is\ :math:`128 \times 8 = 1KBytes`.
+For the read DMA buffer, there are two constraints for determining its size.
+The first is to cover memory system access latency.  The assumption is
+128 cycles. The other is access bandwidth.  The peak performance case is 8
+Bytes per cycle (8 elements in int8, 4 elements in int16/fp16), so the read
+DMA buffer size is :math:`128 \times 8 = 1KBytes`.
 
 .. power-consideration-8:
 
 Power Consideration
 ~~~~~~~~~~~~~~~~~~~
 
-Channel processing sub-unit targets for LRN layer in NVDLA 1.0, based on
-analysis on current network, channel processing usage is not so popular.
+The channel data processing sub-unit targets for LRN layer in NVDLA 1.0. Based on
+analysis of current networks, the channel processing usage is low.
 
 .. table:: Local Response Layer Percentage
  :name: tab_lrn_percentage
@@ -2181,10 +2197,9 @@ analysis on current network, channel processing usage is not so popular.
 
 \* Total Layer Number = Convolution (including FC) + Pooling + LRN
 
-Base on local response normalization layer number percentage (we don’t
-have calculation time percentage yet), it’s highly possible that cross
-channel data processing sub-unit is idle most of the time. Sub-unit
-level clock gating is a must.
+Based on local response normalization layer number percentage
+the channel data processing sub-unit will be idle most of the time.  Therefore,
+the design supports clock gating of the unit.
 
 RUBIK
 -----
@@ -2203,7 +2218,7 @@ without any data calculation. RUBIK has 3 working modes, they are:
 
 -  merge multi-planar formats to data cube
 
-Since the module is to transform feature data cubes, we call it RUBIK
+Since the module's function is to transform feature data cubes, we call it RUBIK
 unit.
 
 .. _fig_image48_cdp:
@@ -2216,15 +2231,15 @@ unit.
 Contract
 ~~~~~~~~
 
-A SW deconvolution layer always uses several HW-layers or two phases.
+A software deconvolution layer always uses several HW-layers or two phases.
 Phase I is generate result by convolution pipeline. And phase II is
 contract mode by RUBIK.
 
 Normally, a SW deconvolution layer has deconvolution x stride and y
 stride that are greater than 1. And with these strides the output of
 phase I HW-layer is a channel-extended data cube. Contract mode in RUBIK
-transforms mapping format to de-extend the cube. Figure below show a
-remapping example which x stride is 2 and y stride is 3.
+transforms mapping format to de-extend the cube. The figure below shows a
+remapping example where the x stride is 2 and the y stride is 3.
 
 .. _fig_image49_rubik_contract:
 
@@ -2243,9 +2258,9 @@ The formula of input cube size and output size are:
 
 ..  Formula of data cube size in contract mode
 
-RUBIK engine does contract slice by slice. I take one Wx1xC input slice
-and convert it to a W’xH’xC’ output sub cube. Then the next input slice.
-It never sends request across line boundary.
+The RUBIK engine does contract slice by slice. It takes one Wx1xC input slice
+and converts it to a W’xH’xC’ output sub cube. Then it continues to the next input slice.
+It never sends a request across a line boundary.
 
 When doing contract, the input/output start address and line stride
 shall align to 32 bytes. It always tries to send 256 byte requests. The
@@ -2268,8 +2283,8 @@ Split and Merge
 ~~~~~~~~~~~~~~~
 
 Split and merge are two opposite operation modes in RUBIK. Split
-transforms a data cube into M-planar formats (NCHW). The number of plane
-is equal to channel size. Merge transforms a serial of planes to a
+transforms a data cube into M-planar formats (NCHW). The number of planes
+is equal to channel size. The merge mode transforms a serial of planes to a
 feature data cube. The transform is showed in figure below.
 
 .. _fig_image50_rubik_split_and_merge:
@@ -2290,18 +2305,16 @@ unlike other data formats for NVDLA.
 Power Consideration
 ~~~~~~~~~~~~~~~~~~~
 
-RUBIK unit applies SLCG in data path. The clock of data path of RUBIK is
-gated by SLCG when it is idle and no HW-layer is available from
-programmable registers. While SLCG does not clock gate the regfile sub
-module inside the sub unit.
+The RUBIK unit applies clock gating in the data path. The clock of data 
+path of RUBIK is
+gated when the unit is idle and no HW-layer is available from the 
+programmable registers. 
 
 MCIF 
 -----
 
-MCIF is to arbitrate requests from several internal sub modules and
-convert to AXI protocol to connect to external DRAM. The interface
-between NVDLA internal sub module and MCIF is an internal interface
-defined by NVDLA team, and will not expose externally.
+MCIF is used to arbitrate requests from several internal sub modules and
+convert to AXI protocol to connect to external DRAM. 
 
 .. _fig_image51_mcif:
 
@@ -2310,17 +2323,18 @@ defined by NVDLA team, and will not expose externally.
 
   MCIF
 
-MCIF will support both AXI read and AXI write channel, but some NVDLA
+MCIF will support both a read and write channels, but some NVDLA
 sub-module will only have read requirement, so the interface between
 sub-module and MCIF will support read, write or both. CDMA0 and CDMA1 in
-above diagram will need read only, and other 5 will need both read and
+the above diagram will need read only, and other 5 will need both read and
 write.
 
 SRAMIF 
 -------
 
-SRAMIF(previous named as SRAMIF) is to connect several internal
-sub-module to SRAM.
+The SRAMIF moduile is used to connect several internal
+sub-modules to on-chip SRAM.  It's similar to the MCIF but the bus
+latency is expected to be lower.
 
 .. _fig_image52_sramif:
 
@@ -2329,9 +2343,9 @@ sub-module to SRAM.
 
   SRAMIF
 
-SRAMIF will support both AXI read and AXI write channel, but some NVDLA
-sub-module will only have read requirement, so the interface between
-sub-module and SRAMIF will support read, write or both. CMDA0~1 will
+SRAMIF will support both read and write channels, but some NVDLA
+sub-modules will only have a read requirement, so the interface between
+DMA engines and SRAMIF will support read, write or both. CMDA0~1 will
 need read channel only, while the other 5 will need both read and write.
 
 Result Statistics
@@ -2339,16 +2353,16 @@ Result Statistics
 
 To perform better calculation accuracy with limited precision data type
 like int8, NVDLA engine involved a large number of converters in many
-pipeline stages. Please see Section "Precision programming" of Programming Guide document for more
-details.
+pipeline stages. Please see Section "Precision programming" of Programming Guide 
+document for more detail.
 
-In the runtime, conversion parameters can be both static value and
-dynamic value. To support the latter ones, SW needs NVDLA HW to give
-rough statistic of output feature data cube and calculate the parameters
+In the runtime software, conversion parameters can be either a static value or a
+dynamic value. To support the latter ones, software requires NVDLA hardware to 
+provide rough statistics of output feature data cube and calculate the parameters
 accordingly.
 
-To achieve that, NVDLA implements result statistic registers in almost
-all the pipeline stages. These registers record:
+To achieve that, NVDLA implements result statistic registers in most
+pipeline stages. These registers record:
 
 -  Number of results that is equals to max non-infinity values.
 
