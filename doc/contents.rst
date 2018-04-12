@@ -10,9 +10,9 @@ of documents that have been written about NVDLA.
 
    primer
    roadmap
+   hw/contents
    sw/contents
    vp
-   hw/contents
    updates
    license
    conduct
@@ -26,16 +26,9 @@ of documents that have been written about NVDLA.
 
 * :doc:`roadmap` -- a look into what's next in NVDLA releases.
 
-* :doc:`hw/v1/contents` -- a design-level view of the NVDLA hardware
-  architecture, including detail on each sub-component, and register-level
-  documentation.  This section also includes a programming guide, and an
-  overview of in-memory and on-disk data formats for weight data.
+* :doc:`hw/contents` -- hardware documents
 
-* :doc:`hw/v2/scalability` -- Scalability parameters and ConfigROM contents in nv_large and nv_small configs (XXX to move)
-
-* :doc:`hw/v1/integration_guide` -- a guide for SoC integrators, including a
-  walk-through of the NVDLA build infrastructure, NVDLA's testbenches, and
-  synthesis scripts.
+* :doc:`sw/contents` -- an exploration of the software ecosystem that supports NVDLA.
 
 * :doc:`vp` -- an introduction of virtual platform for NVDLA.
 
