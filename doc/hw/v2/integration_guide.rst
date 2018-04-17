@@ -256,8 +256,6 @@ with an instantiation of a standard cell synchronizer as appropriate.
   Three flop stage deep synchronizer with an active low asynchronous set pin.
 
 
-.. _memories_sram:
-
 Memories (SRAM)
 ---------------
 
@@ -340,7 +338,6 @@ Read operation is synchronized to the rising edge of the read memory clock, CLK_
 A latch holds the read data whenever RE = ‘0’. There is no write through capability.  
 If the read address matches the write address, read out data may be corrupted.
 
-.. _fig_ram_dp_read_timing:
 .. figure:: ig_sram_dp_read_timing.png
   :alt: Dual Port RAM Read Timing
   :scale: 50%
@@ -348,7 +345,6 @@ If the read address matches the write address, read out data may be corrupted.
 
   Dual Port RAM Read Timing
 
-.. _fig_ram_dp_write_timing:
 .. figure:: ig_sram_dp_write_timing.png
   :alt: Dual Port RAM Write Timing
   :scale: 50%
@@ -411,7 +407,6 @@ Note that:
 |               |              |         | pins                  |
 +---------------+--------------+---------+-----------------------+
 
-.. _fig_ram_pdp_timing:
 .. figure:: ig_sram_pdp_timing.png
   :alt: Pseudo Dual Port RAM Timing
   :scale: 100%
