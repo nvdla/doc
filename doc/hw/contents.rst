@@ -13,6 +13,7 @@ Hardware Manual
    v1/ias/lut-programming
    v1/ias/unit_description
    v1/ias/programming_guide
+   v2/environment_setup_guide
    v2/scalability
    v2/verif_guide
 
@@ -43,6 +44,11 @@ NVDLA v2
 --------
 This version is scalable design of NVDLA. Currently, the config nv_small is verified. The architecture of sub-units is same as NVDLA v1.
 
+* :doc:`v2/environment_setup_guide` -- Please follow this document to setup tools and dependency libraries
+
 * :doc:`v2/scalability` -- Scalability parameters and ConfigROM contents in nv_large and nv_small configurations
+
+* :doc:`v2/integration_guide` -- a guide for SoC integrators, including NVDLA
+  system inferce introduction, synthesis scripts.
 
 * :doc:`v2/verif_guide` -- NVDLA Verification Suite User Guide
