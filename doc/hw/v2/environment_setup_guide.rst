@@ -72,10 +72,11 @@ multiple projects. To change target project names, open generated TOT/tree.make
 project name, only build nv_small:
 
 ::
+
     ##======================= 										  
     ## Project Name Setup, multiple projects supported			  	  
     ##======================= 										  
-    PROJECTS := nv_small_256 nv_small nv_large
+    PROJECTS := nv_small
 
 
 Build Tree
