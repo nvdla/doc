@@ -7,13 +7,13 @@ Hardware Manual
 
    v1/hwarch
    format
-   tb_format
    v1/integration_guide
    v1/ias/precision
    v1/ias/lut-programming
    v1/ias/unit_description
    v1/ias/programming_guide
    v2/environment_setup_guide
+   v2/integration_guide
    v2/scalability
    v2/verif_guide
 
@@ -25,8 +25,6 @@ NVDLA v1
 This is the non-configurable "full-precision" version of NVDLA. The design code is in nvdlav1 branch.
 
 * :doc:`format` -- description of the in-memory format for weight and activation data.
-
-* :doc:`tb_format` -- the format of data files in verif/traces directory. This format is abandoned in NVDLA v2.
 
 * :doc:`v1/integration_guide` -- a guide for SoC integrators, including a
   walk-through of the NVDLA build infrastructure, NVDLA's testbenches, and
