@@ -4,6 +4,10 @@ Scalability parameters and ConfigROM
 Scalability parameters
 ======================
 
+Note that the current source code has only been tested for the nv_small 
+configuration, and while the nv_small configuration passes many tests,
+additionall coverage is necessary to get it to tapeout quality.
+
 +-----------------+-----------------+-----------------+-----------------+
 | **Scalability   | **Description** | **INT8 Large    | **INT8 Small    |
 | Parameter**     |                 | Config(nv_large | Config(nv_small |

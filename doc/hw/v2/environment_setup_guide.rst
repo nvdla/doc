@@ -18,6 +18,13 @@ tree.make setup
 Please install corresponding tools and point to the actual path in your
 environment.
 
+Note that the current source code has only been tested for the nv_small 
+configuration, and while the nv_small configuration passes many tests,
+additionall coverage is necessary to get it to tapeout quality.
+
+Any project name specified should have a project spec file located at hw/spec/defs/<project_name>.spec.
+
+
 ::
 
     Creating tree.make to setup your working environment and projects

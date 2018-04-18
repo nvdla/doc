@@ -5,6 +5,16 @@ Open NVDLA Repository Updates
 
 This document is a quick reference guide to changes in the NVDLA repository. Most recent updates are at the top of the document.  Detailed information can be obtained from the ``git`` list of commits.  
 
+4/19/2017
+=========
+
+First release of NVDLA V2 -- the configurable NVDLA.  This release also includes
+a new testbench which can be used to validate the design.  However,
+the only tested configuration is the "nv_small" configuration. See
+the :doc:`hw/v2/scalability` document for details on the nv_small 
+design configuration parameters.  While the nv_small config passes many
+tests, coverage isn't yet to tapeout quality levels.
+
 12/1/2017
 =========
 
