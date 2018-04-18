@@ -24,6 +24,10 @@ environment.
 
     Enter projects name (Press ENTER if use: nv_small nv_large):
 
+    Enter to determine designware_noexist (Press ENTER 0 to use design ware, 1 to not use design ware: 1):
+
+    Enter design ware path (Press ENTER if use: /home/tools/synopsys/syn_2011.09/dw/sim_ver):
+
     Enter c pre-process path (Press ENTER if use:
     /home/utils/gcc-4.8.2/bin/cpp):
 
@@ -78,6 +82,37 @@ project name, only build nv_small:
     ##======================= 										  
     PROJECTS := nv_small
 
+Designware Components
+---------------------
+
+The NVDLA design utilize the following Designware components.
+
+* DW02_tree
+* DW_lsd
+* DW_minmax
+
+For best QOR, the EDA vendor supplied versions should be used for both synthesis 
+and simulation if possible. They can be obtained directly from the EDA vendors.
+
+If no designware implementation is available, the NVDLA repository contains
+an implementation with an NV\_ prefix to the filename and module name. 
+These files are in the hw/vmod/vlib directory.  The design can be switched to
+using the NV\_ version of the files by setting tree.make environment variable
+DESIGNWARE_NOEXIST to 1; similarly, the environment variable
+DESIGNWARE_NOEXIST will enable this in the simulation build environment. 
+
+::
+
+    DESIGNWARE_NOEXIST := 1
+
+If designware implementation is available, please set tree.make environment
+variable DESIGNWARE_NOEXIST to 0. Please also specify designware directory
+to tree.make environment variable DESIGNWARE_DIR.
+
+::
+
+    DESIGNWARE_NOEXIST := 0
+    DESIGNWARE_DIR := PATH_TO_DESIGNWARE_DIRECTOTRY
 
 Build Tree
 ==========
