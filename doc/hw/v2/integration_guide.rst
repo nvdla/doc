@@ -194,32 +194,6 @@ in the repository at hw/perf/DLA_OpenSource_Performance.xlsx.  The first tab in 
 
 The tool can be used to look at the affect of different hardware configurations on network performance.
 
-Designware Components
-=====================
-
-The NVDLA design utilize the following Designware components.
-
-* DW02_tree
-* DW_lsd
-* DW_minmax
-
-For best QOR, the EDA vendor supplied versions should be used for both synthesis 
-and simulation if possible.  They can be obtained directly from the EDA vendors.
-
-If no designware implementation is available, the NVDLA repository contains
-an implementation with an NV\_ prefix to the filename and module name. 
-These files are in the hw/vlib directory.  The design can be switched to
-using the NV\_ version of the files by setting the Verilog define macro
-DESIGNWARE_NOEXIST to 1; similarly, the environment variable
-DESIGNWARE_NOEXIST will enable this in the simulation build environment. 
-However, these NV\_ versions should not be used currently for any tapeout.
-
-.. warning::
-  Be careful to set the DESIGNWARE_NOEXIST variable the same way for
-  simulation as for synthesis.  The NV\_ variations are believed to be
-  correct, but are not verified to the same degree as DesignWare components
-  are; simulating different RTL than is synthesized can result in unexpected
-  defects in a tapeout netlist.
 
 Library Cells
 =============

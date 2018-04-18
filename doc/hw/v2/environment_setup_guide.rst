@@ -87,32 +87,33 @@ Designware Components
 
 The NVDLA design utilize the following Designware components.
 
-* DW02_tree
+* DW02_multp
+* DW02_sum
 * DW_lsd
-* DW_minmax
 
 For best QOR, the EDA vendor supplied versions should be used for both synthesis 
-and simulation if possible. They can be obtained directly from the EDA vendors.
+and simulation. They can be obtained directly from the EDA vendors.
 
 If no designware implementation is available, the NVDLA repository contains
-an implementation with an NV\_ prefix to the filename and module name. 
-These files are in the hw/vmod/vlib directory.  The design can be switched to
-using the NV\_ version of the files by setting tree.make environment variable
-DESIGNWARE_NOEXIST to 1; similarly, the environment variable
-DESIGNWARE_NOEXIST will enable this in the simulation build environment. 
+an alternate implementation.  The design can be compiled to
+using the alternate implementation by setting the tree.make variable
+DESIGNWARE_NOEXIST to 1.
 
 ::
 
     DESIGNWARE_NOEXIST := 1
 
-If designware implementation is available, please set tree.make environment
-variable DESIGNWARE_NOEXIST to 0. Please also specify designware directory
-to tree.make environment variable DESIGNWARE_DIR.
+If designware implementation is available, set the tree.make 
+variable DESIGNWARE_NOEXIST to 0. When using a designware implementation,
+the designware directory also needs up be added to tree.make with
+the DESIGNWARE_DIR variable.  This variable should point to a directory
+where the simulation version of the designware component is avaiable.  
+Synthesis will pick up an internal optimized version.
 
 ::
 
     DESIGNWARE_NOEXIST := 0
-    DESIGNWARE_DIR := PATH_TO_DESIGNWARE_DIRECTOTRY
+    DESIGNWARE_DIR := \<PATH_TO_DESIGNWARE_DIRECTOTRY\>
 
 Build Tree
 ==========
