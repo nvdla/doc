@@ -5,7 +5,7 @@ Open NVDLA Repository Updates
 
 This document is a quick reference guide to changes in the NVDLA repository. Most recent updates are at the top of the document.  Detailed information can be obtained from the ``git`` list of commits.  
 
-4/19/2017
+4/19/2018
 =========
 
 First release of NVDLA V2 -- the configurable NVDLA.  This release also includes
