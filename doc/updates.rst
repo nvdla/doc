@@ -3,7 +3,12 @@
 Open NVDLA Repository Updates
 *****************************
 
-This document is a quick reference guide to changes in the NVDLA repository. Most recent updates are at the top of the document.  Detailed information can be obtained from the ``git`` list of commits.  
+This document is a quick reference guide to changes in the NVDLA repository. Most recent updates are at the top of the document.  Detailed information can be obtained from the ``git`` list of commits. 
+
+5/15/2018
+=========
+
+Release NVDLA Virtual platform on Amazon Web Services (AWS) FPGA which supports HW regression and SW tests. See :doc:`vp_fpga` section. Support "nv_small" configuration.
 
 4/19/2018
 =========

@@ -13,6 +13,7 @@ of documents that have been written about NVDLA.
    hw/contents
    sw/contents
    vp
+   vp_fpga
    updates
    license
    conduct
@@ -32,6 +33,8 @@ of documents that have been written about NVDLA.
 
 * :doc:`vp` -- an introduction of virtual platform for NVDLA.
 
+  * :doc:`vp_fpga` -- an introduction of virtual platform for software to run on NVDLA(small config) under AWS FPGA.
+
 * :doc:`updates` -- a list of updates to the NVDLA repository
 
 * :doc:`license` -- the license under which NVDLA hardware is released.
@@ -47,4 +50,5 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`search`
+
 
