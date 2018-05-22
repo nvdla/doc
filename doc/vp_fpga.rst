@@ -381,7 +381,6 @@ Setup AWS EC2 instance machine on FPGA AMI
 
 Download source code
 --------------------
-* :ref:`Download_the_Virtual_Simulator`
 * `Download NVDLA AWS FPGA Custom Logic (CL)`_
 * `Download and build NVDLA`_
 * `AWS EC2 FPGA Hardware and Software Development Kits`_ 
