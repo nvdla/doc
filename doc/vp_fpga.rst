@@ -90,16 +90,15 @@ Load AWS FPGA image
 .. code-block:: console
 
    $ sudo fpga-clear-local-image -S 0
-   $ sudo fpga-load-local-image -S 0 -I agfi-09c2a21805a8b9257    # Load MSI-X interrupt fixed AFI
+   $ sudo fpga-load-local-image -S 0 -I agfi-09c2a21805a8b9257     # Load MSI-X interrupt fixed AFI
    $ sudo fpga-clear-local-image -S 0
    $ sudo fpga-describe-local-image -S 0 -H
-   $ sudo fpga-load-local-image -S 0 -I <your-image-afi-global-id>                                      # Load the image
+   $ sudo fpga-load-local-image -S 0 -I <your-image-afi-global-id> # Load the image
    $ sudo fpga-describe-local-image -S 0 -R -H
-   $ sudo rmmod edma-drv && sudo insmod $SDK_DIR/linux_kernel_drivers/edma/edma-drv.ko    # Re-install the edma driver to make sure the MSI is registered to /dev/fpga0_event0
+   $ sudo rmmod edma-drv                                           # Only needed if edma driver has been installed
+   $ sudo insmod $SDK_DIR/linux_kernel_drivers/edma/edma-drv.ko    # Re-install the edma driver to make sure the MSI is registered to /dev/fpga0_event0
 
-AFI *agfi-09c2a21805a8b9257* is necessary for MSI-X interrupts issue, more details please refer to `MSI-X issue`_
-
-.. _`MSI-X issue`: https://forums.aws.amazon.com/ann.jspa?annID=4917
+AFI *agfi-09c2a21805a8b9257* is necessary for MSI-X interrupts issue.
 
 You can generate your own AWS FPGA Image (AFI) by `Generating the AFI on AWS FPGA AMI`_ Or can use *agfi-0c0d3238889376d22* if just want to run tests on AWS FPGA platform.
 
@@ -146,7 +145,15 @@ Please refer to `Setup AWS EC2 instance machine`_ and the AMI we recommend to ch
 Download the Virtual Simulator
 ------------------------------
 
-Please refer to :ref:`Download_the_Virtual_Simulator`.
+1. :ref:`Download_the_Virtual_Simulator`
+++++++++++++++++++++++++++++++++++++++++
+
+2. Download NVDLA AWS FPGA Custom Logic (CL)
+++++++++++++++++++++++++++++++++++++++++++++
+
+.. code-block:: console
+
+   $ git clone https://github.com/nvdla/vp_fpga.git
 
 Install Dependencies
 --------------------
@@ -236,7 +243,7 @@ Build and Install the Virtual Simulator with NVDLA FPGA
 
 .. code-block:: console
    
-   $ cd [aws-fpga prefix] && source sdk_setup.sh    # Setup AWS SDK
+   $ cd [aws-fpga prefix] && source sdk_setup.sh              # Setup AWS SDK
    $ lsmod | grep edma                                        # Check if the edma driver is intalled
    $ cd $SDK_DIR/linux_kernel_drivers/edma                    # If nothing shows up, following the instructions below to install it
    $ make
@@ -255,6 +262,14 @@ Please refer to `Load AWS FPGA image`_.
 4. Cmake build under the vp repository directory
 ++++++++++++++++++++++++++++++++++++++++++++++++
 
+For CentOS:
+
+.. code-block:: console
+
+   $ cmake -DCMAKE_INSTALL_PREFIX=[install dir] -DSYSTEMC_PREFIX=[systemc prefix] -DNVDLA_HW_PREFIX=[nvdla_hw prefix] -DNVDLA_HW_PROJECT=[nvdla_hw project name] -DAWS_FPGA_PRESENT=1 -DAWS_SDK_PREFIX=[aws sdk prefix] -DLUA_INCLUDE_DIR=/usr/local/include -DLUA_LIBRARIES=/usr/local/lib/liblua.a
+
+For Ubuntu:
+
 .. code-block:: console
 
    $ cmake -DCMAKE_INSTALL_PREFIX=[install dir] -DSYSTEMC_PREFIX=[systemc prefix] -DNVDLA_HW_PREFIX=[nvdla_hw prefix] -DNVDLA_HW_PROJECT=[nvdla_hw project name] -DAWS_FPGA_PRESENT=1 -DAWS_SDK_PREFIX=[aws sdk prefix]
@@ -262,6 +277,14 @@ Please refer to `Load AWS FPGA image`_.
 *install dir* is where you would like to install the virtual simulator, *systemc prefix* is the SystemC installation directory, *nvdla_hw prefix* is the local NVDLA HW repository, *nvdla_hw project name* is the NVDLA HW project name and *aws sdk prefix* is the AWS sdk directory
 
 Example:
+
+For CentOS:
+
+.. code-block:: console
+
+   $ cmake -DCMAKE_INSTALL_PREFIX=build -DSYSTEMC_PREFIX=/usr/local/systemc-2.3.0/ -DNVDLA_HW_PREFIX=/usr/local/nvdla/hw -DNVDLA_HW_PROJECT=nv_small -DAWS_FPGA_PRESENT=1 -DAWS_SDK_PREFIX=/usr/local/aws-fpga/sdk -DLUA_INCLUDE_DIR=/usr/local/include -DLUA_LIBRARIES=/usr/local/lib/liblua.a
+
+For Ubuntu:
 
 .. code-block:: console
 
@@ -283,11 +306,11 @@ Running HW regression tests on FPGA
 
 .. code-block:: console
 
-   $ cd [vp prefix]/fpga/aws-fpga/cl_nvdla/verif/regression
+   $ cd [vp_fpga prefix]/cl_nvdla/verif/regression
    $ make AWS_FPGA=1 NVDLA_HW_ROOT=[nvdla_hw prefix]
    $ make check    # Check last regression status
 
-*nvdla_hw prefix* is the local NVDLA HW repository, *vp prefix* is the local virtual simulator repository.
+*nvdla_hw prefix* is the local NVDLA HW repository, *vp_fpga prefix* is the local nvdla aws fpga CL repository.
 
 2. Run NVDLA random regression tests
 ++++++++++++++++++++++++++++++++++++
@@ -296,11 +319,11 @@ You can run NVDLA random regression tests which has HW full coverage with below 
 
 .. code-block:: console
 
-   $ cd [vp prefix]/fpga/aws-fpga/cl_nvdla/verif/regression
+   $ cd [vp_fpga prefix]/cl_nvdla/verif/regression
    $ make AWS_FPGA=1 NVDLA_HW_ROOT=[nvdla_hw prefix] NVDLA_HW_TRACE_LIST=nv_small_random NVDLA_HW_TRACE_ROOT=[nvdla_hw prefix]/nv_small_XXXX/nvdla_utb RANDOM_TEST=1
    $ make check NVDLA_HW_TRACE_LIST=nv_small_random # Check last regression status
 
-*nvdla_hw prefix* is the local NVDLA HW repository, *vp prefix* is the local virtual simulator repository.
+*nvdla_hw prefix* is the local NVDLA HW repository, *vp prefix* is the local nvdla aws fpga CL repository.
 
 Running the Virtual Simulator
 -----------------------------
@@ -326,7 +349,6 @@ Start the virtual simulator:
 
 .. code-block:: console
 
-   $ export SC_SIGNAL_WRITE_CHECK=DISABLE
    $ sudo ./build/bin/aarch64_toplevel -c conf/aarch64_nvdla.lua --fpga
    Login the kernel. The demo image uses account 'root' and password 'nvdla'.
 
@@ -360,11 +382,13 @@ Setup AWS EC2 instance machine on FPGA AMI
 Download source code
 --------------------
 * :ref:`Download_the_Virtual_Simulator`
+* `Download NVDLA AWS FPGA Custom Logic (CL)`_
 * `Download and build NVDLA`_
 * `AWS EC2 FPGA Hardware and Software Development Kits`_ 
 
 .. _`AWS EC2 FPGA Hardware and Software Development Kits`: `1. Download AWS EC2 FPGA Hardware and Software Development Kit`_
 .. _`Download and build NVDLA`: `4. Download and build NVDLA CMOD and VMOD`_
+.. _`Download NVDLA AWS FPGA Custom Logic (CL)`: `2. Download NVDLA AWS FPGA Custom Logic (CL)`_
 
 Build NVDLA RTL
 ---------------
@@ -394,13 +418,13 @@ Generate design checkpoint (DCP)
 .. code-block:: console
 
    $ cd [aws fpga prefix] && source hdk_setup.sh
-   $ export CL_DIR=[vp prefix]/fpga/aws-fpga/cl_nvdla
+   $ export CL_DIR=[vp_fpga prefix]/cl_nvdla
    $ export NV_HW_ROOT=[nvdla_hw prefix]
    $ cd $CL_DIR/build/scripts
    $ ./filelist.sh
    $ $HDK_DIR/common/shell_stable/build/scripts/aws_build_dcp_from_cl.sh -foreground -clock_recipe_a A2    # Create DCP with 15.625M
 
-The DCP generation process could take hours to finish, you should not stop the EC2 instance during this process. After the DCP is generated successfully, a tarball file should be generated under [vp prefix]/fpga/aws-fpga/cl_nvdla/build/checkpoints/to_aws.
+The DCP generation process could take hours to finish, you should not stop the EC2 instance during this process. After the DCP is generated successfully, a tarball file should be generated under [vp_fpga prefix]/cl_nvdla/build/checkpoints/to_aws.
 
 Generate AFI
 ------------
