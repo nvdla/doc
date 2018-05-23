@@ -146,7 +146,7 @@ Download the Virtual Simulator
 ------------------------------
 
 1. Download Virtual Simulator
-++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++
 
 Please refer to :ref:`Download_the_Virtual_Simulator`
 
