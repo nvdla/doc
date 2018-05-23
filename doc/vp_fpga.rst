@@ -145,8 +145,10 @@ Please refer to `Setup AWS EC2 instance machine`_ and the AMI we recommend to ch
 Download the Virtual Simulator
 ------------------------------
 
-1. :ref:`Download_the_Virtual_Simulator`
+1. Download Virtual Simulator
 ++++++++++++++++++++++++++++++++++++++++
+
+Please refer to :ref:`Download_the_Virtual_Simulator`
 
 2. Download NVDLA AWS FPGA Custom Logic (CL)
 ++++++++++++++++++++++++++++++++++++++++++++
