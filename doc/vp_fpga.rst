@@ -155,7 +155,7 @@ Please refer to :ref:`Download_the_Virtual_Simulator`
 
 .. code-block:: console
 
-   $ git clone https://github.com/nvdla/vp_fpga.git
+   $ git clone https://github.com/nvdla/vp_awsfpga.git
 
 Install Dependencies
 --------------------
@@ -308,11 +308,11 @@ Running HW regression tests on FPGA
 
 .. code-block:: console
 
-   $ cd [vp_fpga prefix]/cl_nvdla/verif/regression
+   $ cd [vp_awsfpga prefix]/cl_nvdla/verif/regression
    $ make AWS_FPGA=1 NVDLA_HW_ROOT=[nvdla_hw prefix]
    $ make check    # Check last regression status
 
-*nvdla_hw prefix* is the local NVDLA HW repository, *vp_fpga prefix* is the local nvdla aws fpga CL repository.
+*nvdla_hw prefix* is the local NVDLA HW repository, *vp_awsfpga prefix* is the local nvdla aws fpga CL repository.
 
 2. Run NVDLA random regression tests
 ++++++++++++++++++++++++++++++++++++
@@ -321,7 +321,7 @@ You can run NVDLA random regression tests which has HW full coverage with below 
 
 .. code-block:: console
 
-   $ cd [vp_fpga prefix]/cl_nvdla/verif/regression
+   $ cd [vp_awsfpga prefix]/cl_nvdla/verif/regression
    $ make AWS_FPGA=1 NVDLA_HW_ROOT=[nvdla_hw prefix] NVDLA_HW_TRACE_LIST=nv_small_random NVDLA_HW_TRACE_ROOT=[nvdla_hw prefix]/nv_small_XXXX/nvdla_utb RANDOM_TEST=1
    $ make check NVDLA_HW_TRACE_LIST=nv_small_random # Check last regression status
 
@@ -402,6 +402,76 @@ Build NVDLA RTL
 
 Please refer to :ref:`tree_build` for details on building the NVDLA hardware tree, and make sure the required tools listed in :ref:`env_setup` are installed first.
 
+Generate Interconnect code
+--------------------------
+
+Before generate NVDLA AFI, users need to generate some interconnect code with Xilinux tool which is included in AWS *"FPGA Developer AMI"*.
+
+1. Start Xilinux tool in AWS EC2 instance
++++++++++++++++++++++++++++++++++++++++++
+
+.. code-block:: console
+
+   $ vivado
+
+.. note:: You need to access the AWS EC2 instance from GUI machine to use Xilinux tool.
+
+2. Configure IP setting
++++++++++++++++++++++++
+
+* Click Manage IP -> New IP Location, then click Next, configure the Manage IP Settings page, part should be xcvu9p-flgb2104-2-i, then click Finish
+
+.. note:: For IP location, we recommend to use [vp_awsfpga prefix]/common/design/xilinx_ip/
+
+3. Generate IP axi2apb
+++++++++++++++++++++++
+
+* In the IP catalog, expand AXI_Infrastructure, search axi_apb, then select AXI APB Bridge, then double click the IP. 
+* Set the slave number to 1
+* Then click OK, then click Generate, then click OK and wait the task in Design Runs panel to finish
+
+4. Generate IP axi_interconnect_nvdla_64b
++++++++++++++++++++++++++++++++++++++++++
+
+* In the IP catalog, expand AXI_Infrastructure, then select AXI Interconnect RTL, then double click the IP
+* In Component Name, change the name to axi_interconnect_nvdla_64b
+* In the tab global, change the Slave Interface Thread ID Width to 8, the Address Width to 64 , the Interconnect Internal Data Width to 512
+* In the tab Interfaces, change the Master Interface Data Width to 512, slave0 interface data width to 512, and slave1 to 64, all Acceptance to 32, all the FIFO * Then click OK, then click Generate, then click OK and wait the task in Design Runs panel to finish
+
+5. Generate IP axi_interconnect_nvdla_512b
+++++++++++++++++++++++++++++++++++++++++++
+
+* In the IP catalog, expand AXI_Infrastructure, then select AXI Interconnect RTL, then double click the IP
+* In Component Name, change the name to axi_interconnect_nvdla_512b
+* In the tab global, change the Number of Slave Interface to 3, Slave Interface Thread ID Width to 8, the Address Width to 64, the Interconnect Internal Data Width to 512
+* In the tab Interfaces, change all the interface width to 512, all Acceptance to 32, all the FIFO Depth to 512
+* Then click OK, then click Generate, then click OK and wait the task in Design Runs panel to finish
+
+6. Generate IP axi_interconnect_nvdla_256b
+++++++++++++++++++++++++++++++++++++++++++
+
+* In the IP catalog, expand AXI_Infrastructure, then select AXI Interconnect RTL, then double click the IP
+* In Component Name, change the name to axi_interconnect_nvdla_256b
+* In the tab global, change the Number of Slave Interface to 3, Slave Interface Thread ID Width to 8, the Address Width to 64, the Interconnect Internal Data Width to 512
+* In the tab Interfaces, change all the interface width to 512, all Acceptance to 32, all the FIFO Depth to 256
+* Then click OK, then click Generate, then click OK and wait the task in Design Runs panel to finish
+
+7. Generate IP axi_protocol_converter_axi_to_axil
++++++++++++++++++++++++++++++++++++++++++++++++++
+
+* In the IP catalog, expand AXI_Infrastructure, then select AXI Protocol Converter, then double click the IP
+* In Component Name, change the name to axi_protocol_converter_axi_to_axil
+* Change the Address Width to 64, Data Width to 64
+* Then click OK, then click Generate, then click OK and wait the task in Design Runs panel to finish
+
+8. Generate IP axi_dwidth_converter_512b_to_64b
++++++++++++++++++++++++++++++++++++++++++++++++
+
+* In the IP catalog, expand AXI_Infrastructure, then select AXI Data Width Converter, then double click the IP
+* In Component Name, change the name to axi_dwidth_converter_512b_to_64b
+* Change the Address Width to 64, SI Data Width 512, SI ID Width to 16
+* Then click OK, then click Generate, then click OK and wait the task in Design Runs panel to finish
+
 Install AWS CLI
 ---------------
 
@@ -419,13 +489,13 @@ Generate design checkpoint (DCP)
 .. code-block:: console
 
    $ cd [aws fpga prefix] && source hdk_setup.sh
-   $ export CL_DIR=[vp_fpga prefix]/cl_nvdla
+   $ export CL_DIR=[vp_awsfpga prefix]/cl_nvdla
    $ export NV_HW_ROOT=[nvdla_hw prefix]
    $ cd $CL_DIR/build/scripts
    $ ./filelist.sh
    $ $HDK_DIR/common/shell_stable/build/scripts/aws_build_dcp_from_cl.sh -foreground -clock_recipe_a A2    # Create DCP with 15.625M
 
-The DCP generation process could take hours to finish, you should not stop the EC2 instance during this process. After the DCP is generated successfully, a tarball file should be generated under [vp_fpga prefix]/cl_nvdla/build/checkpoints/to_aws.
+The DCP generation process could take hours to finish, you should not stop the EC2 instance during this process. After the DCP is generated successfully, a tarball file should be generated under [vp_awsfpga prefix]/cl_nvdla/build/checkpoints/to_aws.
 
 Generate AFI
 ------------
