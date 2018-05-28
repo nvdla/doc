@@ -4,6 +4,7 @@ Virtual Platform On AWS FPGA
 Overview
 ========
 
+
 Virtual Platform (:ref:`overview`) can run on Amazon Web Services (AWS) FPGA platform. :numref:`fig_vp_fpga` below shows the top level diagram of the NVDLA virtual simulator on AWS FPGA platform.
 
 .. _fig_vp_fpga:
@@ -402,75 +403,127 @@ Build NVDLA RTL
 
 Please refer to :ref:`tree_build` for details on building the NVDLA hardware tree, and make sure the required tools listed in :ref:`env_setup` are installed first.
 
-Generate Interconnect code
+Generate Vivado IP
 --------------------------
 
-Before generate NVDLA AFI, users need to generate some interconnect code with Xilinux tool which is included in AWS *"FPGA Developer AMI"*.
+Before generate NVDLA AFI, users need to generate some Xilinx Vivado IP which is used in AWS *"FPGA Developer AMI"*.
 
-1. Start Xilinux tool in AWS EC2 instance
+.. note:: 
+   * You need to access the AWS EC2 instance from GUI machine to use Xilinx tool.
+   * Vivado veresion is /opt/Xilinx/SDx/2017.1.op/Vivado/bin/vivado
+   * For IP location, we recommend to use [vp_awsfpga prefix]/common/design/xilinx_ip/ 
+
+1. Start Xilinx tool in AWS EC2 instance
 +++++++++++++++++++++++++++++++++++++++++
 
 .. code-block:: console
 
    $ vivado
 
-.. note:: You need to access the AWS EC2 instance from GUI machine to use Xilinux tool.
 
 2. Configure IP setting
 +++++++++++++++++++++++
 
-* Click Manage IP -> New IP Location, then click Next, configure the Manage IP Settings page, part should be xcvu9p-flgb2104-2-i, then click Finish
+* Click "Manage IP"
+* Click "New IP Location"
+* Click "Next"
+* Configure the Manage IP Settings page, set "part" to "xcvu9p-flgb2104-2-i"
+* Click "Finish"
 
-.. note:: For IP location, we recommend to use [vp_awsfpga prefix]/common/design/xilinx_ip/
+
 
 3. Generate IP axi2apb
 ++++++++++++++++++++++
 
-* In the IP catalog, expand AXI_Infrastructure, search axi_apb, then select AXI APB Bridge, then double click the IP. 
-* Set the slave number to 1
-* Then click OK, then click Generate, then click OK and wait the task in Design Runs panel to finish
+* In the IP catalog, search axi_apb
+* Double click "AXI APB Bridge" 
+* Set "Component Name" to "axi_apb_bridge_0"
+* Set "Number Of Slaves" to "1"
+* Click "OK"
+* Click "Generate"
+* Click "OK" and wait the task in "Design Runs" panel to finish
 
 4. Generate IP axi_interconnect_nvdla_64b
 +++++++++++++++++++++++++++++++++++++++++
 
-* In the IP catalog, expand AXI_Infrastructure, then select AXI Interconnect RTL, then double click the IP
-* In Component Name, change the name to axi_interconnect_nvdla_64b
-* In the tab global, change the Slave Interface Thread ID Width to 8, the Address Width to 64 , the Interconnect Internal Data Width to 512
-* In the tab Interfaces, change the Master Interface Data Width to 512, slave0 interface data width to 512, and slave1 to 64, all Acceptance to 32, all the FIFO * Then click OK, then click Generate, then click OK and wait the task in Design Runs panel to finish
+* In the IP catalog, expand "AXI_Infrastructure", double click "AXI Interconnect RTL"
+* Set "Component Name" to "axi_interconnect_nvdla_64b"
+* Click the tab "Global"
+* Set "Number of Slave Interface" to "2" 
+* Set "Slave Interface Thread ID Width" to "8" 
+* Set "Address Width" to "64"
+* Set "Interconnect Internal Data Width" to "512"
+* Click the tab "Interfaces"
+* Set "Master Interface Data Width" to "512"
+* Set "Slave Interface 0 data width" to "512"
+* Set "Slave Interface 1 data width" to "64"
+* Click the tab "Read Write Channels"
+* Set all the "Acceptance" to "32"
+* Set all the "FIFO Depth" to "512"
+* Click "OK"
+* Click "Generate"
+* Click "OK" and wait the task in "Design Runs" panel to finish
 
 5. Generate IP axi_interconnect_nvdla_512b
 ++++++++++++++++++++++++++++++++++++++++++
 
-* In the IP catalog, expand AXI_Infrastructure, then select AXI Interconnect RTL, then double click the IP
-* In Component Name, change the name to axi_interconnect_nvdla_512b
-* In the tab global, change the Number of Slave Interface to 3, Slave Interface Thread ID Width to 8, the Address Width to 64, the Interconnect Internal Data Width to 512
-* In the tab Interfaces, change all the interface width to 512, all Acceptance to 32, all the FIFO Depth to 512
-* Then click OK, then click Generate, then click OK and wait the task in Design Runs panel to finish
+* In the IP catalog, expand "AXI_Infrastructure", double click "AXI Interconnect RTL"
+* Set "Component Name" to "axi_interconnect_nvdla_512b"
+* Click the tab "Global"
+* Set "Number of Slave Interface" to "3" 
+* Set "Slave Interface Thread ID Width" to "8" 
+* Set "Address Width" to "64"
+* Set "Interconnect Internal Data Width" to "512"
+* Click the tab "Interfaces"
+* Set all the "Data Width" to "512"
+* Click the tab "Read Write Channels"
+* Set all the "Acceptance" to "32"
+* Set all the "FIFO Depth" to "512"
+* Click "OK"
+* Click "Generate"
+* Click "OK" and wait the task in "Design Runs" panel to finish
 
 6. Generate IP axi_interconnect_nvdla_256b
 ++++++++++++++++++++++++++++++++++++++++++
 
-* In the IP catalog, expand AXI_Infrastructure, then select AXI Interconnect RTL, then double click the IP
-* In Component Name, change the name to axi_interconnect_nvdla_256b
-* In the tab global, change the Number of Slave Interface to 3, Slave Interface Thread ID Width to 8, the Address Width to 64, the Interconnect Internal Data Width to 512
-* In the tab Interfaces, change all the interface width to 512, all Acceptance to 32, all the FIFO Depth to 256
-* Then click OK, then click Generate, then click OK and wait the task in Design Runs panel to finish
+* In the IP catalog, expand "AXI_Infrastructure", double click "AXI Interconnect RTL"
+* Set "Component Name" to "axi_interconnect_nvdla_256b"
+* Click the tab "Global"
+* Set "Number of Slave Interface" to "3" 
+* Set "Slave Interface Thread ID Width" to "8" 
+* Set "Address Width" to "64"
+* Set "Interconnect Internal Data Width" to "512"
+* Click the tab "Interfaces"
+* Set all the "Data Width" to "256"
+* Click the tab "Read Write Channels"
+* Set all the "Acceptance" to "32"
+* Set all the "FIFO Depth" to "512"
+* Click "OK"
+* Click "Generate"
+* Click "OK" and wait the task in "Design Runs" panel to finish
 
 7. Generate IP axi_protocol_converter_axi_to_axil
 +++++++++++++++++++++++++++++++++++++++++++++++++
 
-* In the IP catalog, expand AXI_Infrastructure, then select AXI Protocol Converter, then double click the IP
-* In Component Name, change the name to axi_protocol_converter_axi_to_axil
-* Change the Address Width to 64, Data Width to 64
-* Then click OK, then click Generate, then click OK and wait the task in Design Runs panel to finish
+* In the IP catalog, expand "AXI_Infrastructure", double click "AXI Protocol Converter"
+* Set "Component Name" to "axi_protocol_converter_axi_to_axil"
+* Set "Address Width" to "64"
+* Set "Data Width" to "64"
+* Click "OK"
+* Click "Generate"
+* Click "OK" and wait the task in "Design Runs" panel to finish
 
 8. Generate IP axi_dwidth_converter_512b_to_64b
 +++++++++++++++++++++++++++++++++++++++++++++++
 
-* In the IP catalog, expand AXI_Infrastructure, then select AXI Data Width Converter, then double click the IP
-* In Component Name, change the name to axi_dwidth_converter_512b_to_64b
-* Change the Address Width to 64, SI Data Width 512, SI ID Width to 16
-* Then click OK, then click Generate, then click OK and wait the task in Design Runs panel to finish
+* In the IP catalog, expand "AXI_Infrastructure", double click "AXI Data Width Converter"
+* Set "Component Name" to "axi_dwidth_converter_512b_to_64b"
+* Set "Address Width" to "64"
+* Set "SI Data Width" to "512"
+* Set "SI ID Width" to "16"
+* Click "OK"
+* Click "Generate"
+* Click "OK" and wait the task in "Design Runs" panel to finish
 
 Install AWS CLI
 ---------------
