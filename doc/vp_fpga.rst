@@ -406,7 +406,7 @@ Please refer to :ref:`tree_build` for details on building the NVDLA hardware tre
 Generate Vivado IP
 --------------------------
 
-Before generate NVDLA AFI, users need to generate some Xilinx Vivado IP which is used in AWS *"FPGA Developer AMI"*.
+Before generate NVDLA AFI, users need to generate some necessary Xilinx Vivado IP in AWS EC2 instance.
 
 .. note:: 
    * You need to access the AWS EC2 instance from GUI machine to use Xilinx tool.
@@ -420,7 +420,6 @@ Before generate NVDLA AFI, users need to generate some Xilinx Vivado IP which is
 
    $ vivado
 
-
 2. Configure IP setting
 +++++++++++++++++++++++
 
@@ -429,8 +428,6 @@ Before generate NVDLA AFI, users need to generate some Xilinx Vivado IP which is
 * Click "Next"
 * Configure the Manage IP Settings page, set "part" to "xcvu9p-flgb2104-2-i"
 * Click "Finish"
-
-
 
 3. Generate IP axi2apb
 ++++++++++++++++++++++
