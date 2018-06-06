@@ -16,6 +16,7 @@ of documents that have been written about NVDLA.
    vp_fpga
    updates
    license
+   contributing
    conduct
    glossary
 
@@ -38,6 +39,8 @@ of documents that have been written about NVDLA.
 * :doc:`updates` -- a list of updates to the NVDLA repository
 
 * :doc:`license` -- the license under which NVDLA hardware is released.
+
+* :doc:`contributing` -- some guidelines for contributing changes.
 
 * This project adheres to the :doc:`conduct`; by participating, you are
   expected to uphold this code.
