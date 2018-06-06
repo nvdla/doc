@@ -101,7 +101,9 @@ Load AWS FPGA image
 
 AFI *agfi-09c2a21805a8b9257* is necessary for MSI-X interrupts issue.
 
-You can generate your own AWS FPGA Image (AFI) by `Generating the AFI on AWS FPGA AMI`_ Or can use *agfi-0c0d3238889376d22* if just want to run tests on AWS FPGA platform.
+You can generate your own AWS FPGA Image (AFI) by `Generating the AFI on AWS FPGA AMI`_ Or can use NVIDIA Sample AFI (refer to `VP AWS FPGA README`_) if just want to run tests on AWS FPGA platform.
+
+.. _`VP AWS FPGA README`: https://github.com/nvdla/vp_awsfpga/blob/master/README.md
 
 More details please refer to `AWS Getting Started`_.
 
@@ -214,11 +216,15 @@ Please refer to :ref:`tree_build` for details on building the NVDLA hardware tre
 
    $ git clone https://github.com/nvdla/hw.git
    $ cd hw
-   $ git reset --hard c2e15a548032e5e9bbdc8a8f0b9ec4ade57a9f18    # HW versison must be matched with virtual simulator
+   $ git reset --hard <HW verion index>    # HW versison must be matched with virtual simulator
    $ make
    $ tools/bin/tmake -build cmod_top -build vmod
  
 The header files and library will be generated in *hw/outdir/<project>/cmod/release* and *hw/outdir/<project>/vmod/release*.
+
+<HW verion index> must be matched with virtual simulator, refer to `VP README`_ for details.
+
+.. _`VP README`: https://github.com/nvdla/vp/blob/master/README.md
 
 If you need to run the random HW regression tests on FPGA, please run the below commands to build tests for random HW regression.
 
@@ -239,7 +245,7 @@ Build and Install the Virtual Simulator with NVDLA FPGA
 
    $ git clone https://github.com/aws/aws-fpga.git
 
-.. note:: Always sync latest version for AWS EC2 FPGA Hardware and Software Development Kits. Please sync to *"be3d41cb1b6b5db6bc24b577ab1af8d2eb4de102"* which was verified with any issue.
+.. note:: Always sync latest version for AWS EC2 FPGA Hardware and Software Development Kits. Please sync aws repository to specified version (refer to `VP AWS FPGA README`_) which was verified with any issue.
 
 2. Setup AWS SDK and edma driver
 ++++++++++++++++++++++++++++++++
