@@ -412,7 +412,9 @@ Please refer to :ref:`tree_build` for details on building the NVDLA hardware tre
 Generate Vivado IP
 --------------------------
 
-Before generate NVDLA AFI, users need to generate some necessary Xilinx Vivado IP in AWS EC2 instance.
+Before generate NVDLA AFI, users need to generate some necessary Xilinx
+Vivado IP in AWS EC2 instance.  The generated IP is not distributed with the
+NVDLA source distribution because of licensing restrictions.
 
 .. note:: 
    * You need to access the AWS EC2 instance from GUI machine to use Xilinx tool.
