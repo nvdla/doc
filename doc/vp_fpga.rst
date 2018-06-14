@@ -35,6 +35,8 @@ Log into the `AWS Management Console`_ and set up your root account.
 
 .. _`AWS Management Console`: https://console.aws.amazon.com/
 
+.. note:: Please set your aws region to US East (N.Virginia) since each AWS region is independent.
+
 2. Launch an Amazon EC2 instance
 ++++++++++++++++++++++++++++++++
 
