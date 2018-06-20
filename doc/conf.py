@@ -158,7 +158,8 @@ html_static_path = ['../static']
 html_additional_pages = {
     'index': 'index.html',
     'hwarch': 'hwarch.html',
-    'integration_guide' : 'integration_guide.html'
+    'integration_guide' : 'integration_guide.html',
+    'signup': 'signup.html'
 }
 
 # If false, no module index is generated.
