@@ -891,6 +891,9 @@ assumptions to simplify the interface protocol.
 * Writes must always be acknowledged, reads must always get return data
 * Writes must be committed to memory when NVDLA gets a write acknowledge
 * Reads must always get the actual value from memory
+* Write acknowledge must be returned in write request order
+* Read data must be returned in read request order
+
 
 Clock and reset
 ^^^^^^^^^^^^^^^
@@ -1086,6 +1089,9 @@ the benefit of lower latency and higher throughput.  The SRAM interface
 protocol is exactly the same as DBBIF interface, but signals have been
 renamed to the prefixes ``nvdla_core2sram_{aw,ar,w,b,r}_``, for the aw, ar,
 w, b and r channels respectively.
+The return order between write acknowledges from SRAMIF and DBBIF is not restricted.
+For example, there are two BDMA layers, layer0 and alyer1. Layer0 writes to DBBIF and layer1 writes to SRAMIF.
+Layer1 may receive write acknowledge from SRAMIF before layer0 which receive write acknowledge from DBBIF.
 
 
 Register Interface
