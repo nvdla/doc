@@ -2117,7 +2117,7 @@ The Look-up table approach is adopted for the RESMO
 
 .. _fig_image45_cdp_curve:
 
-.. figure:: ias_image45_cdp_curve.svg
+.. figure:: ias_image45_cdp_curve.png
   :align: center
 
   Curve for reciprocation-exponent-sum-multi operation
