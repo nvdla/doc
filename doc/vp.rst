@@ -3,8 +3,8 @@ Virtual Platform
 
 .. _overview:
 
-Overview
-========
+1. Overview
+===========
 
 The NVDLA virtual platform provides a register-accurate system on which software can be quickly developed and debugged. The virtual platform is based on GreenSocs QBOX_, a solution for co-simulation with QEMU and SystemC. :numref:`fig_vp_top` below shows the top level diagram of the NVDLA virtual simulator. A QEMU emulator of ARMv8 'virt' SoC board is included to provide high performance CPU emulation and generic devices. The emulator is wrapped inside a standard SystemC module with a set of TLM-2.0 interfaces to interact with other SystemC modules. 
 
@@ -17,17 +17,17 @@ The NVDLA virtual platform provides a register-accurate system on which software
 
   NVDLA Virtual Platform.
 
-Using the Virtual Simulator
-===========================
+2. Using the Virtual Simulator
+==============================
 
-It is recommended that you use the pre-built virtual simulator binary included in the docker_ image. The `Running the Virtual Simulator From Docker`_ section describes the detail. You are also welcome to build the virtual simulator from source code and use that.
+It is recommended that you use the pre-built virtual simulator binary included in the docker_ image. The `2.6 Running the Virtual Simulator From Docker`_ section describes the detail. You are also welcome to build the virtual simulator from source code and use that.
 
 .. _docker: https://hub.docker.com/r/nvdla
 
 .. _System_Requirements:
 
-System Requirements
--------------------
+2.1 System Requirements
+-----------------------
 
 It is recommended to build the virtual simulator in a system that meets the following requirements:
 
@@ -51,8 +51,8 @@ Several tools like Java and Perl are also required to build the NVDLA hardware t
 
 .. _Download_the_Virtual_Simulator:
 
-Download the Virtual Simulator
-------------------------------
+2.2 Download the Virtual Simulator
+----------------------------------
 
 The NVDLA virtual simulator source code can be downloaded from github_.
 
@@ -66,21 +66,21 @@ The NVDLA virtual simulator source code can be downloaded from github_.
 
 .. _Install_Dependencies:
 
-Install Dependencies
---------------------
+2.3 Install Dependencies
+------------------------
 
-1. Install required tools and libraries
-+++++++++++++++++++++++++++++++++++++++
+2.3.1 Install required tools and libraries
+++++++++++++++++++++++++++++++++++++++++++
 
 .. code-block:: console
 
    $ sudo apt-get update
    $ sudo apt-get install g++ cmake libboost-dev python-dev libglib2.0-dev libpixman-1-dev liblua5.2-dev swig libcap-dev libattr1-dev
 
-2. Download and install SystemC 2.3.0
-+++++++++++++++++++++++++++++++++++++
+2.3.2 Download and install SystemC 2.3.0
+++++++++++++++++++++++++++++++++++++++++
 
-Please be noted that SystemC 2.3.1/2.3.2 is currently not supported currently
+Please be noted that SystemC 2.3.1/2.3.2 is not supported currently.
 
 .. code-block:: console
 
@@ -94,10 +94,30 @@ Please be noted that SystemC 2.3.1/2.3.2 is currently not supported currently
    $ make
    $ sudo make install
 
+2.3.3 Download and install perl package required
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+We need to install perl package YAML.pm and Tee.pm to build NVDLA CMOD.
+
+.. code-block:: console
+
+      $ wget -O YAML-1.24.tar.gz http://search.cpan.org/CPAN/authors/id/T/TI/TINITA/YAML-1.24.tar.gz
+      $ tar -xzvf YAML-1.24.tar.gz
+      $ cd YAML-1.24
+      $ perl Makefile.PL
+      $ make
+      $ sudo make install
+      $ wget -O IO-Tee-0.65.tar.gz http://search.cpan.org/CPAN/authors/id/N/NE/NEILB/IO-Tee-0.65.tar.gz
+      $ tar -xzvf IO-Tee-0.65.tar.gz
+      $ cd IO-Tee-0.65
+      $ perl Makefile.PL
+      $ make
+      $ sudo make install
+
 .. _Download_and_build_NVDLA_CMOD:
 
-3. Download and build NVDLA CMOD
-++++++++++++++++++++++++++++++++
+2.3.4 Download and build NVDLA CMOD
++++++++++++++++++++++++++++++++++++
 
 Please refer to :ref:`tree_build` for details on building the NVDLA hardware tree, and make sure the required tools listed in :ref:`env_setup` are installed first.
 
@@ -110,11 +130,11 @@ Please refer to :ref:`tree_build` for details on building the NVDLA hardware tre
  
 The header files and library will be generated in *hw/outdir/<project>/cmod/release*.
 
-Build and Install the Virtual Simulator
----------------------------------------
+2.4 Build and Install the Virtual Simulator
+-------------------------------------------
 
-1. Cmake build under the vp repository directory
-++++++++++++++++++++++++++++++++++++++++++++++++
+2.4.1 Cmake build under the vp repository directory
++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. code-block:: console
 
@@ -128,8 +148,8 @@ Example:
 
    $ cmake -DCMAKE_INSTALL_PREFIX=build -DSYSTEMC_PREFIX=/usr/local/systemc-2.3.0/ -DNVDLA_HW_PREFIX=/usr/local/nvdla/hw -DNVDLA_HW_PROJECT=nv_small
 
-2. Compile and install
-++++++++++++++++++++++
+2.4.2 Compile and install
++++++++++++++++++++++++++
 
 .. code-block:: console
 
@@ -138,27 +158,27 @@ Example:
 
 .. _Running_the_Virtual_Simulator:
 
-Running the Virtual Simulator
------------------------------
+2.5 Running the Virtual Simulator
+---------------------------------
 
-1. Prepare Kernel Image
-+++++++++++++++++++++++
+2.5.1 Prepare Kernel Image
+++++++++++++++++++++++++++
 
 A demo linux kernel image is provided in the github release. You can run this image in the virtual simulator, and run the NVDLA KMD/UMD inside it. 
 
-If you would like to build a linux kernel on your own, please refer to `Building Linux Kernel for NVDLA Virtual Simulator`_.
+If you would like to build a linux kernel on your own, please refer to `3. Building Linux Kernel for NVDLA Virtual Simulator`_.
 
 After the image is ready, modify the *conf/aarch64_nvdla.lua* for the image and rootfs file location.
 
-2. Standard QEMU Arguments
-++++++++++++++++++++++++++
+2.5.2 Standard QEMU Arguments
++++++++++++++++++++++++++++++
 
 The configuration of the virtual simulator is defined in *conf/aarch64_nvdla.lua*. You can change the standard QEMU arguments in *extra_arguments* inside the lua file. 
 
-3. Running Kernel Image In the Virtual Simulator
-++++++++++++++++++++++++++++++++++++++++++++++++
+2.5.3 Running Kernel Image In the Virtual Simulator
++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-Start the virtual simulator:
+Start the virtual simulator. Pay attention that the environment variable 'SC_SIGNAL_WRITE_CHECK' should be set to 'DISABLE' before we run the virtual simulator.
 
 .. code-block:: console
 
@@ -166,7 +186,7 @@ Start the virtual simulator:
    $ ./build/bin/aarch64_toplevel -c conf/aarch64_nvdla.lua
    Login the kernel. The demo image uses account 'root' and password 'nvdla'.
 
-Some demo tests are provided in the *tests* directory, you can run them after login as root:
+Some demo tests are provided in the *tests* directory, you can run them after login as root.
 
 .. code-block:: console
 
@@ -178,8 +198,8 @@ You should be able to see 'Hello World!' printed in the screen. You are now read
 
 If you want to exit the virtual simulator, press 'ctrl+a x'.
 
-Running the Virtual Simulator From Docker
------------------------------------------
+2.6 Running the Virtual Simulator From Docker
+---------------------------------------------
 
 .. code-block:: console
 
@@ -193,8 +213,8 @@ The NVDLA software is also provided in the docker image, please refer to :doc:`s
 
 .. _Debugging_the_Virtual_Simulator:
 
-Debugging the Virtual Simulator
--------------------------------
+2.7 Debugging the Virtual Simulator
+-----------------------------------
 
 Before debugging the virtual simulator, you need to build the debug version of the simulator:
 
@@ -204,8 +224,8 @@ Before debugging the virtual simulator, you need to build the debug version of t
    $ make
    $ make install
 
-1. Log Output Control
-+++++++++++++++++++++
+2.7.1 Log Output Control
+++++++++++++++++++++++++
 
 The log output of SystemC simulator is controled by a configuration string that can be set in two ways:
 
@@ -238,8 +258,8 @@ You should be able to see logs like:
    Info: nvdla.csb_adaptor: GP: iswrite=0 addr=0x300c len=4 data=0x 00000000 resp=TLM_OK_RESPONSE
    Info: nvdla.dbb_adaptor: GP: iswrite=1 addr=0xc0001e80 len=64 data=0x abcd01b0 abcd01b1 abcd01b2 abcd01b3 abcd01b4 abcd01b5 abcd01b6 abcd01b7 abcd01b8 abcd01b9 abcd01ba abcd01bb abcd01bc abcd01bd abcd01be abcd01bf resp=TLM_OK_RESPONSE
  
-2. GDB
-++++++
+2.7.2 GDB
++++++++++
 You can also use GDB to debug the virtual simulator. First run the simulator, then get the PID of the process and use GDB to attach to it.
 
 .. code-block:: console
@@ -249,17 +269,17 @@ You can also use GDB to debug the virtual simulator. First run the simulator, th
 
 .. _Building_Linux_Kernel:
 
-Building Linux Kernel for NVDLA Virtual Simulator
-=================================================
+3. Building Linux Kernel for NVDLA Virtual Simulator
+====================================================
 
 The NVDLA virtual platform is based on QEMU aarch64 virt machine, so building a linux kernel is the same as building one for QEMU aarch64 virt machine. Here's an example of using buildroot to build a linux kernel for NVDLA virtual platform.
 
-1. Download
------------
+3.1 Download
+------------
 Download the buildroot from https://buildroot.org/download.html. This example uses the version buildroot-2017.11-rc1.
 
-2. Configure
-------------
+3.2 Configure
+-------------
 
 Use *qemu_aarch64_virt_defconfig* as base config, then set the customized configurations:
 
@@ -280,8 +300,8 @@ Use *qemu_aarch64_virt_defconfig* as base config, then set the customized config
    * Target Packages -> Show packages that are also provided by busybox -> Y
    * Target Packages -> Networking applications -> openssh -> Y
 
-3. Build
---------
+3.3 Build
+---------
 
 .. code-block:: console
 
