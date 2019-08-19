@@ -21,6 +21,9 @@ Browsing Source Code
 
 - top (https://github.com/nvdla/sw)
     - umd: :ref:`user_mode_driver`
+        - apps: Sample applications
+            - runtime :ref:`runtime_test_app`
+            - compiler :ref:`compiler_test_app`
         - core: NVDLA specific implementation of user mode components
             - **runtime:** :ref:`runtime_environment`
             - **compiler:** :ref:`compilation_tools`
@@ -31,9 +34,7 @@ Browsing Source Code
         - **make:** Make files
         - port: :ref:`umd_layer`
             - **linux:** Portability layer for Linux
-        - tests: Test applications
-            - runtime :ref:`runtime_test_app`
-            - compiler :ref:`compiler_test_app`
+        - utils: Utility functions
     - kmd: :ref:`kernel_mode_driver`
         - **Documentation:** Device tree bindings for NVDLA device
         - **firmware:** Core DLA hardware programming including HW layer scheduler
