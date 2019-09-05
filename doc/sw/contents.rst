@@ -22,8 +22,8 @@ Browsing Source Code
 - top (https://github.com/nvdla/sw)
     - umd: :ref:`user_mode_driver`
         - apps: Sample applications
-            - **runtime:** :ref:`runtime_test_app`
             - **compiler:** :ref:`compiler_test_app`
+            - **runtime:** :ref:`runtime_test_app`
         - core: NVDLA specific implementation of user mode components
             - **runtime:** :ref:`runtime_environment`
             - **compiler:** :ref:`compilation_tools`
