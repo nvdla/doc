@@ -5,16 +5,6 @@ Open NVDLA Repository Updates
 
 This document is a quick reference guide to changes in the NVDLA repository. Most recent updates are at the top of the document.  Detailed information can be obtained from the ``git`` list of commits. 
 
-8/26/2019
-=========
-
-NVDLA Compiler open source
-
-5/28/2019
-=========
-
-Release binary NVDLA compiler with int8 precision support for nv_large and nv_small
-
 5/15/2018
 =========
 
