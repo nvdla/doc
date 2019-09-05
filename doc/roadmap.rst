@@ -83,7 +83,7 @@ Whereas the full-precision configuration of NVDLA was mostly focussed on perform
      - Binary compiler
    * - 
      -  
-     - Application supporting Caffe models; most CNN related layers
+     - Application supporting Caffe and TensorFlow models; most CNN related layers
    * - 
      -  
      - Software sanity tests
@@ -115,29 +115,10 @@ The third set of deliverables will see scalable solutions: the user can set para
      - Customizable compiler
    * -  
      - UVM testbench validation of custom configurations
+     - NVDLA compliance test suite
+   * -  
      - 
-
+     - TensorRT and all supported frameworks
 
 |
-
-Next
-====
-
-Next features to allow more adoption of NVDLA.
-
-.. list-table::
-   :widths: 15 20 20
-   :header-rows: 1
-
-   * - Documentation
-     - Hardware
-     - Software
-   * - 
-     - 
-     - More layers in compiler such group convolution, relu-n
-   * - 
-     - 
-     - Machine Translation Layer which make firmware agnostic to hardware configuration
-   * - 
-     - 
-     - Hardware multi-batch for FC layers
+ 
