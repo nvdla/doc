@@ -1,8 +1,8 @@
-.. _compilation_tools:
+.. _compiler_library:
 
-=================
-Compilation tools
-=================
+================
+Compiler library
+================
 
 The Compilation phase is responsible for converting (aka compiling) a deep neural network into a sequence of hardware layers that are optimized for a given NVDLA configuration. Having a compiled network optimized for specific hardware configuration improves performance by reducing model size, load and run times. Compilation is a 2-step process that consists of: Parsing and Compiling.
 

@@ -1,7 +1,7 @@
 Software Manual
 ===============
 
-NVDLA has a full software ecosystem including support from compiling network to inference. Part of this ecosystem includes the on-device software stack, a part of the :term:`NVDLA` open source release; additionally, NVIDIA will provide a full training infrastructure to build new models that incorporate Deep Learning, and to convert existing models to a form that is usable by :term:`NVDLA` software.  In general, the software associated with :term:`NVDLA` is grouped into two parts: the :ref:`compilation_tools` (model conversion), and the :ref:`runtime_environment` (run-time software to load and execute compiled neural network on :term:`NVDLA`). The general flow of this is as shown in the figure below;
+NVDLA has a full software ecosystem including support from compiling network to inference. Part of this ecosystem includes the on-device software stack, a part of the :term:`NVDLA` open source release; additionally, NVIDIA will provide a full training infrastructure to build new models that incorporate Deep Learning, and to convert existing models to a form that is usable by :term:`NVDLA` software.  In general, the software associated with :term:`NVDLA` is grouped into two parts: the :ref:`compiler_library` (model conversion), and the :ref:`runtime_environment` (run-time software to load and execute compiled neural network on :term:`NVDLA`). The general flow of this is as shown in the figure below;
 
 .. _fig_software_package:
 .. figure:: images/software_package.png
@@ -26,7 +26,7 @@ Browsing Source Code
             - **runtime:** :ref:`runtime_test_app`
         - core: NVDLA specific implementation of user mode components
             - **runtime:** :ref:`runtime_environment`
-            - **compiler:** :ref:`compilation_tools`
+            - **compiler:** :ref:`compiler_library`
             - **include:** :ref:`umd_api`
             - **common:** Implementation shared between runtime and compiler such as loadable and logging
         - **external:** External modules used in UMD such as flatbuffers
