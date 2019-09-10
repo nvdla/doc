@@ -109,16 +109,14 @@ The third set of deliverables will see scalable solutions: the user can set para
      - Software
    * - Software architecture document 
      - Small config Verilog RTL released
-     - FPGA support for accelerating software development
+     - Refer to `GitHub`_ for software roadmap.
    * - 
      - RTL support for fine grained configuration control
-     - Customizable compiler
+     -
    * -  
      - UVM testbench validation of custom configurations
-     - NVDLA compliance test suite
-   * -  
-     - 
-     - TensorRT and all supported frameworks
+     -
 
 |
  
+.. _`GitHub`: https://github.com/nvdla/sw/blob/master/Roadmap.md
