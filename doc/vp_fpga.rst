@@ -69,7 +69,7 @@ After you launch your instance, you can connect to it and use it the way that yo
 
 .. note:: You can also connect via SSH or PuTTY, `click here`_ to learn more.
 
-.. _`click here`: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstances.html
+.. _`click here`: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstances.html
 
 2.2 Setup AWS SDK
 -----------------
@@ -188,7 +188,7 @@ Please be noted that SystemC 2.3.1/2.3.2 is currently not supported currently
 
 .. code-block:: console
 
-   $ wget -O systemc-2.3.0a.tar.gz http://www.accellera.org/images/downloads/standards/systemc/systemc-2.3.0a.tar.gz
+   $ wget -O systemc-2.3.0a.tar.gz https://www.accellera.org/images/downloads/standards/systemc/systemc-2.3.0a.tar.gz
    $ tar -xzvf systemc-2.3.0a.tar.gz
    $ cd systemc-2.3.0a
    $ sudo mkdir -p /usr/local/systemc-2.3.0/
@@ -203,7 +203,7 @@ Please be noted that SystemC 2.3.1/2.3.2 is currently not supported currently
 
 .. code-block:: console
 
-   $ curl -R -O http://www.lua.org/ftp/lua-5.3.2.tar.gz
+   $ curl -R -O https://www.lua.org/ftp/lua-5.3.2.tar.gz
    $ tar zxf lua-5.3.2.tar.gz
    $ cd lua-5.3.2
    $ make linux CFLAGS="-fPIC -DLUA_USE_LINUX" test
@@ -216,13 +216,13 @@ We need to install perl package YAML.pm and Tee.pm to build NVDLA CMOD.
 
 .. code-block:: console
 
-      $ wget -O YAML-1.24.tar.gz http://search.cpan.org/CPAN/authors/id/T/TI/TINITA/YAML-1.24.tar.gz
+      $ wget -O YAML-1.24.tar.gz https://search.cpan.org/CPAN/authors/id/T/TI/TINITA/YAML-1.24.tar.gz
       $ tar -xzvf YAML-1.24.tar.gz
       $ cd YAML-1.24
       $ perl Makefile.PL
       $ make
       $ sudo make install
-      $ wget -O IO-Tee-0.65.tar.gz http://search.cpan.org/CPAN/authors/id/N/NE/NEILB/IO-Tee-0.65.tar.gz
+      $ wget -O IO-Tee-0.65.tar.gz https://search.cpan.org/CPAN/authors/id/N/NE/NEILB/IO-Tee-0.65.tar.gz
       $ tar -xzvf IO-Tee-0.65.tar.gz
       $ cd IO-Tee-0.65
       $ perl Makefile.PL

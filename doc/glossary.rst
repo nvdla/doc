@@ -56,7 +56,7 @@ Glossary And Acronyms
        Control backbone. System control data path that connected to NVDLA
 
     DBB
-       Data backbone. The memory system that to which NVDLA connects
+       Data backbone. The path that NVDLA uses to perform DMA to system memory, such as the DRAM interface.
 
     AMBA
        ARM Advanced Microcontroller Bus Architecture. A set of ARM defined bus standards.
@@ -70,17 +70,11 @@ Glossary And Acronyms
     CSB
        Configuration Space Bus.  (See :ref:`external_interfaces`.)
 
-    DBB
-       Data Back Bone -- the path that NVDLA uses to perform DMA to system memory, such as the DRAM interface.
-
     DBBIF
        The NVDLA interface to the DBB.  (See :ref:`external_interfaces`.)
 
     IRQ
        Interrupt request.  (See :ref:`external_interfaces`.)
-
-    NVDLA
-       NVIDIA Deep Learning Accelerator.
 
     SRAMIF
        The NVDLA interface to an optional high-performance SRAM subsystem.

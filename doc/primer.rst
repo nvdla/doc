@@ -780,16 +780,16 @@ pertaining to Deep Learning and Convolutional Neural Networks. The following
 links have been provided as a means to begin or further an individual's
 investigation into these topics, as needed.
 
-* `NVIDIA Webinar Series: Deep Learning Demystified <http://info.nvidia.com/deep-learning-demystified.html>`_
+* `NVIDIA Webinar Series: Deep Learning Demystified <https://info.nvidia.com/deep-learning-demystified.html>`_
 * A Beginner's Guide to Understanding Convolutional Neural Networks
 
   * `Part 1 <https://adeshpande3.github.io/adeshpande3.github.io/A-Beginner's-Guide-To-Understanding-Convolutional-Neural-Networks/>`_
   * `Part 2 <https://adeshpande3.github.io/adeshpande3.github.io/A-Beginner's-Guide-To-Understanding-Convolutional-Neural-Networks-Part-2/>`_
 
 * `Inference: The Next Step in GPU-Accelerated Deep Learning <https://devblogs.nvidia.com/parallelforall/inference-next-step-gpu-accelerated-deep-learning/>`_
-* `NVIDIA Whitepaper: GPU-Based Deep Learning Inference: A performance and Power Analysis <http://www.nvidia.com/content/tegra/embedded-systems/pdf/jetson_tx1_whitepaper.pdf>`_
+* `NVIDIA Whitepaper: GPU-Based Deep Learning Inference: A performance and Power Analysis <https://www.nvidia.com/content/tegra/embedded-systems/pdf/jetson_tx1_whitepaper.pdf>`_
 * `Fundamentals of Deep Learning: What’s the Difference between Deep Learning Training and Inference? <https://blogs.nvidia.com/blog/2016/08/22/difference-deep-learning-training-inference-ai/>`_
-* `Inception (GoogLeNet): Going Deeper with Convolutions <http://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Szegedy_Going_Deeper_With_2015_CVPR_paper.pdf>`_
+* `Inception (GoogLeNet): Going Deeper with Convolutions <https://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Szegedy_Going_Deeper_With_2015_CVPR_paper.pdf>`_
 * `Microsoft ResNet: Deep Residual Learning for Image Recognition <https://arxiv.org/pdf/1512.03385v1.pdf>`_
 * `AlexNet: ImageNet Classification with Deep Convolutional Neural Networks <https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf>`_
 * `VGG Net: Very Deep Convolutional Networks for Large-Scale Image Recognition <https://arxiv.org/pdf/1409.1556v6.pdf>`_
