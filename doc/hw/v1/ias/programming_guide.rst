@@ -614,30 +614,30 @@ for INT/FP16 and C’=ceil(C, 32)):
 
 -  CSC.D_ATOMICS: Hardware uses this register to decide stripe size:
 
-.. code:: c
+.. code-block:: c
 
-  int calc_stripe_size(int atomics, int processed)     
-  {                                                    
-      int stripe_size;                                     
-      int remain_atomics = atomics - processed;            
-      if ( remain_atomics < 32 && remain_atomics >= 16 ) { 
-          stripe_size = remain_atomics;                        
-      } else {                                             
-          assert(remain_atomics > 16);                         
-          stripe_size = 16;                                    
-      }                                                    
-                                                           
-      return stripe_size;                                  
-  }                                                    
+  int calc_stripe_size(int atomics, int processed)
+  {
+      int stripe_size;
+      int remain_atomics = atomics - processed;
+      if ( remain_atomics < 32 && remain_atomics >= 16 ) {
+          stripe_size = remain_atomics;
+      } else {
+          assert(remain_atomics > 16);
+          stripe_size = 16;
+      }
+
+      return stripe_size;
+  }
 
 The register value of D_ATOMICS itself is calculated by:
 
-.. code:: c
+.. code-block:: c
 
-  int calc_atomics(int out_width, int out_height) 
-  {                                               
-      return out_width*out_height-1;                  
-  }                                               
+  int calc_atomics(int out_width, int out_height)
+  {
+      return out_width*out_height-1;
+  }
 
 -  CSC.D_RELEASE: Hardware uses this field to decide how many input
    slices should be released after current hardware layer.
@@ -1043,27 +1043,27 @@ The working mode selection strategy is:
 
 -  Calculate the actual pooling output:
 
-.. code:: c
+.. code-block:: c
 
   pooled_width = static_cast<int>(ceil(static_cast<float>(width + pad_left + pad_right - kernel_w) / stride_w)) + 1;
-  if ((pooled_width - 1) \* stride_w >= width + pad_left) {       
-      --pooled_width;                                                 
-  }                                                               
+  if ((pooled_width - 1) * stride_w >= width + pad_left) {
+      --pooled_width;
+  }
 
 -  Decide working mode
 
-.. code:: c
+.. code-block:: c
 
-  typedef enum {                                                        
-      PDP_FLYING_MODE,                                                      
-      PDP_OFFLINE_MODE,                                                     
-  } pdp_mode;                                                           
+  typedef enum {
+      PDP_FLYING_MODE,
+      PDP_OFFLINE_MODE,
+  } pdp_mode;
   static pdp_mode get_pdp_mode( int width_output, int max_fly_width, bool is_full_conv )
   {
       // convolution mode should also be taking into consideration: If software split
       // convolution layer into different hardware layers, PDP can't working on-the-fly
-      return (width_output <= max_fly_width) && is_full_conv ? PDP_FLYING_MODE : PDP_OFFLINE_MODE;                                   
-  }                                                                     
+      return (width_output <= max_fly_width) && is_full_conv ? PDP_FLYING_MODE : PDP_OFFLINE_MODE;
+  }
 
 -  If PDP working offline mode, we need to calculate splitted width and
    split number as well (please see: 10.1.4 for detail)

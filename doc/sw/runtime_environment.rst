@@ -10,7 +10,7 @@ Runtime environment
 
 The runtime envionment includes software to run a compiled neural network on compatible :term:`NVDLA` hardware. It consists of 2 parts:
 
-* :ref:`user_mode_driver` - This is the main interface to the application. As detailed in the :ref:`compilation_tools`, after parsing and compiling the neural network layer by layer, the compiled output is stored in a file format called :term:`NVDLA Loadable`. User mode runtime driver loads this loadable and submits inference jobs to the :ref:`kernel_mode_driver`.
+* :ref:`user_mode_driver` - This is the main interface to the application. As detailed in the :ref:`compiler_library`, after parsing and compiling the neural network layer by layer, the compiled output is stored in a file format called :term:`NVDLA Loadable`. User mode runtime driver loads this loadable and submits inference jobs to the :ref:`kernel_mode_driver`.
 
 * :ref:`kernel_mode_driver` - Consists of kernel mode driver and engine scheduler that does the work of scheduling the compiled network on :term:`NVDLA` and programming the :term:`NVDLA` registers to configure each functional block.
 
@@ -266,7 +266,7 @@ Portability layer
 
    This API should initialize session for portability layer which may include allocating some structure required to maintain information such such device context, file descriptors. This function can be empty.
 
-   :param [out] session_handle: Pointer to update session handle address. This address is passed in any APIs called after this which can be used by portability layer to recover session information.
+   :param session_handle: [out] Pointer to update session handle address. This address is passed in any APIs called after this which can be used by portability layer to recover session information.
    :returns: :c:type:`NvError`
 
 .. c:function:: void NvDlaDestroy(void *session_handle)
@@ -281,7 +281,7 @@ Portability layer
 
    :param session_handle: Session handle address obtained from :c:func:`NvDlaInitialize`
    :param instance: NVDLA instance to use if there are more than one instances in SoC
-   :param [out] device_handle: Pointer to update device context. It is used to obtain device information required for further callbacks which need device context.
+   :param device_handle: [out] Pointer to update device context. It is used to obtain device information required for further callbacks which need device context.
    :returns: :c:type:`NvError`
 
 .. c:function:: void NvDlaClose(void *session_handle, void *device_handle)
@@ -307,9 +307,9 @@ Portability layer
 
    :param session_handle: Session handle address obtained from :c:func:`NvDlaInitialize`
    :param device_handle: Device handle address obtained from :c:func:`NvDlaOpen`
-   :param [out] mem_handle: Memory handle updated by this function
+   :param mem_handle: [out] Memory handle updated by this function
+   :param pData: [out] If the allocation and mapping is successful, provides a virtual address through which the memory buffer can be accessed.
    :param size: Size of buffer to allocate
-   :param pData: If the allocation and mapping is successful, provides a virtual address through which the memory buffer can be accessed.
    :param heap: Implementation defined memory heap selection
    :returns: :c:type:`NvError`
 

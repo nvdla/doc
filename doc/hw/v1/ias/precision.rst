@@ -62,7 +62,7 @@ pipeline:
 
    Look-up tables are used to deal with non-linear function in networks; these functions include
    sigmoid/tanh activation, or local response normalization as mentioned
-   in `Data Formats <http://nvdla.org/hw/format.html>`_.  We use an innovative 2 level hybrid LUT to mimic those
+   in `Data Formats <https://nvdla.org/hw/format.html>`_.  We use an innovative 2 level hybrid LUT to mimic those
    non-linear functions; for more detail, see :doc:`lut-programming`.
 
 FP16 error threshold

@@ -84,7 +84,7 @@ Please be noted that SystemC 2.3.1/2.3.2 is not supported currently.
 
 .. code-block:: console
 
-   $ wget -O systemc-2.3.0a.tar.gz http://www.accellera.org/images/downloads/standards/systemc/systemc-2.3.0a.tar.gz
+   $ wget -O systemc-2.3.0a.tar.gz https://www.accellera.org/images/downloads/standards/systemc/systemc-2.3.0a.tar.gz
    $ tar -xzvf systemc-2.3.0a.tar.gz
    $ cd systemc-2.3.0a
    $ sudo mkdir -p /usr/local/systemc-2.3.0/
@@ -101,13 +101,13 @@ We need to install perl package YAML.pm and Tee.pm to build NVDLA CMOD.
 
 .. code-block:: console
 
-      $ wget -O YAML-1.24.tar.gz http://search.cpan.org/CPAN/authors/id/T/TI/TINITA/YAML-1.24.tar.gz
+      $ wget -O YAML-1.24.tar.gz https://search.cpan.org/CPAN/authors/id/T/TI/TINITA/YAML-1.24.tar.gz
       $ tar -xzvf YAML-1.24.tar.gz
       $ cd YAML-1.24
       $ perl Makefile.PL
       $ make
       $ sudo make install
-      $ wget -O IO-Tee-0.65.tar.gz http://search.cpan.org/CPAN/authors/id/N/NE/NEILB/IO-Tee-0.65.tar.gz
+      $ wget -O IO-Tee-0.65.tar.gz https://search.cpan.org/CPAN/authors/id/N/NE/NEILB/IO-Tee-0.65.tar.gz
       $ tar -xzvf IO-Tee-0.65.tar.gz
       $ cd IO-Tee-0.65
       $ perl Makefile.PL

@@ -902,7 +902,7 @@ that it can support three read steams at a time. If the input weight
 format is uncompressed, it only fetches weight data. If the input weight
 format is compressed, weight, WMB, and WGS are all fetched. 
 Please see `Data Formats
-<http://nvdla.org/hw/format.html>`_ for more details of weight formats.
+<https://nvdla.org/hw/format.html>`_ for more details of weight formats.
 
 If the input weight data is compressed, two arbiters are enabled for
 order of read streams. First a weighted round-robin arbiter grants a
@@ -1330,7 +1330,7 @@ parameters. The parameters are obtained from training.
 
 SDP can support per layer parameter or per channel parameter to do batch
 normalization operation. When the parameter is per channel, they are
-interleaved in memory (see `Data Formats <http://nvdla.org/hw/format.html>`_). 
+interleaved in memory (see `Data Formats <https://nvdla.org/hw/format.html>`_). 
 And a DMA in SDP will fetch the
 parameter and calculate the feature data cube from the convolution pipeline.
 
@@ -1498,7 +1498,7 @@ The throughput for each sub-unit is:
 
    b. Operand data for the adder and multiplier should be packed
       together and in same format of per element, per channel or per
-      cube.  See `Data Formats <http://nvdla.org/hw/format.html>`_ for details.
+      cube.  See `Data Formats <https://nvdla.org/hw/format.html>`_ for details.
 
    c. ReLU can be bypassed or enabled.
 

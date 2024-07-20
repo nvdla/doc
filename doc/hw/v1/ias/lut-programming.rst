@@ -322,18 +322,15 @@ automatic address incremental mechanism, which means, when you need to
 program an LUT table, you just have to write your code as below (take LE
 table program for example):
 
-.. code:: c
+.. code-block:: c
 
-  /\* program raw table \*/                                    
-  reg = (FIELD_ENUM(S_LUT_ACCESS_CFG, LUT_TABLE_ID, LE)        
-        << SHIFT(S_LUT_ACCESS_CFG, LUT_TABLE_ID)) \|           
-        (FIELD_ENUM(S_LUT_ACCESS_CFG, LUT_ACCESS_TYPE, WRITE)  
-        << SHIFT(S_LUT_ACCESS_CFG, LUT_ACCESS_TYPE));          
-  reg_write(S_LUT_ACCESS_CFG, reg);                            
-  for(i = 0; i < LUT_LE_TABLE_ENTRIES; i\+\+) {                
-      reg_write(S_LUT_ACCESS_DATA, lut->le_table[i]);          
-  }                                                            
-                                                               
+  /* program raw table */
+  reg = (FIELD_ENUM(S_LUT_ACCESS_CFG, LUT_TABLE_ID, LE) << SHIFT(S_LUT_ACCESS_CFG, LUT_TABLE_ID)) |
+        (FIELD_ENUM(S_LUT_ACCESS_CFG, LUT_ACCESS_TYPE, WRITE) << SHIFT(S_LUT_ACCESS_CFG, LUT_ACCESS_TYPE));
+  reg_write(S_LUT_ACCESS_CFG, reg);
+  for(i = 0; i < LUT_LE_TABLE_ENTRIES; i++) {
+      reg_write(S_LUT_ACCESS_DATA, lut->le_table[i]);
+  }
 
 If the address beyond the total LUT entry (e.g.: The
 LUT_RAW_TABLE_ENTRIES in pseudo code above exceed the actual LUT entry),

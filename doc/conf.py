@@ -46,7 +46,7 @@ master_doc = 'contents'
 
 # General information about the project.
 project = u'NVDLA Open Source Project'
-copyright = u'2018, NVIDIA Corporation'
+copyright = u'2018 - 2024, NVIDIA Corporation'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -100,7 +100,7 @@ numfig = True
 # -- Add Stylesheet
 
 def setup(app):
-    app.add_stylesheet('styles.css')
+    app.add_css_file('styles.css')
 
 # -- Options for HTML output ----------------------------------------------
 
