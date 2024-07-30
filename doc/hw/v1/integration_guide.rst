@@ -299,7 +299,7 @@ in the repository at hw/perf/DLA_OpenSource_Performance.xlsx.  The first tab in 
 * Hardware MAC utilization
 * Network MAC utilization
 
-The tool can be used to look at the easyffect of different hardware configurations on network performance.
+The tool can be used to look at the effect of different hardware configurations on network performance.
 
 
 
