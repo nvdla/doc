@@ -35,6 +35,7 @@
     width: 100% !important;
     max-width: 100% !important;
   }
+
 </style>
 <script src="https://assets.adobedtm.com/5d4962a43b79/814eb6e9b4e1/launch-4bc07f1e0b0b.min.js"></script>
 <!-- OneTrust Cookies Consent Notice start for nvdla.org -->
@@ -51,15 +52,26 @@ function OptanonWrapper() {
 
 {%- block footer %}
 <div class="footer" role="contentinfo">
-<div class="container">
-<div class="row">
-{% trans path=pathto('copyright'), copyright=copyright|e %}&#169; <a
-href="{{ path }}">Copyright</a> {{ copyright }}.{% endtrans %}
-<a href="https://www.nvidia.com/object/legal_info.html">Legal Information.</a>
-<a href="https://www.nvidia.com/object/privacy_policy.html">Privacy Policy.</a>
-{% trans sphinx_version=sphinx_version|e %}Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> {{ sphinx_version }}.{% endtrans %}
-</div>
-</div>
+  <div class="container">
+    <div class="footer-links">
+      <a href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+      <span class="footer-sep">|</span>
+      <a href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Your Privacy Choices</a>
+      <span class="footer-sep">|</span>
+      <a href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+      <span class="footer-sep">|</span>
+      <a href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+      <span class="footer-sep">|</span>
+      <a href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+      <span class="footer-sep">|</span>
+      <a href="https://www.nvidia.com/en-us/contact/">Contact</a>
+      <span class="footer-sep">|</span>
+      <a href="#" id="ot-sdk-btn" class="ot-sdk-show-settings footer-cookie-link">Cookie Settings</a>
+    </div>
+    <div class="footer-meta">
+      <p>Copyright &#169; {{ copyright|e }} &nbsp;|&nbsp; {% trans sphinx_version=sphinx_version|e %}Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> {{ sphinx_version }}.{% endtrans %}</p>
+    </div>
+  </div>
 </div>
 <script type="text/javascript">_satellite.pageBottom();</script>
 {%- endblock %}

@@ -125,17 +125,49 @@ div.sphinxsidebar ul ul {
 }
 
 div.footer {
-    background-color: #999999;
-    color: white;
-    padding: 3px 8px 3px 0;
+    background-color: #333333;
+    color: #cccccc;
+    padding: 8px 0 6px 0;
     clear: both;
     font-size: 0.8em;
-    text-align: right;
+    text-align: left;
 }
 
 div.footer a {
-    color: #b0f000;
+    color: #76b900;
+    text-decoration: none;
+}
+
+div.footer a:hover {
     text-decoration: underline;
+}
+
+div.footer .footer-links {
+    margin-bottom: 4px;
+    font-size: 0.95em;
+}
+
+div.footer .footer-sep {
+    margin: 0 8px;
+    color: #888888;
+}
+
+div.footer .footer-meta {
+    color: #dddddd;
+    font-size: 0.9em;
+}
+
+div.footer p {
+    margin: 0;
+}
+
+div.footer .footer-cookie-link {
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: inherit;
+    font-family: inherit;
 }
 
 /* -- body styles ----------------------------------------------------------- */
